@@ -324,6 +324,12 @@ paths:
       tags:
       - AutoTrading
       operationId: GetTradeLeaderPublic
+      parameters:
+      - name: TradeLeaderId
+        in: path
+        required: true
+        schema:
+          type: integer
       responses:
         "200":
           description: ""
@@ -534,7 +540,7 @@ paths:
     delete:
       tags:
       - Charts
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Charts
       parameters:
       - name: ContextId
         in: path
@@ -623,7 +629,7 @@ paths:
     post:
       tags:
       - ClientManagement
-      operationId: AttachFile
+      operationId: AttachFile_ClientManagement
       parameters:
       - name: DocumentType
         in: query
@@ -696,7 +702,11 @@ paths:
         in: query
         required: true
         schema:
-          type: onboardingdocumenttype
+          type: string
+          items:
+            enum:
+            - Switzerland501
+            - Switzerland901
       responses:
         "200":
           description: ""
@@ -705,7 +715,7 @@ paths:
     get:
       tags:
       - ClientManagement
-      operationId: GetSignupOptions
+      operationId: GetSignupOptions_ClientManagement
       responses:
         "200":
           description: ""
@@ -782,7 +792,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -813,7 +823,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -830,16 +840,16 @@ paths:
         "200":
           description: ""
           content: {}
-  /openapi/cr/v1/reports/Portfolio/{ClientKey}/{Fromdate}/{ToDate}/:
+  /openapi/cr/v1/reports/Portfolio/{ClientKey}/{FromDate}/{ToDate}/:
     get:
       tags:
       - ClientReporting
-      operationId: GetAsync
+      operationId: GetAsync_ClientReporting
       parameters:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -863,16 +873,16 @@ paths:
         "200":
           description: ""
           content: {}
-  /openapi/cr/v1/reports/Portfolio/me/{Fromdate}/{ToDate}/:
+  /openapi/cr/v1/reports/Portfolio/me/{FromDate}/{ToDate}/:
     get:
       tags:
       - ClientReporting
-      operationId: GetMeAsync
+      operationId: GetMeAsync_ClientReporting
       parameters:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -895,7 +905,7 @@ paths:
     get:
       tags:
       - ClientReporting
-      operationId: GetAsync
+      operationId: GetAsync_ClientReporting3
       parameters:
       - name: AccountKey
         in: query
@@ -911,7 +921,12 @@ paths:
         in: query
         required: true
         schema:
-          type: bookingrequesttype
+          type: string
+          items:
+            enum:
+            - BkAmountId
+            - CaMasterRecordId
+            - RelatedTradeId
       - name: FilterValue
         in: query
         required: true
@@ -930,7 +945,7 @@ paths:
     get:
       tags:
       - ClientReporting
-      operationId: GetMeAsync
+      operationId: GetMeAsync_ClientReporting3
       parameters:
       - name: AccountKey
         in: query
@@ -941,7 +956,12 @@ paths:
         in: query
         required: true
         schema:
-          type: bookingrequesttype
+          type: string
+          items:
+            enum:
+            - BkAmountId
+            - CaMasterRecordId
+            - RelatedTradeId
       - name: FilterValue
         in: query
         required: true
@@ -960,12 +980,12 @@ paths:
     get:
       tags:
       - ClientReporting
-      operationId: GetAsync
+      operationId: GetAsync_ClientReporting4
       parameters:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -991,12 +1011,12 @@ paths:
     get:
       tags:
       - ClientReporting
-      operationId: GetMeAsync
+      operationId: GetMeAsync_ClientReporting4
       parameters:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -1047,7 +1067,18 @@ paths:
       - name: LogEntryTypes
         in: query
         schema:
-          type: logentrytype []
+          type: array
+          items:
+            type: string
+            enum:
+            - Corrections
+            - DisclaimerActions
+            - NonTradingActivity
+            - Notifications
+            - OrderActivity
+            - Orders
+            - TradeActivity
+            - Trades
       - name: PostingId
         in: query
         schema:
@@ -1089,11 +1120,19 @@ paths:
       - name: EntryType
         in: query
         schema:
-          type: orderentrytype
+          type: string
+          items:
+            enum:
+            - All
+            - Last
       - name: FieldGroups
         in: query
         schema:
-          type: orderactivityfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
       - name: FromDateTime
         in: query
         schema:
@@ -1109,7 +1148,18 @@ paths:
       - name: Status
         in: query
         schema:
-          type: orderlogstatus []
+          type: array
+          items:
+            type: string
+            enum:
+            - Cancelled
+            - Changed
+            - DoneForDay
+            - Expired
+            - Fill
+            - FinalFill
+            - Placed
+            - Working
       - name: ToDateTime
         in: query
         schema:
@@ -1144,7 +1194,13 @@ paths:
       - name: Status
         in: query
         schema:
-          type: casestatus []
+          type: array
+          items:
+            type: string
+            enum:
+            - Canceled
+            - InformationProvided
+            - ProblemSolved
       - name: ToDateTime
         in: query
         schema:
@@ -1231,7 +1287,7 @@ paths:
     get:
       tags:
       - ClientServices
-      operationId: Get
+      operationId: Get_ClientServices3
       parameters:
       - name: $skip
         in: query
@@ -1248,7 +1304,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -1280,7 +1336,7 @@ paths:
     get:
       tags:
       - ClientServices
-      operationId: Get
+      operationId: Get_ClientServices4
       parameters:
       - name: $skip
         in: query
@@ -1297,7 +1353,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -1310,7 +1366,12 @@ paths:
       - name: FilterType
         in: query
         schema:
-          type: bookingrequesttype
+          type: string
+          items:
+            enum:
+            - BkAmountId
+            - CaMasterRecordId
+            - RelatedTradeId
       - name: FilterValue
         in: query
         schema:
@@ -1335,7 +1396,7 @@ paths:
     get:
       tags:
       - ClientServices
-      operationId: Get
+      operationId: Get_ClientServices5
       parameters:
       - name: $skip
         in: query
@@ -1348,7 +1409,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -1393,7 +1454,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -1437,7 +1498,11 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: scheduledtradingconditionsfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - ScheduledTradingConditions
       - name: OptionRootId
         in: path
         required: true
@@ -1462,7 +1527,7 @@ paths:
         in: query
         required: true
         schema:
-          type: decimal
+          type: number
       - name: AssetType
         in: path
         required: true
@@ -1497,7 +1562,9 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: tradingconditionfieldgroup []
+          type: array
+          items:
+            type: string
       - name: HoldingPeriodInDays
         in: query
         schema:
@@ -1505,7 +1572,7 @@ paths:
       - name: Price
         in: query
         schema:
-          type: decimal
+          type: number
       - name: Uic
         in: path
         required: true
@@ -1560,7 +1627,11 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: scheduledtradingconditionsfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - ScheduledTradingConditions
       - name: Uic
         in: path
         required: true
@@ -1583,7 +1654,7 @@ paths:
     get:
       tags:
       - ClientServices
-      operationId: Get
+      operationId: Get_ClientServices
       parameters:
       - name: AccountKey
         in: query
@@ -1649,7 +1720,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -1680,7 +1755,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -1760,7 +1839,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -1826,7 +1909,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -1877,7 +1964,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -1962,7 +2053,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -1997,7 +2092,12 @@ paths:
         in: query
         required: true
         schema:
-          type: activitytype []
+          type: array
+          items:
+            type: string
+            enum:
+            - Email
+            - PhoneCall
       - name: ClientKey
         in: query
         schema:
@@ -2005,7 +2105,18 @@ paths:
       - name: Duration
         in: query
         schema:
-          type: openorderduration
+          type: string
+          items:
+            enum:
+            - AtTheClose
+            - AtTheOpening
+            - DayOrder
+            - FillOrKill
+            - GoodForPeriod
+            - GoodTillCancel
+            - GoodTillDate
+            - ImmediateOrCancel
+            - Unknown
       - name: ExpirationDateTime
         in: query
         schema:
@@ -2013,7 +2124,12 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: activityfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
       - name: FromDateTime
         in: query
         schema:
@@ -2025,15 +2141,47 @@ paths:
       - name: OrderStatuses
         in: query
         schema:
-          type: orderstatus []
+          type: array
+          items:
+            type: string
+            enum:
+            - Filled
+            - LockedPlacementPending
+            - NotWorking
+            - NotWorkingLockedCancelPending
+            - NotWorkingLockedChangePending
+            - Parked
+            - Unknown
+            - Working
+            - WorkingLockedCancelPending
+            - WorkingLockedChangePending
       - name: OrderTypes
         in: query
         schema:
-          type: placeableordertype []
+          type: array
+          items:
+            type: string
+            enum:
+            - Algorithmic
+            - GuaranteedStop
+            - Limit
+            - Market
+            - Stop
+            - StopIfTraded
+            - StopLimit
+            - Switch
+            - TrailingStop
+            - TrailingStopIfTraded
+            - Traspaso
+            - TraspasoIn
       - name: PositionEventFilter
         in: query
         schema:
-          type: positioneventfilter
+          type: string
+          items:
+            enum:
+            - All
+            - TradesOnly
       - name: SequenceId
         in: query
         schema:
@@ -2050,7 +2198,7 @@ paths:
     post:
       tags:
       - Ens
-      operationId: AddSubscriptionAsync
+      operationId: AddSubscriptionAsync_Ens
       responses:
         "200":
           description: ""
@@ -2059,7 +2207,7 @@ paths:
     delete:
       tags:
       - Ens
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Ens
       parameters:
       - name: ContextId
         in: path
@@ -2078,7 +2226,7 @@ paths:
     delete:
       tags:
       - Ens
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Ens3
       parameters:
       - name: ContextId
         in: path
@@ -2122,7 +2270,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2135,7 +2283,24 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: accountperformancefieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - AccountSummary
+            - All
+            - Allocation
+            - AvailableBenchmarks
+            - BalancePerformance
+            - BalancePerformance_AccountValueTimeSeries
+            - BenchMark
+            - BenchmarkPerformance
+            - TimeWeightedPerformance
+            - TimeWeightedPerformance_AccumulatedTimeWeightedTimeSeries
+            - TotalCashBalancePerCurrency
+            - TotalPositionsValuePerCurrency
+            - TotalPositionsValuePerProductPerSecurity
+            - TradeActivity
       - name: FromDate
         in: query
         schema:
@@ -2147,7 +2312,13 @@ paths:
       - name: StandardPeriod
         in: query
         schema:
-          type: accountperformancestandardperiod
+          type: string
+          items:
+            enum:
+            - AllTime
+            - Month
+            - Quarter
+            - Year
       - name: ToDate
         in: query
         schema:
@@ -2165,7 +2336,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -2181,7 +2356,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2232,11 +2407,19 @@ paths:
       - name: StandardPeriod
         in: query
         schema:
-          type: accountperformancestandardperiod
+          type: string
+          items:
+            enum:
+            - AllTime
+            - Month
+            - Quarter
+            - Year
       - name: Symbol
         in: query
         schema:
-          type: string []
+          type: array
+          items:
+            type: string
       - name: ToDate
         in: query
         schema:
@@ -2278,7 +2461,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -2306,7 +2493,7 @@ paths:
         in: path
         required: true
         schema:
-          type: accountgroupkey
+          type: string
       - name: ClientKey
         in: query
         required: true
@@ -2325,7 +2512,7 @@ paths:
         in: path
         required: true
         schema:
-          type: accountgroupkey
+          type: string
       - name: ClientKey
         in: query
         required: true
@@ -2344,7 +2531,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -2361,12 +2552,16 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetAccounts
+      operationId: GetAccounts_Portfolio
       parameters:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -2441,7 +2636,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -2467,7 +2666,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio3
       parameters:
       - name: ContextId
         in: path
@@ -2486,7 +2685,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio4
       parameters:
       - name: ContextId
         in: path
@@ -2506,12 +2705,12 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetBalance
+      operationId: GetBalance_Portfolio
       parameters:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2524,7 +2723,11 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: balancefieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - MarginOverview
       responses:
         "200":
           description: ""
@@ -2538,7 +2741,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2565,7 +2768,7 @@ paths:
     post:
       tags:
       - Portfolio
-      operationId: AddActiveSubscription
+      operationId: AddActiveSubscription_Portfolio
       responses:
         "200":
           description: ""
@@ -2574,7 +2777,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio4
       parameters:
       - name: ContextId
         in: path
@@ -2593,7 +2796,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio5
       parameters:
       - name: ContextId
         in: path
@@ -2618,7 +2821,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -2654,7 +2861,7 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetClient
+      operationId: GetClient_Portfolio
       parameters:
       - name: ClientKey
         in: path
@@ -2699,7 +2906,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2716,7 +2923,13 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: closedpositionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - ClosedPosition
+            - DisplayAndFormat
+            - ExchangeInfo
       responses:
         "200":
           description: ""
@@ -2730,7 +2943,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2748,7 +2961,13 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: closedpositionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - ClosedPosition
+            - DisplayAndFormat
+            - ExchangeInfo
       responses:
         "200":
           description: ""
@@ -2762,7 +2981,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2785,7 +3004,7 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetClosedPositions
+      operationId: GetClosedPositions_Portfolio
       parameters:
       - name: $skip
         in: query
@@ -2798,7 +3017,13 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: closedpositionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - ClosedPosition
+            - DisplayAndFormat
+            - ExchangeInfo
       responses:
         "200":
           description: ""
@@ -2807,7 +3032,7 @@ paths:
     post:
       tags:
       - Portfolio
-      operationId: AddActiveSubscription
+      operationId: AddActiveSubscription_Portfolio3
       parameters:
       - name: $top
         in: query
@@ -2821,7 +3046,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio5
       parameters:
       - name: ContextId
         in: path
@@ -2840,7 +3065,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio6
       parameters:
       - name: ContextId
         in: path
@@ -2884,7 +3109,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2916,7 +3141,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2948,7 +3173,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -2995,15 +3220,20 @@ paths:
       - name: LowerBarrier
         in: query
         schema:
-          type: double
+          type: number
       - name: PutCall
         in: query
         schema:
-          type: putcall
+          type: string
+          items:
+            enum:
+            - Call
+            - None
+            - Put
       - name: Strike
         in: query
         schema:
-          type: double
+          type: number
       - name: Uic
         in: query
         schema:
@@ -3011,7 +3241,7 @@ paths:
       - name: UpperBarrier
         in: query
         schema:
-          type: double
+          type: number
       - name: ValueDate
         in: query
         schema:
@@ -3033,7 +3263,7 @@ paths:
     post:
       tags:
       - Portfolio
-      operationId: AddActiveSubscription
+      operationId: AddActiveSubscription_Portfolio4
       responses:
         "200":
           description: ""
@@ -3042,7 +3272,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio6
       parameters:
       - name: ContextId
         in: path
@@ -3061,7 +3291,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio7
       parameters:
       - name: ContextId
         in: path
@@ -3081,7 +3311,7 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetNetPositions
+      operationId: GetNetPositions_Portfolio
       parameters:
       - name: $skip
         in: query
@@ -3094,7 +3324,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3141,11 +3371,22 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: netpositionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
+            - NetPositionBase
+            - NetPositionView
+            - SinglePosition
+            - SinglePositionBase
+            - SinglePositionView
       - name: LowerBarrier
         in: query
         schema:
-          type: double
+          type: number
       - name: NetPositionId
         in: query
         schema:
@@ -3153,11 +3394,16 @@ paths:
       - name: PutCall
         in: query
         schema:
-          type: putcall
+          type: string
+          items:
+            enum:
+            - Call
+            - None
+            - Put
       - name: Strike
         in: query
         schema:
-          type: double
+          type: number
       - name: Uic
         in: query
         schema:
@@ -3165,7 +3411,7 @@ paths:
       - name: UpperBarrier
         in: query
         schema:
-          type: double
+          type: number
       - name: ValueDate
         in: query
         schema:
@@ -3187,7 +3433,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3200,7 +3446,18 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: netpositionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
+            - NetPositionBase
+            - NetPositionView
+            - SinglePosition
+            - SinglePositionBase
+            - SinglePositionView
       - name: NetPositionId
         in: path
         required: true
@@ -3219,7 +3476,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3255,7 +3512,18 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: netpositionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
+            - NetPositionBase
+            - NetPositionView
+            - SinglePosition
+            - SinglePositionBase
+            - SinglePositionView
       responses:
         "200":
           description: ""
@@ -3264,7 +3532,7 @@ paths:
     post:
       tags:
       - Portfolio
-      operationId: AddActiveSubscription
+      operationId: AddActiveSubscription_Portfolio5
       responses:
         "200":
           description: ""
@@ -3273,7 +3541,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio7
       parameters:
       - name: ContextId
         in: path
@@ -3292,7 +3560,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio8
       parameters:
       - name: ContextId
         in: path
@@ -3312,7 +3580,7 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetOpenOrders
+      operationId: GetOpenOrders_Portfolio
       parameters:
       - name: $skip
         in: query
@@ -3325,7 +3593,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3338,7 +3606,13 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: orderfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
       - name: OrderId
         in: query
         schema:
@@ -3346,7 +3620,11 @@ paths:
       - name: Status
         in: query
         schema:
-          type: orderstatusfilter
+          type: string
+          items:
+            enum:
+            - All
+            - Working
       - name: WatchlistId
         in: query
         schema:
@@ -3369,7 +3647,13 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: orderfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
       - name: OrderId
         in: path
         required: true
@@ -3388,7 +3672,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3424,7 +3708,13 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: orderfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
       - name: MultiLegOrderId
         in: query
         schema:
@@ -3432,7 +3722,11 @@ paths:
       - name: Status
         in: query
         schema:
-          type: orderstatusfilter
+          type: string
+          items:
+            enum:
+            - All
+            - Working
       responses:
         "200":
           description: ""
@@ -3441,12 +3735,16 @@ paths:
     post:
       tags:
       - Portfolio
-      operationId: AddActiveSubscription
+      operationId: AddActiveSubscription_Portfolio6
       parameters:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -3467,7 +3765,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio8
       parameters:
       - name: ContextId
         in: path
@@ -3486,7 +3784,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio9
       parameters:
       - name: ContextId
         in: path
@@ -3506,7 +3804,7 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetPositions
+      operationId: GetPositions_Portfolio
       parameters:
       - name: $skip
         in: query
@@ -3519,7 +3817,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3532,7 +3830,16 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: positionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
+            - PositionBase
+            - PositionIdOnly
+            - PositionView
       - name: NetPositionId
         in: query
         schema:
@@ -3558,7 +3865,7 @@ paths:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3571,7 +3878,16 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: positionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
+            - PositionBase
+            - PositionIdOnly
+            - PositionView
       - name: PositionId
         in: path
         required: true
@@ -3585,12 +3901,12 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetPositionDetails
+      operationId: GetPositionDetails_Portfolio
       parameters:
       - name: AccountGroupKey
         in: query
         schema:
-          type: accountgroupkey
+          type: string
       - name: AccountKey
         in: query
         schema:
@@ -3626,7 +3942,16 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: positionfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - DisplayAndFormat
+            - ExchangeInfo
+            - Greeks
+            - PositionBase
+            - PositionIdOnly
+            - PositionView
       responses:
         "200":
           description: ""
@@ -3635,7 +3960,7 @@ paths:
     post:
       tags:
       - Portfolio
-      operationId: AddActiveSubscription
+      operationId: AddActiveSubscription_Portfolio7
       parameters:
       - name: $top
         in: query
@@ -3649,7 +3974,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Portfolio9
       parameters:
       - name: ContextId
         in: path
@@ -3668,7 +3993,7 @@ paths:
     delete:
       tags:
       - Portfolio
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Portfolio10
       parameters:
       - name: ContextId
         in: path
@@ -3712,7 +4037,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -3738,13 +4067,13 @@ paths:
     get:
       tags:
       - Portfolio
-      operationId: GetUser
+      operationId: GetUser_Portfolio
       parameters:
       - name: UserKey
         in: path
         required: true
         schema:
-          type: userkey
+          type: string
       responses:
         "200":
           description: ""
@@ -3812,7 +4141,7 @@ paths:
     get:
       tags:
       - ReferenceData
-      operationId: Get
+      operationId: Get_ReferenceData6
       responses:
         "200":
           description: ""
@@ -3907,7 +4236,34 @@ paths:
       - name: AssetTypes
         in: query
         schema:
-          type: assettype []
+          type: array
+          items:
+            type: string
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
       - name: CanParticipateInMultiLegOrder
         in: query
         schema:
@@ -3915,7 +4271,12 @@ paths:
       - name: Class
         in: query
         schema:
-          type: class []
+          type: array
+          items:
+            type: string
+            enum:
+            - Complex
+            - NonComplex
       - name: ExchangeId
         in: query
         schema:
@@ -3935,11 +4296,15 @@ paths:
       - name: Tags
         in: query
         schema:
-          type: string []
+          type: array
+          items:
+            type: string
       - name: Uics
         in: query
         schema:
-          type: int []
+          type: array
+          items:
+            type: integer
       responses:
         "200":
           description: ""
@@ -3961,7 +4326,9 @@ paths:
       - name: ExpiryDates
         in: query
         schema:
-          type: datetime []
+          type: array
+          items:
+            type: string
       - name: OptionRootId
         in: path
         required: true
@@ -3970,11 +4337,17 @@ paths:
       - name: OptionSpaceSegment
         in: query
         schema:
-          type: optionspacesegment
+          type: string
       - name: TradingStatus
         in: query
         schema:
-          type: tradingstatus
+          type: string
+          items:
+            enum:
+            - NonTradable
+            - NotDefined
+            - ReduceOnly
+            - Tradable
       - name: UnderlyingUic
         in: query
         schema:
@@ -4004,19 +4377,55 @@ paths:
       - name: AssetTypes
         in: query
         schema:
-          type: assettype []
+          type: array
+          items:
+            type: string
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
       - name: FieldGroups
         in: query
         schema:
-          type: instrumentfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - OrderSetting
+            - TradingSessions
       - name: Tags
         in: query
         schema:
-          type: string []
+          type: array
+          items:
+            type: string
       - name: Uics
         in: query
         schema:
-          type: int []
+          type: array
+          items:
+            type: integer
       responses:
         "200":
           description: ""
@@ -4069,12 +4478,17 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: instrumentfieldgroup []
+          type: array
+          items:
+            type: string
+            enum:
+            - OrderSetting
+            - TradingSessions
       - name: Uic
         in: path
         required: true
         schema:
-          type: uic
+          type: integer
       responses:
         "200":
           description: ""
@@ -4135,7 +4549,7 @@ paths:
         in: path
         required: true
         schema:
-          type: uic
+          type: integer
       responses:
         "200":
           description: ""
@@ -4144,7 +4558,7 @@ paths:
     get:
       tags:
       - ReferenceData
-      operationId: Get
+      operationId: Get_ReferenceData7
       responses:
         "200":
           description: ""
@@ -4163,7 +4577,7 @@ paths:
         in: path
         required: true
         schema:
-          type: uic
+          type: integer
       responses:
         "200":
           description: ""
@@ -4178,7 +4592,7 @@ paths:
         in: path
         required: true
         schema:
-          type: uic
+          type: integer
       responses:
         "200":
           description: ""
@@ -4205,7 +4619,7 @@ paths:
     get:
       tags:
       - Root
-      operationId: Get
+      operationId: Get_Root8
       responses:
         "200":
           description: ""
@@ -4259,7 +4673,7 @@ paths:
     get:
       tags:
       - Root
-      operationId: Get
+      operationId: Get_Root9
       responses:
         "200":
           description: ""
@@ -4268,7 +4682,7 @@ paths:
     post:
       tags:
       - Root
-      operationId: Post
+      operationId: Post_Root
       responses:
         "200":
           description: ""
@@ -4277,7 +4691,7 @@ paths:
     delete:
       tags:
       - Root
-      operationId: Delete
+      operationId: Delete_Root
       parameters:
       - name: ContextId
         in: path
@@ -4322,7 +4736,7 @@ paths:
     post:
       tags:
       - Root
-      operationId: AddSubscription
+      operationId: AddSubscription_Root
       responses:
         "200":
           description: ""
@@ -4331,7 +4745,7 @@ paths:
     delete:
       tags:
       - Root
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Root11
       parameters:
       - name: ContextId
         in: path
@@ -4351,7 +4765,7 @@ paths:
     delete:
       tags:
       - Root
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Root10
       parameters:
       - name: ContextId
         in: path
@@ -4409,7 +4823,7 @@ paths:
       - name: Statuses
         in: query
         schema:
-          type: allocationkeystatus
+          type: string
       responses:
         "200":
           description: ""
@@ -4457,7 +4871,7 @@ paths:
       - name: Totalamount
         in: query
         schema:
-          type: double
+          type: number
       responses:
         "200":
           description: ""
@@ -4475,11 +4889,15 @@ paths:
       - name: Amount
         in: query
         schema:
-          type: decimal
+          type: number
       - name: AmountType
         in: query
         schema:
-          type: orderamounttype
+          type: string
+          items:
+            enum:
+            - CashAmount
+            - Quantity
       - name: AssetType
         in: query
         required: true
@@ -4518,7 +4936,18 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: infopricegroupspec []
+          type: array
+          items:
+            type: string
+            enum:
+            - Commissions
+            - DisplayAndFormat
+            - HistoricalChanges
+            - InstrumentPriceDetails
+            - MarketDepth
+            - PriceInfo
+            - PriceInfoDetails
+            - Quote
       - name: ForwardDate
         in: query
         schema:
@@ -4526,19 +4955,24 @@ paths:
       - name: LowerBarrier
         in: query
         schema:
-          type: decimal
+          type: number
       - name: OrderAskPrice
         in: query
         schema:
-          type: decimal
+          type: number
       - name: OrderBidPrice
         in: query
         schema:
-          type: decimal
+          type: number
       - name: PutCall
         in: query
         schema:
-          type: putcall
+          type: string
+          items:
+            enum:
+            - Call
+            - None
+            - Put
       - name: QuoteCurrency
         in: query
         schema:
@@ -4546,11 +4980,16 @@ paths:
       - name: StrikePrice
         in: query
         schema:
-          type: decimal
+          type: number
       - name: ToOpenClose
         in: query
         schema:
-          type: toopenclose
+          type: string
+          items:
+            enum:
+            - ToClose
+            - ToOpen
+            - Undefined
       - name: Uic
         in: query
         required: true
@@ -4559,7 +4998,7 @@ paths:
       - name: UpperBarrier
         in: query
         schema:
-          type: decimal
+          type: number
       responses:
         "200":
           description: ""
@@ -4577,11 +5016,15 @@ paths:
       - name: Amount
         in: query
         schema:
-          type: decimal
+          type: number
       - name: AmountType
         in: query
         schema:
-          type: orderamounttype
+          type: string
+          items:
+            enum:
+            - CashAmount
+            - Quantity
       - name: AssetType
         in: query
         required: true
@@ -4620,7 +5063,18 @@ paths:
       - name: FieldGroups
         in: query
         schema:
-          type: infopricegroupspec []
+          type: array
+          items:
+            type: string
+            enum:
+            - Commissions
+            - DisplayAndFormat
+            - HistoricalChanges
+            - InstrumentPriceDetails
+            - MarketDepth
+            - PriceInfo
+            - PriceInfoDetails
+            - Quote
       - name: ForwardDate
         in: query
         schema:
@@ -4636,19 +5090,24 @@ paths:
       - name: LowerBarrier
         in: query
         schema:
-          type: decimal
+          type: number
       - name: OrderAskPrice
         in: query
         schema:
-          type: decimal
+          type: number
       - name: OrderBidPrice
         in: query
         schema:
-          type: decimal
+          type: number
       - name: PutCall
         in: query
         schema:
-          type: putcall
+          type: string
+          items:
+            enum:
+            - Call
+            - None
+            - Put
       - name: QuoteCurrency
         in: query
         schema:
@@ -4656,11 +5115,16 @@ paths:
       - name: StrikePrice
         in: query
         schema:
-          type: decimal
+          type: number
       - name: ToOpenClose
         in: query
         schema:
-          type: toopenclose
+          type: string
+          items:
+            enum:
+            - ToClose
+            - ToOpen
+            - Undefined
       - name: Uics
         in: query
         required: true
@@ -4669,7 +5133,7 @@ paths:
       - name: UpperBarrier
         in: query
         schema:
-          type: decimal
+          type: number
       responses:
         "200":
           description: ""
@@ -4678,7 +5142,7 @@ paths:
     post:
       tags:
       - Trading
-      operationId: AddSubscriptionAsync
+      operationId: AddSubscriptionAsync_Trading3
       responses:
         "200":
           description: ""
@@ -4687,7 +5151,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Trading11
       parameters:
       - name: ContextId
         in: path
@@ -4706,7 +5170,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Trading12
       parameters:
       - name: ContextId
         in: path
@@ -4750,7 +5214,7 @@ paths:
     post:
       tags:
       - Trading
-      operationId: AddSubscriptionAsync
+      operationId: AddSubscriptionAsync_Trading4
       responses:
         "200":
           description: ""
@@ -4759,7 +5223,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Trading12
       parameters:
       - name: ContextId
         in: path
@@ -4778,7 +5242,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Trading13
       parameters:
       - name: ContextId
         in: path
@@ -4798,7 +5262,7 @@ paths:
     post:
       tags:
       - Trading
-      operationId: AddSubscriptionAsync
+      operationId: AddSubscriptionAsync_Trading5
       responses:
         "200":
           description: ""
@@ -4807,7 +5271,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Trading14
       parameters:
       - name: ContextId
         in: path
@@ -4971,7 +5435,7 @@ paths:
     post:
       tags:
       - Trading
-      operationId: AddSubscriptionAsync
+      operationId: AddSubscriptionAsync_Trading6
       responses:
         "200":
           description: ""
@@ -4980,7 +5444,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscriptions
+      operationId: DeleteSubscriptions_Trading13
       parameters:
       - name: ContextId
         in: path
@@ -4999,7 +5463,7 @@ paths:
     delete:
       tags:
       - Trading
-      operationId: DeleteSubscription
+      operationId: DeleteSubscription_Trading15
       parameters:
       - name: ContextId
         in: path
@@ -5180,7 +5644,20 @@ paths:
         in: query
         required: true
         schema:
-          type: optionsstrategytype
+          items:
+            enum:
+            - BackRatio
+            - Butterfly
+            - CalendarSpread
+            - Condor
+            - Custom
+            - Diagonal
+            - IronButterfly
+            - IronCondor
+            - RiskReversal
+            - Straddle
+            - Strangle
+            - Vertical
       responses:
         "200":
           description: ""
@@ -5221,7 +5698,11 @@ paths:
       - name: $inlinecount
         in: query
         schema:
-          type: inlinecountvalue
+          type: string
+          items:
+            enum:
+            - AllPages
+            - None
       - name: $skip
         in: query
         schema:
@@ -5233,7 +5714,12 @@ paths:
       - name: State
         in: query
         schema:
-          type: pricealertdefinitionstate
+          type: string
+          items:
+            enum:
+            - Disabled
+            - Enabled
+            - RecentlyTriggered
       responses:
         "200":
           description: ""

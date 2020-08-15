@@ -13,6 +13,24 @@ paths:
       tags:
       - AutoTrading
       operationId: PostInvestment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                DisplayName:
+                  type: string
+                FundingAccountKey:
+                  type: string
+                InitialFunding:
+                  type: number
+                InvestmentShieldAmount:
+                  type: number
+                IsDisclaimerAccepted:
+                  type: boolean
+                TradeLeaderId:
+                  type: string
       responses:
         "200":
           description: ""
@@ -48,6 +66,26 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                DisplayName:
+                  type: string
+                FundingAccountKey:
+                  type: string
+                InvestmentShieldAmount:
+                  type: number
+                IsActive:
+                  type: boolean
+                IsAutoFundsTransfer:
+                  type: boolean
+                PendingFunding:
+                  type: number
+                PositionsCloseOnDeactivation:
+                  type: boolean
       responses:
         "200":
           description: ""
@@ -83,6 +121,16 @@ paths:
         required: true
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Amount:
+                  type: number
+                TargetAccountKey:
+                  type: string
       responses:
         "200":
           description: ""
@@ -106,6 +154,24 @@ paths:
       tags:
       - AutoTrading
       operationId: AddSubscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -135,6 +201,24 @@ paths:
       tags:
       - AutoTrading
       operationId: AddSuggestionSubscriptionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -193,6 +277,36 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                OverallSuitability:
+                  type: string
+                  items:
+                    enum:
+                    - High
+                    - Low
+                    - Medium
+                    - Unknown
+                    - VeryHigh
+                ProductAreaSuitability:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - Bonds
+                    - CfdCommodities
+                    - CFDs
+                    - ContractOptions
+                    - Futures
+                    - FXForwards
+                    - FXOptions
+                    - FXSpot
+                    - MutualFunds
+                    - Stocks
       responses:
         "200":
           description: ""
@@ -222,6 +336,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Accepted:
+                  type: boolean
       responses:
         "200":
           description: ""
@@ -311,16 +433,32 @@ paths:
           description: ""
           content: {}
   /openapi/at/v3/tradeLeaders/public:
-    get:
+    post:
       tags:
       - AutoTrading
       operationId: GetAllTradeLeadersPublic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                OwnerKey:
+                  type: string
+                StandardPeriod:
+                  type: string
+                  items:
+                    enum:
+                    - AllTime
+                    - Month
+                    - Quarter
+                    - Year
       responses:
         "200":
           description: ""
           content: {}
   /openapi/at/v3/tradeLeaders/public/{TradeLeaderId}:
-    get:
+    post:
       tags:
       - AutoTrading
       operationId: GetTradeLeaderPublic
@@ -330,6 +468,22 @@ paths:
         required: true
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                OwnerKey:
+                  type: string
+                StandardPeriod:
+                  type: string
+                  items:
+                    enum:
+                    - AllTime
+                    - Month
+                    - Quarter
+                    - Year
       responses:
         "200":
           description: ""
@@ -364,6 +518,32 @@ paths:
       tags:
       - AssetTransfers
       operationId: CashTransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Amount:
+                  type: number
+                Comment:
+                  type: string
+                Currency:
+                  type: string
+                ExternalReference:
+                  type: string
+                FromAccountKey:
+                  type: string
+                FundingCheck:
+                  type: string
+                  items:
+                    enum:
+                    - Enforce
+                    - Ignore
+                ToAccountKey:
+                  type: string
+                ValueDate:
+                  type: string
       responses:
         "200":
           description: ""
@@ -426,6 +606,32 @@ paths:
       tags:
       - AssetTransfers
       operationId: PrebookFundDeposit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                Amount:
+                  type: number
+                BIC:
+                  type: string
+                ClientKey:
+                  type: string
+                ClientName:
+                  type: string
+                Currency:
+                  type: string
+                ExpectedValueDate:
+                  type: string
+                ExternalReference:
+                  type: string
+                Iban:
+                  type: string
+                RemitterAccount:
+                  type: string
       responses:
         "200":
           description: ""
@@ -513,6 +719,63 @@ paths:
       tags:
       - Charts
       operationId: AddSubscriptionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                  properties:
+                    AssetType:
+                      type: string
+                      items:
+                        enum:
+                        - Bond
+                        - Cash
+                        - CfdIndexOption
+                        - CfdOnFutures
+                        - CfdOnIndex
+                        - CfdOnStock
+                        - ContractFutures
+                        - FuturesOption
+                        - FuturesStrategy
+                        - FxBinaryOption
+                        - FxForwards
+                        - FxKnockInOption
+                        - FxKnockOutOption
+                        - FxNoTouchOption
+                        - FxOneTouchOption
+                        - FxSpot
+                        - FxVanillaOption
+                        - IpoOnStock
+                        - ManagedFund
+                        - MutualFund
+                        - Stock
+                        - StockIndex
+                        - StockIndexOption
+                        - StockOption
+                    Count:
+                      type: integer
+                    FieldGroups:
+                      type: array
+                      items:
+                        type: object
+                    Horizon:
+                      type: integer
+                    Uic:
+                      type: integer
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -581,6 +844,31 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ClientKey:
+                  type: string
+                Documents:
+                  type: array
+                  items:
+                    type: string
+                RenewalData:
+                  type: object
+                  properties:
+                    AustraliaData:
+                      type: object
+                    PersonalInformation:
+                      type: object
+                    ProfileInformation:
+                      type: object
+                    RegulatoryInformation:
+                      type: object
+                    SingaporeData:
+                      type: object
       responses:
         "200":
           description: ""
@@ -621,6 +909,99 @@ paths:
         in: query
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountInformation:
+                  type: object
+                  properties:
+                    AdditionalChoiceOfAccounts:
+                      type: array
+                      items:
+                        type: string
+                    ClientCategoryId:
+                      type: string
+                    CurrencyCode:
+                      type: string
+                    IntendedCommissionGroupId:
+                      type: string
+                    IntendedTemplateId:
+                      type: string
+                    OtherInstructions:
+                      type: string
+                BankInformation:
+                  type: object
+                  properties:
+                    BeneficiaryBankName:
+                      type: string
+                    ReceivingCountryIsoCode:
+                      type: string
+                FinlandData:
+                  type: object
+                  properties:
+                    EuroclearJudicialForm:
+                      type: string
+                    EuroclearSectorCode:
+                      type: string
+                ItalyData:
+                  type: object
+                  properties:
+                    EmploymentInformation:
+                      type: object
+                    MailContactPreference:
+                      type: boolean
+                    ProfileInformation:
+                      type: object
+                OnboardingInformation:
+                  type: object
+                  properties:
+                    ElectronicVerification:
+                      type: object
+                PensionData:
+                  type: object
+                  properties:
+                    AdditionalPensionData:
+                      type: string
+                    EmployerReference:
+                      type: string
+                    PensionProductTypes:
+                      type: array
+                      items:
+                        type: string
+                PersonalInformation:
+                  type: object
+                  properties:
+                    AdditionalTaxCountryCode:
+                      type: string
+                ProfileInformation:
+                  type: object
+                  properties:
+                    AnnualIncomeInformation:
+                      type: object
+                    InvestableAssets:
+                      type: object
+                    InvestmentPurpose:
+                      type: object
+                RegulatoryInformation:
+                  type: object
+                  properties:
+                    FatcaDeclaration:
+                      type: object
+                SingaporeData:
+                  type: object
+                  properties:
+                    AnnualIncomeSgd:
+                      type: string
+                SwitzerlandData:
+                  type: object
+                  properties:
+                    AnnualIncomeChf:
+                      type: string
+                    NetWorthChf:
+                      type: string
       responses:
         "200":
           description: ""
@@ -746,6 +1127,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                RedirectUrl:
+                  type: string
       responses:
         "200":
           description: ""
@@ -755,6 +1144,18 @@ paths:
       tags:
       - ClientManagement
       operationId: ResetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Email:
+                  type: string
+                Language:
+                  type: string
+                UserId:
+                  type: string
       responses:
         "200":
           description: ""
@@ -770,6 +1171,16 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Documents:
+                  type: array
+                  items:
+                    type: object
       responses:
         "200":
           description: ""
@@ -1173,6 +1584,22 @@ paths:
       tags:
       - ClientServices
       operationId: CreateCase
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CaseTitle:
+                  type: string
+                ClientKey:
+                  type: string
+                Description:
+                  type: string
+                NotifyClient:
+                  type: boolean
+                ShowInPortal:
+                  type: boolean
       responses:
         "200":
           description: ""
@@ -1234,6 +1661,39 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CaseStatus:
+                  type: string
+                  items:
+                    enum:
+                    - ExternallyPending
+                    - InProgress
+                    - InternallyPending
+                CaseType:
+                  type: string
+                  items:
+                    enum:
+                    - Faq
+                    - Problem
+                    - Question
+                    - Request
+                Description:
+                  type: string
+                FollowUpDueDate:
+                  type: string
+                HandledByPartner:
+                  type: boolean
+                IsEscalated:
+                  type: boolean
+                ShowInPortal:
+                  type: boolean
+                Title:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1249,6 +1709,19 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Status:
+                  type: string
+                  items:
+                    enum:
+                    - Canceled
+                    - InformationProvided
+                    - ProblemSolved
       responses:
         "200":
           description: ""
@@ -1264,6 +1737,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Comment:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1279,6 +1760,25 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Attachment:
+                  type: object
+                  properties:
+                    Data:
+                      type: string
+                    FileName:
+                      type: string
+                    MimeType:
+                      type: string
+                Note:
+                  type: string
+                Title:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1646,6 +2146,22 @@ paths:
       tags:
       - ClientServices
       operationId: Transfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Amount:
+                  type: number
+                Currency:
+                  type: string
+                FromAccountKey:
+                  type: string
+                ToAccountKey:
+                  type: string
+                WithdrawalReasonId:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -1680,6 +2196,39 @@ paths:
       tags:
       - ClientServices
       operationId: WithdrawIBanSwift
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                AdvancedOptions:
+                  type: object
+                  properties:
+                    IntermediaryBank:
+                      type: string
+                    RegulatedBroker:
+                      type: object
+                    RequestClosureOfAccount:
+                      type: string
+                Amount:
+                  type: number
+                ClearingCode:
+                  type: string
+                Currency:
+                  type: string
+                Iban:
+                  type: string
+                MessageToBeneficiary:
+                  type: string
+                ReceivingCountryCode:
+                  type: string
+                Swift:
+                  type: string
+                WithdrawalReasonId:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -1689,6 +2238,47 @@ paths:
       tags:
       - ClientServices
       operationId: WithdrawalAccountNumberBeneficiaryBank
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                AccountNumber:
+                  type: string
+                AdvancedOptions:
+                  type: object
+                  properties:
+                    IntermediaryBank:
+                      type: string
+                    RegulatedBroker:
+                      type: object
+                    RequestClosureOfAccount:
+                      type: string
+                Amount:
+                  type: number
+                BeneficiaryAddress:
+                  type: string
+                BeneficiaryCityAndPostcode:
+                  type: string
+                BeneficiaryCountry:
+                  type: string
+                BeneficiaryName:
+                  type: string
+                ClearingCode:
+                  type: string
+                Currency:
+                  type: string
+                MessageToBeneficiary:
+                  type: string
+                ReceivingCountryCode:
+                  type: string
+                Swift:
+                  type: string
+                WithdrawalReasonId:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -1698,6 +2288,39 @@ paths:
       tags:
       - ClientServices
       operationId: WithdrawalAccountNumberSwift
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                AccountNumber:
+                  type: string
+                AdvancedOptions:
+                  type: object
+                  properties:
+                    IntermediaryBank:
+                      type: string
+                    RegulatedBroker:
+                      type: object
+                    RequestClosureOfAccount:
+                      type: string
+                Amount:
+                  type: number
+                ClearingCode:
+                  type: string
+                Currency:
+                  type: string
+                MessageToBeneficiary:
+                  type: string
+                ReceivingCountryCode:
+                  type: string
+                Swift:
+                  type: string
+                WithdrawalReasonId:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -1707,6 +2330,47 @@ paths:
       tags:
       - ClientServices
       operationId: WithdrawalIBanBeneficiaryBank
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                AdvancedOptions:
+                  type: object
+                  properties:
+                    IntermediaryBank:
+                      type: string
+                    RegulatedBroker:
+                      type: object
+                    RequestClosureOfAccount:
+                      type: string
+                Amount:
+                  type: number
+                BeneficiaryAddress:
+                  type: string
+                BeneficiaryCityAndPostcode:
+                  type: string
+                BeneficiaryCountry:
+                  type: string
+                BeneficiaryName:
+                  type: string
+                ClearingCode:
+                  type: string
+                Currency:
+                  type: string
+                Iban:
+                  type: string
+                MessageToBeneficiary:
+                  type: string
+                ReceivingCountryCode:
+                  type: string
+                Swift:
+                  type: string
+                WithdrawalReasonId:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -1733,6 +2397,32 @@ paths:
         in: query
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountId:
+                  type: string
+                AccountKey:
+                  type: string
+                ClientId:
+                  type: string
+                ClientKey:
+                  type: string
+                FieldGroups:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - Accounts
+                    - Default
+                    - Users
+                Keywords:
+                  type: string
+                UserId:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1742,6 +2432,22 @@ paths:
       tags:
       - Developer
       operationId: CreateApp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Description:
+                  type: string
+                Flow:
+                  type: string
+                IsTradingEnabled:
+                  type: boolean
+                Name:
+                  type: string
+                RedirectUri:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1811,6 +2517,16 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Description:
+                  type: string
+                Name:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1826,6 +2542,18 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                BrandingId:
+                  type: integer
+                Description:
+                  type: string
+                Uri:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1896,6 +2624,18 @@ paths:
         required: true
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                BrandingId:
+                  type: integer
+                Description:
+                  type: string
+                Uri:
+                  type: string
       responses:
         "200":
           description: ""
@@ -1951,6 +2691,16 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ValidFrom:
+                  type: string
+                ValidUntil:
+                  type: string
       responses:
         "200":
           description: ""
@@ -2040,6 +2790,18 @@ paths:
         required: true
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Regenerate:
+                  type: boolean
+                ValidFrom:
+                  type: string
+                ValidUntil:
+                  type: string
       responses:
         "200":
           description: ""
@@ -2199,6 +2961,24 @@ paths:
       tags:
       - Ens
       operationId: AddSubscriptionAsync_Ens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -2433,6 +3213,14 @@ paths:
       tags:
       - PartnerIntegration
       operationId: IdNowInteractiveVerificationComplete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                VerificationStatus:
+                  type: object
       responses:
         "200":
           description: ""
@@ -2448,6 +3236,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                RequestBody:
+                  type: object
       responses:
         "200":
           description: ""
@@ -2518,6 +3314,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountValueProtectionLimit:
+                  type: number
       responses:
         "200":
           description: ""
@@ -2608,6 +3412,25 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountValueProtectionLimit:
+                  type: number
+                BenchmarkInstrument:
+                  type: object
+                  properties:
+                    BenchmarkInstrumentAssetType:
+                      type: string
+                    BenchmarkInstrumentUic:
+                      type: integer
+                DisplayName:
+                  type: string
+                UseCashPositionsAsMarginCollateral:
+                  type: boolean
       responses:
         "200":
           description: ""
@@ -2623,6 +3446,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                NewBalance:
+                  type: number
       responses:
         "200":
           description: ""
@@ -2658,6 +3489,31 @@ paths:
       tags:
       - Portfolio
       operationId: AddActiveSubscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                  properties:
+                    AccountGroupKey:
+                      type: string
+                    AccountKey:
+                      type: string
+                    ClientKey:
+                      type: string
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -2769,6 +3625,24 @@ paths:
       tags:
       - Portfolio
       operationId: AddActiveSubscription_Portfolio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -2853,6 +3727,22 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountValueProtectionLimit:
+                  type: number
+                ForceOpenDefaultValue:
+                  type: boolean
+                NewPositionNettingMode:
+                  type: string
+                  items:
+                    enum:
+                    - EndOfDay
+                    - Intraday
       responses:
         "200":
           description: ""
@@ -2885,6 +3775,22 @@ paths:
       tags:
       - Portfolio
       operationId: UpdateClientSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountValueProtectionLimit:
+                  type: number
+                ForceOpenDefaultValue:
+                  type: boolean
+                NewPositionNettingMode:
+                  type: string
+                  items:
+                    enum:
+                    - EndOfDay
+                    - Intraday
       responses:
         "200":
           description: ""
@@ -3038,6 +3944,24 @@ paths:
         in: query
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -3096,6 +4020,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                NewPageSize:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -3264,6 +4196,24 @@ paths:
       tags:
       - Portfolio
       operationId: AddActiveSubscription_Portfolio4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -3533,6 +4483,24 @@ paths:
       tags:
       - Portfolio
       operationId: AddActiveSubscription_Portfolio5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -3757,6 +4725,24 @@ paths:
         in: query
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -3966,6 +4952,24 @@ paths:
         in: query
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -4024,6 +5028,14 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                NewPageSize:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -4091,6 +5103,18 @@ paths:
       tags:
       - Portfolio
       operationId: UpdateUserPreferences
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Culture:
+                  type: string
+                Language:
+                  type: string
+                TimeZoneId:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -4683,6 +5707,22 @@ paths:
       tags:
       - Root
       operationId: Post_Root
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -4720,6 +5760,18 @@ paths:
       tags:
       - Root
       operationId: PatchCapabilities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                TradeLevel:
+                  type: string
+                  items:
+                    enum:
+                    - FullTradingAndChat
+                    - OrdersOnly
       responses:
         "200":
           description: ""
@@ -4728,6 +5780,18 @@ paths:
       tags:
       - Root
       operationId: SetCapabilities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                TradeLevel:
+                  type: string
+                  items:
+                    enum:
+                    - FullTradingAndChat
+                    - OrdersOnly
       responses:
         "200":
           description: ""
@@ -4737,6 +5801,22 @@ paths:
       tags:
       - Root
       operationId: AddSubscription_Root
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -4794,6 +5874,35 @@ paths:
       tags:
       - Trading
       operationId: AddAllocationKey
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AllocationKeyName:
+                  type: string
+                AllocationUnitType:
+                  type: string
+                  items:
+                    enum:
+                    - Percentage
+                    - Unit
+                MarginHandling:
+                  type: string
+                  items:
+                    enum:
+                    - Disabled
+                    - Enabled
+                    - RecentlyTriggered
+                OneTime:
+                  type: boolean
+                OwnerAccountKey:
+                  type: string
+                ParticipatingAccountsInfo:
+                  type: array
+                  items:
+                    type: object
       responses:
         "200":
           description: ""
@@ -5143,6 +6252,24 @@ paths:
       tags:
       - Trading
       operationId: AddSubscriptionAsync_Trading3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5215,6 +6342,22 @@ paths:
       tags:
       - Trading
       operationId: AddSubscriptionAsync_Trading4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5263,6 +6406,24 @@ paths:
       tags:
       - Trading
       operationId: AddSubscriptionAsync_Trading5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5302,6 +6463,18 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Expiries:
+                  type: array
+                  items:
+                    type: object
+                MaxStrikesPerExpiry:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5331,6 +6504,36 @@ paths:
       tags:
       - Trading
       operationId: CreatePosition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AppHint:
+                  type: integer
+                BuySell:
+                  type: string
+                  items:
+                    enum:
+                    - buy
+                    - sell
+                ContextId:
+                  type: string
+                ExerciseMethod:
+                  type: string
+                  items:
+                    enum:
+                    - Cash
+                    - Spot
+                PriceReferenceId:
+                  type: string
+                QuoteId:
+                  type: string
+                TradeIdeaId:
+                  type: integer
+                UserPrice:
+                  type: number
       responses:
         "200":
           description: ""
@@ -5346,6 +6549,22 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                DisableForceOpen:
+                  type: boolean
+                ExerciseMethod:
+                  type: string
+                  items:
+                    enum:
+                    - Cash
+                    - Spot
       responses:
         "200":
           description: ""
@@ -5361,6 +6580,48 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                Amount:
+                  type: integer
+                AppHint:
+                  type: integer
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - Bond
+                    - Cash
+                    - CfdIndexOption
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FuturesOption
+                    - FuturesStrategy
+                    - FxBinaryOption
+                    - FxForwards
+                    - FxKnockInOption
+                    - FxKnockOutOption
+                    - FxNoTouchOption
+                    - FxOneTouchOption
+                    - FxSpot
+                    - FxVanillaOption
+                    - IpoOnStock
+                    - ManagedFund
+                    - MutualFund
+                    - Stock
+                    - StockIndex
+                    - StockIndexOption
+                    - StockOption
+                Uic:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5370,6 +6631,48 @@ paths:
       tags:
       - Trading
       operationId: ExerciseAmountAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                Amount:
+                  type: integer
+                AppHint:
+                  type: integer
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - Bond
+                    - Cash
+                    - CfdIndexOption
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FuturesOption
+                    - FuturesStrategy
+                    - FxBinaryOption
+                    - FxForwards
+                    - FxKnockInOption
+                    - FxKnockOutOption
+                    - FxNoTouchOption
+                    - FxOneTouchOption
+                    - FxSpot
+                    - FxVanillaOption
+                    - IpoOnStock
+                    - ManagedFund
+                    - MutualFund
+                    - Stock
+                    - StockIndex
+                    - StockIndexOption
+                    - StockOption
+                Uic:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5379,6 +6682,29 @@ paths:
       tags:
       - Trading
       operationId: GetMultiLegPriceAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                FieldGroups:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - Commissions
+                    - DisplayAndFormat
+                    - Greeks
+                    - InstrumentPriceDetails
+                    - MarginImpactBuySell
+                    - Quote
+                Legs:
+                  type: array
+                  items:
+                    type: object
       responses:
         "200":
           description: ""
@@ -5388,6 +6714,24 @@ paths:
       tags:
       - Trading
       operationId: AddMultiLegPricesSubscriptionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5436,6 +6780,24 @@ paths:
       tags:
       - Trading
       operationId: AddSubscriptionAsync_Trading6
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Arguments:
+                  type: object
+                ContextId:
+                  type: string
+                Format:
+                  type: string
+                ReferenceId:
+                  type: string
+                RefreshRate:
+                  type: integer
+                Tag:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5504,6 +6866,84 @@ paths:
       tags:
       - Trading
       operationId: ChangeOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                AlgoOrderData:
+                  type: object
+                Amount:
+                  type: number
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - Bond
+                    - Cash
+                    - CfdIndexOption
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FuturesOption
+                    - FuturesStrategy
+                    - FxBinaryOption
+                    - FxForwards
+                    - FxKnockInOption
+                    - FxKnockOutOption
+                    - FxNoTouchOption
+                    - FxOneTouchOption
+                    - FxSpot
+                    - FxVanillaOption
+                    - IpoOnStock
+                    - ManagedFund
+                    - MutualFund
+                    - Stock
+                    - StockIndex
+                    - StockIndexOption
+                    - StockOption
+                DecisionMakerUserID:
+                  type: integer
+                IsForceOpen:
+                  type: boolean
+                OrderDuration:
+                  type: object
+                OrderId:
+                  type: string
+                OrderPrice:
+                  type: number
+                OrderType:
+                  type: string
+                  items:
+                    enum:
+                    - Algorithmic
+                    - GuaranteedStop
+                    - Limit
+                    - Market
+                    - Stop
+                    - StopIfTraded
+                    - StopLimit
+                    - Switch
+                    - TrailingStop
+                    - TrailingStopIfTraded
+                    - Traspaso
+                    - TraspasoIn
+                Orders:
+                  type: array
+                  items:
+                    type: object
+                StopLimitPrice:
+                  type: number
+                TraderId:
+                  type: string
+                TrailingStopDistanceToMarket:
+                  type: number
+                TrailingStopStep:
+                  type: number
       responses:
         "200":
           description: ""
@@ -5512,6 +6952,125 @@ paths:
       tags:
       - Trading
       operationId: PlaceOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                AlgoOrderData:
+                  type: object
+                AllocationKeyId:
+                  type: string
+                Amount:
+                  type: number
+                AmountType:
+                  type: string
+                  items:
+                    enum:
+                    - CashAmount
+                    - Quantity
+                AppHint:
+                  type: integer
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - Bond
+                    - Cash
+                    - CfdIndexOption
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FuturesOption
+                    - FuturesStrategy
+                    - FxBinaryOption
+                    - FxForwards
+                    - FxKnockInOption
+                    - FxKnockOutOption
+                    - FxNoTouchOption
+                    - FxOneTouchOption
+                    - FxSpot
+                    - FxVanillaOption
+                    - IpoOnStock
+                    - ManagedFund
+                    - MutualFund
+                    - Stock
+                    - StockIndex
+                    - StockIndexOption
+                    - StockOption
+                BuySell:
+                  type: string
+                  items:
+                    enum:
+                    - buy
+                    - sell
+                CancelOrders:
+                  type: boolean
+                ClearForceOpen:
+                  type: boolean
+                DecisionMakerUserID:
+                  type: integer
+                ExternalReference:
+                  type: string
+                ForwardDate:
+                  type: string
+                IsForceOpen:
+                  type: boolean
+                ManualOrder:
+                  type: boolean
+                OrderDuration:
+                  type: object
+                OrderId:
+                  type: string
+                OrderPrice:
+                  type: number
+                OrderType:
+                  type: string
+                  items:
+                    enum:
+                    - Algorithmic
+                    - GuaranteedStop
+                    - Limit
+                    - Market
+                    - Stop
+                    - StopIfTraded
+                    - StopLimit
+                    - Switch
+                    - TrailingStop
+                    - TrailingStopIfTraded
+                    - Traspaso
+                    - TraspasoIn
+                Orders:
+                  type: array
+                  items:
+                    type: object
+                PositionId:
+                  type: string
+                StopLimitPrice:
+                  type: number
+                SwitchInstrumentUic:
+                  type: integer
+                ToOpenClose:
+                  type: string
+                  items:
+                    enum:
+                    - ToClose
+                    - ToOpen
+                    - Undefined
+                TraderId:
+                  type: string
+                TrailingStopDistanceToMarket:
+                  type: number
+                TrailingStopStep:
+                  type: number
+                TraspasoIn:
+                  type: object
+                Uic:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5592,6 +7151,24 @@ paths:
       tags:
       - Trading
       operationId: ChangeMultiLegStrategyOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                DecisionMakerUserID:
+                  type: integer
+                MultiLegAmount:
+                  type: number
+                MultiLegOrderId:
+                  type: string
+                OrderPrice:
+                  type: number
+                TraderId:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5600,6 +7177,46 @@ paths:
       tags:
       - Trading
       operationId: PlaceMultiLegStrategyOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                DecisionMakerUserID:
+                  type: integer
+                ExternalReference:
+                  type: string
+                Legs:
+                  type: array
+                  items:
+                    type: object
+                ManualOrder:
+                  type: boolean
+                OrderDuration:
+                  type: object
+                OrderPrice:
+                  type: number
+                OrderType:
+                  type: string
+                  items:
+                    enum:
+                    - Algorithmic
+                    - GuaranteedStop
+                    - Limit
+                    - Market
+                    - Stop
+                    - StopIfTraded
+                    - StopLimit
+                    - Switch
+                    - TrailingStop
+                    - TrailingStopIfTraded
+                    - Traspaso
+                    - TraspasoIn
+                TraderId:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5644,6 +7261,7 @@ paths:
         in: query
         required: true
         schema:
+          type: string
           items:
             enum:
             - BackRatio
@@ -5667,6 +7285,50 @@ paths:
       tags:
       - Trading
       operationId: PreCheckMultilegOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                DecisionMakerUserID:
+                  type: integer
+                ExternalReference:
+                  type: string
+                FieldGroups:
+                  type: array
+                  items:
+                    type: object
+                Legs:
+                  type: array
+                  items:
+                    type: object
+                ManualOrder:
+                  type: boolean
+                OrderDuration:
+                  type: object
+                OrderPrice:
+                  type: number
+                OrderType:
+                  type: string
+                  items:
+                    enum:
+                    - Algorithmic
+                    - GuaranteedStop
+                    - Limit
+                    - Market
+                    - Stop
+                    - StopIfTraded
+                    - StopLimit
+                    - Switch
+                    - TrailingStop
+                    - TrailingStopIfTraded
+                    - Traspaso
+                    - TraspasoIn
+                TraderId:
+                  type: string
       responses:
         "200":
           description: ""
@@ -5676,6 +7338,107 @@ paths:
       tags:
       - Trading
       operationId: PreCheckOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountKey:
+                  type: string
+                Amount:
+                  type: number
+                AmountType:
+                  type: string
+                  items:
+                    enum:
+                    - CashAmount
+                    - Quantity
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - Bond
+                    - Cash
+                    - CfdIndexOption
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FuturesOption
+                    - FuturesStrategy
+                    - FxBinaryOption
+                    - FxForwards
+                    - FxKnockInOption
+                    - FxKnockOutOption
+                    - FxNoTouchOption
+                    - FxOneTouchOption
+                    - FxSpot
+                    - FxVanillaOption
+                    - IpoOnStock
+                    - ManagedFund
+                    - MutualFund
+                    - Stock
+                    - StockIndex
+                    - StockIndexOption
+                    - StockOption
+                BuySell:
+                  type: string
+                  items:
+                    enum:
+                    - buy
+                    - sell
+                DecisionMakerUserID:
+                  type: integer
+                ExternalReference:
+                  type: string
+                FieldGroups:
+                  type: array
+                  items:
+                    type: object
+                ForwardDate:
+                  type: string
+                IsForceOpen:
+                  type: boolean
+                OrderDuration:
+                  type: object
+                OrderPrice:
+                  type: number
+                OrderType:
+                  type: string
+                  items:
+                    enum:
+                    - Algorithmic
+                    - GuaranteedStop
+                    - Limit
+                    - Market
+                    - Stop
+                    - StopIfTraded
+                    - StopLimit
+                    - Switch
+                    - TrailingStop
+                    - TrailingStopIfTraded
+                    - Traspaso
+                    - TraspasoIn
+                PositionId:
+                  type: string
+                StopLimitPrice:
+                  type: number
+                StrategyId:
+                  type: string
+                SwitchInstrumentUic:
+                  type: integer
+                ToOpenClose:
+                  type: string
+                  items:
+                    enum:
+                    - ToClose
+                    - ToOpen
+                    - Undefined
+                TraspasoIn:
+                  type: object
+                Uic:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5685,6 +7448,58 @@ paths:
       tags:
       - ValueAdd
       operationId: PostAlertDefinition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountId:
+                  type: string
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FxSpot
+                    - SrdOnEtf
+                    - SrdOnStock
+                    - Stock
+                    - StockIndex
+                Comment:
+                  type: string
+                ExpiryDate:
+                  type: string
+                IsRecurring:
+                  type: boolean
+                Operator:
+                  type: string
+                  items:
+                    enum:
+                    - GreaterOrEqual
+                    - LessOrEqual
+                PriceVariable:
+                  type: string
+                  items:
+                    enum:
+                    - AskTick
+                    - BidTick
+                    - PercentChange
+                    - Traded
+                State:
+                  type: string
+                  items:
+                    enum:
+                    - Disabled
+                    - Enabled
+                    - RecentlyTriggered
+                TargetValue:
+                  type: number
+                Uic:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5749,6 +7564,58 @@ paths:
         required: true
         schema:
           type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AccountId:
+                  type: string
+                AssetType:
+                  type: string
+                  items:
+                    enum:
+                    - CfdOnFutures
+                    - CfdOnIndex
+                    - CfdOnStock
+                    - ContractFutures
+                    - FxSpot
+                    - SrdOnEtf
+                    - SrdOnStock
+                    - Stock
+                    - StockIndex
+                Comment:
+                  type: string
+                ExpiryDate:
+                  type: string
+                IsRecurring:
+                  type: boolean
+                Operator:
+                  type: string
+                  items:
+                    enum:
+                    - GreaterOrEqual
+                    - LessOrEqual
+                PriceVariable:
+                  type: string
+                  items:
+                    enum:
+                    - AskTick
+                    - BidTick
+                    - PercentChange
+                    - Traded
+                State:
+                  type: string
+                  items:
+                    enum:
+                    - Disabled
+                    - Enabled
+                    - RecentlyTriggered
+                TargetValue:
+                  type: number
+                Uic:
+                  type: integer
       responses:
         "200":
           description: ""
@@ -5781,6 +7648,28 @@ paths:
       tags:
       - ValueAdd
       operationId: PutUserSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                EmailAddress:
+                  type: string
+                NotifyWithMail:
+                  type: boolean
+                NotifyWithPopup:
+                  type: boolean
+                Sound:
+                  type: string
+                  items:
+                    enum:
+                    - Asterisk
+                    - Beep
+                    - Exclamation
+                    - Hand
+                    - None
+                    - Question
       responses:
         "200":
           description: ""

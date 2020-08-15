@@ -7,14 +7,17 @@ type Parameter struct {
 	Required    bool   `json:"required" yaml:",omitempty"`
 	Style       string `json:"style" yaml:",omitempty"`
 	Explode     bool   `json:"explode" yaml:",omitempty"`
-	Schema      struct {
-		Type  string `json:"type" yaml:",omitempty"`
-		Items struct {
-			Type    string   `json:"type" yaml:",omitempty"`
-			Default string   `json:"default" yaml:",omitempty"`
-			Enum    []string `json:"enum" yaml:",omitempty"`
-		} `json:"items" yaml:",omitempty"`
-	} `json:"schema" yaml:",omitempty"`
+	Schema      Schema `json:"schema" yaml:",omitempty"`
+}
+
+type Schema struct {
+	Type       string            `json:"type" yaml:",omitempty"`
+	Properties map[string]Schema `json:"properties" yaml:",omitempty"`
+	Items      struct {
+		Type    string   `json:"type" yaml:",omitempty"`
+		Default string   `json:"default" yaml:",omitempty"`
+		Enum    []string `json:"enum" yaml:",omitempty"`
+	} `json:"items" yaml:",omitempty"`
 }
 
 type Method struct {
@@ -27,17 +30,13 @@ type Method struct {
 		Content     struct {
 			ApplicationJSON struct {
 				Schema struct {
-					Ref string `json:"$ref" yaml:",omitempty"`
+					Type       string            `json:"type" yaml:",omitempty"`
+					Properties map[string]Schema `json:"properties" yaml:",omitempty"`
 				} `json:"schema" yaml:",omitempty"`
-			} `json:"application/json" yaml:",omitempty"`
-			ApplicationXML struct {
-				Schema struct {
-					Ref string `json:"$ref" yaml:",omitempty"`
-				} `json:"schema" yaml:",omitempty"`
-			} `json:"application/xml" yaml:",omitempty"`
+			} `json:"application/json" yaml:"application/json,omitempty"`
 		} `json:"content" yaml:",omitempty"`
 		Required bool `json:"required" yaml:",omitempty"`
-	} `json:"requestBody" yaml:",omitempty"`
+	} `json:"requestBody" yaml:"requestBody,omitempty"`
 	Responses struct {
 		Num200 struct {
 			Description string `json:"description"`

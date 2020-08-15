@@ -115,12 +115,24 @@ func main() {
 	fmt.Println(`
 openapi: 3.0.1
 info:
-	title: Swagger Petstore
-	description: xxxx
+	title: Swagger Saxo Bank openapi
+	description: Saxo Bank openapi for trading
 	version: 1.0.0
 servers:
   - url: 'https://gateway.saxobank.com/sim/openapi'
-	- url: 'https://gateway.saxobank.com/openapi'`)
+	- url: 'https://gateway.saxobank.com/openapi'
+security: 
+	- openapi_auth: []`)
 
 	fmt.Println(string(d))
+	fmt.Println(`
+components:
+  securitySchemes:
+    openapi_auth:
+      type: oauth2
+      flows:
+        implicit:
+					authorizationUrl: https://live.logonvalidation.net/authorize
+					refreshUrl: https://live.logonvalidation.net/token
+					scopes: {}`)
 }

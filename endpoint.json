@@ -1,0 +1,29 @@
+{
+    "HttpMethod": "GET",
+    "Url": "https://gateway.saxobank.com/sim/openapi/hist/v3/accountValues/{ClientKey}/?MockDataId={MockDataId}",
+    "Parameters": [
+      {
+        "HasRequiredProperties": false,
+        "RequiredProperties": null,
+        "Name": "ClientKey",
+        "IsRequired": true,
+        "Origin": "Route",
+        "DataType": "ClientKey",
+        "IsComplex": false,
+        "IsEnum": false
+      },
+      {
+        "HasRequiredProperties": false,
+        "RequiredProperties": null,
+        "Name": "MockDataId",
+        "IsRequired": false,
+        "Origin": "Query-String",
+        "DataType": "String",
+        "IsComplex": false,
+        "IsEnum": false
+      }
+    ],
+    "Key": "GetStandardPeriodAccountValues",
+    "HashCode": "821cbaf861bc833d02e3962e262142b8",
+    "RefDocsUrl": "/openapi/referencedocs/endpoint?apiVersion=v3&serviceGroup=accounthistory&service=account%20values&endpoint=getstandardperiodaccountvalues&hash=821cbaf861bc833d02e3962e262142b8"
+  }

@@ -1,0 +1,5302 @@
+
+openapi: 3.0.1
+info:
+	title: Swagger Petstore
+	description: xxxx
+	version: 1.0.0
+servers:
+  - url: 'https://gateway.saxobank.com/sim/openapi'
+	- url: 'https://gateway.saxobank.com/openapi'
+paths:
+  /openapi/at/v3/investments:
+    post:
+      tags:
+      - AutoTrading
+      operationId: PostInvestment
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetInvestmentByLeader
+      parameters:
+      - name: InvestmentId
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: TradeLeaderId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/{InvestmentId}:
+    patch:
+      tags:
+      - AutoTrading
+      operationId: PatchInvestmentAsync
+      parameters:
+      - name: InvestmentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/{InvestmentId}/maxWithdrawalAmount/:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetMaxWithdrawalAmountAsync
+      parameters:
+      - name: InvestmentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: TargetAccountId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/{InvestmentId}/withdraw:
+    put:
+      tags:
+      - AutoTrading
+      operationId: PutInvestmentAsync
+      parameters:
+      - name: InvestmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/me/:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetInvestments
+      parameters:
+      - name: TradeLeaderId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/subscriptions:
+    post:
+      tags:
+      - AutoTrading
+      operationId: AddSubscription
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - AutoTrading
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/subscriptions/suggestions:
+    post:
+      tags:
+      - AutoTrading
+      operationId: AddSuggestionSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/subscriptions/suggestions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - AutoTrading
+      operationId: DeleteSuggestionSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/investments/summaries:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetInvestmentsummariesAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeFollowers/{ClientKey}/suitabilitystatus:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetSuitabilityStatus
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    put:
+      tags:
+      - AutoTrading
+      operationId: PutSuitabilityStatus
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeFollowers/{ClientKey}/termsandconditions:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTermsAndConditions
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    put:
+      tags:
+      - AutoTrading
+      operationId: PutClientTermsAndConditions
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeFollowers/me:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTradeFollowers
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetAllTradeLeaders
+      parameters:
+      - name: StandardPeriod
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - AllTime
+            - Month
+            - Quarter
+            - Year
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/{TradeLeaderId}/:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTradeLeader
+      parameters:
+      - name: StandardPeriod
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - AllTime
+            - Month
+            - Quarter
+            - Year
+      - name: TradeLeaderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/{TradeLeaderId}/logo:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTradeLeaderLogo
+      parameters:
+      - name: TradeLeaderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/logo/{LogoKey}:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTradeLeaderLogoByLogoKey
+      parameters:
+      - name: LogoKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/public:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetAllTradeLeadersPublic
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/public/{TradeLeaderId}:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTradeLeaderPublic
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/at/v3/tradeLeaders/public/customselection/{SelectionId}/:
+    get:
+      tags:
+      - AutoTrading
+      operationId: GetTradeLeadersCustomSelectionPublic
+      parameters:
+      - name: SelectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: StandardPeriod
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - AllTime
+            - Month
+            - Quarter
+            - Year
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/atr/v1/partner/cashtransfers:
+    post:
+      tags:
+      - AssetTransfers
+      operationId: CashTransfer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/atr/v1/partner/cashtransfers/:
+    get:
+      tags:
+      - AssetTransfers
+      operationId: CashTransfersBySearchParameters
+      parameters:
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      - name: ExternalReference
+        in: query
+        schema:
+          type: string
+      - name: FromDateTime
+        in: query
+        schema:
+          type: string
+      - name: SkipToken
+        in: query
+        schema:
+          type: string
+      - name: ToDateTime
+        in: query
+        schema:
+          type: string
+      - name: Top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/atr/v1/partner/cashtransfers/{TransactionId}:
+    get:
+      tags:
+      - AssetTransfers
+      operationId: CashTransfersById
+      parameters:
+      - name: TransactionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/atr/v1/partner/prebookedfunds:
+    post:
+      tags:
+      - AssetTransfers
+      operationId: PrebookFundDeposit
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/chart/v1/charts/:
+    get:
+      tags:
+      - Charts
+      operationId: GetChartDataAsync
+      parameters:
+      - name: AssetType
+        in: query
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: Count
+        in: query
+        schema:
+          type: integer
+      - name: FieldGroups
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - BlockInfo
+            - ChartInfo
+            - Data
+            - DisplayAndFormat
+      - name: Horizon
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: Mode
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - From
+            - UpTo
+      - name: Time
+        in: query
+        schema:
+          type: string
+      - name: Uic
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/chart/v1/charts/subscriptions:
+    post:
+      tags:
+      - Charts
+      operationId: AddSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/chart/v1/charts/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Charts
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/chart/v1/charts/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Charts
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/clientrenewals/:
+    get:
+      tags:
+      - ClientManagement
+      operationId: GetClientRenewalData
+      parameters:
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/clientrenewals/{RenewalEntityId}:
+    patch:
+      tags:
+      - ClientManagement
+      operationId: UpdateClientRenewalData
+      parameters:
+      - name: RenewalEntityId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/clientrenewals/pending/:
+    get:
+      tags:
+      - ClientManagement
+      operationId: GetRenewalStatuses
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: MustRenewBy
+        in: query
+        schema:
+          type: string
+      - name: OwnerKey
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/:
+    post:
+      tags:
+      - ClientManagement
+      operationId: SignUp
+      parameters:
+      - name: OwnerKey
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/attachments/{SignUpId}/:
+    post:
+      tags:
+      - ClientManagement
+      operationId: AttachFile
+      parameters:
+      - name: DocumentType
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - AccountViewToIb
+            - EsaContract
+            - FeePaymentAuthorization
+            - GeneralBusinessTerms
+            - PensionTransferRequest
+            - PowerOfAttorney
+            - PowerOfAttorneyToIb
+            - ProofOfIdentity
+            - ProofOfResidency
+            - SourceOfFundsDocument
+            - TermsAndConditions
+            - TermsAndConditionsAldersopsparingPrivate
+            - TermsAndConditionsKapitalPensionPrivate
+            - TermsAndConditionsRatePensionPrivate
+      - name: RenewalDate
+        in: query
+        schema:
+          type: string
+      - name: SignUpId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Title
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/completeapplication/{SignUpId}/:
+    put:
+      tags:
+      - ClientManagement
+      operationId: CompleteApplication
+      parameters:
+      - name: AwaitAccountCreation
+        in: query
+        schema:
+          type: boolean
+      - name: SignUpId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/onboardingpdf/{ClientKey}/:
+    get:
+      tags:
+      - ClientManagement
+      operationId: GenerateTypedOnboardingPDF
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: DocumentType
+        in: query
+        required: true
+        schema:
+          type: onboardingdocumenttype
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/options:
+    get:
+      tags:
+      - ClientManagement
+      operationId: GetSignupOptions
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/status/{ClientKey}:
+    get:
+      tags:
+      - ClientManagement
+      operationId: GetSignUpStatus
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/signups/verification/initiate/{ClientKey}:
+    post:
+      tags:
+      - ClientManagement
+      operationId: InitiateVerification
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v1/users/resetpasswordrequest:
+    post:
+      tags:
+      - ClientManagement
+      operationId: ResetPassword
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v2/signups/attachments/{SignUpId}:
+    post:
+      tags:
+      - ClientManagement
+      operationId: AttachFile
+      parameters:
+      - name: SignUpId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cm/v2/signups/options:
+    get:
+      tags:
+      - ClientManagement
+      operationId: GetSignupOptions
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/AccountStatement/{ClientKey}/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetAsync
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/AccountStatement/me/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetMeAsync
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/Portfolio/{ClientKey}/{Fromdate}/{ToDate}/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetAsync
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ToDate
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/Portfolio/me/{Fromdate}/{ToDate}/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetMeAsync
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: FromDate
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ToDate
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/TradeDetails/{ClientKey}/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetAsync
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FilterType
+        in: query
+        required: true
+        schema:
+          type: bookingrequesttype
+      - name: FilterValue
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: TradeId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/TradeDetails/me/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetMeAsync
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: FilterType
+        in: query
+        required: true
+        schema:
+          type: bookingrequesttype
+      - name: FilterValue
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: TradeId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/TradesExecuted/{ClientKey}/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetAsync
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cr/v1/reports/TradesExecuted/me/:
+    get:
+      tags:
+      - ClientReporting
+      operationId: GetMeAsync
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/audit/activities/:
+    get:
+      tags:
+      - ClientServices
+      operationId: Get
+      parameters:
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: CorrelationKey
+        in: query
+        schema:
+          type: string
+      - name: From
+        in: query
+        schema:
+          type: string
+      - name: LogEntryTypes
+        in: query
+        schema:
+          type: logentrytype []
+      - name: PostingId
+        in: query
+        schema:
+          type: string
+      - name: To
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/audit/orderactivities/:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetOrderStatesAsync
+      parameters:
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      - name: CorrelationKey
+        in: query
+        schema:
+          type: string
+      - name: EntryType
+        in: query
+        schema:
+          type: orderentrytype
+      - name: FieldGroups
+        in: query
+        schema:
+          type: orderactivityfieldgroup []
+      - name: FromDateTime
+        in: query
+        schema:
+          type: string
+      - name: IncludeSubAccounts
+        in: query
+        schema:
+          type: boolean
+      - name: OrderId
+        in: query
+        schema:
+          type: string
+      - name: Status
+        in: query
+        schema:
+          type: orderlogstatus []
+      - name: ToDateTime
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/partner/support/cases:
+    post:
+      tags:
+      - ClientServices
+      operationId: CreateCase
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/partner/support/cases/:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetCases
+      parameters:
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: FromDateTime
+        in: query
+        schema:
+          type: string
+      - name: Status
+        in: query
+        schema:
+          type: casestatus []
+      - name: ToDateTime
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/partner/support/cases/{CaseId}:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetCase
+      parameters:
+      - name: CaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - ClientServices
+      operationId: UpdateNote
+      parameters:
+      - name: CaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/partner/support/cases/{CaseId}/caseclose:
+    put:
+      tags:
+      - ClientServices
+      operationId: CloseCase
+      parameters:
+      - name: CaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/partner/support/cases/{CaseId}/internalcomment:
+    post:
+      tags:
+      - ClientServices
+      operationId: CreateInternalComment
+      parameters:
+      - name: CaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/partner/support/cases/{CaseId}/note:
+    post:
+      tags:
+      - ClientServices
+      operationId: CreateNote
+      parameters:
+      - name: CaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/reports/aggregatedAmounts/{ClientKey}/{FromDate}/{ToDate}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: Get
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: MockDataId
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/reports/bookings/{ClientKey}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: Get
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FilterType
+        in: query
+        schema:
+          type: bookingrequesttype
+      - name: FilterValue
+        in: query
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: MockDataId
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/reports/closedPositions/{ClientKey}/{FromDate}/{ToDate}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: Get
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ToDate
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/reports/trades/{ClientKey}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetDetailsAsync
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: MockDataId
+        in: query
+        schema:
+          type: string
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      - name: TradeId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/tradingconditions/ContractOptionSpaces/{AccountKey}/{OptionRootId}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetForContractOption
+      parameters:
+      - name: AccountKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: scheduledtradingconditionsfieldgroup []
+      - name: OptionRootId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/tradingconditions/cost/{AccountKey}/{Uic}/{AssetType}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetTradingConditionCost
+      parameters:
+      - name: AccountKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Amount
+        in: query
+        required: true
+        schema:
+          type: decimal
+      - name: AssetType
+        in: path
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: FieldGroups
+        in: query
+        schema:
+          type: tradingconditionfieldgroup []
+      - name: HoldingPeriodInDays
+        in: query
+        schema:
+          type: integer
+      - name: Price
+        in: query
+        schema:
+          type: decimal
+      - name: Uic
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v1/tradingconditions/instrument/{AccountKey}/{Uic}/{AssetType}/:
+    get:
+      tags:
+      - ClientServices
+      operationId: GetForInstrument
+      parameters:
+      - name: AccountKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: AssetType
+        in: path
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: FieldGroups
+        in: query
+        schema:
+          type: scheduledtradingconditionsfieldgroup []
+      - name: Uic
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/cashmanagement/interaccounttransfers:
+    post:
+      tags:
+      - ClientServices
+      operationId: Transfer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/cashmanagement/wiretransfers/instructions/:
+    get:
+      tags:
+      - ClientServices
+      operationId: Get
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: CurrencyCode
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/cashmanagement/withdrawals/WithdrawIBanSwift:
+    post:
+      tags:
+      - ClientServices
+      operationId: WithdrawIBanSwift
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/cashmanagement/withdrawals/WithdrawalAccountNumberBeneficiaryBank:
+    post:
+      tags:
+      - ClientServices
+      operationId: WithdrawalAccountNumberBeneficiaryBank
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/cashmanagement/withdrawals/WithdrawalAccountNumberSwift:
+    post:
+      tags:
+      - ClientServices
+      operationId: WithdrawalAccountNumberSwift
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/cashmanagement/withdrawals/WithdrawalIbanBeneficiaryBank:
+    post:
+      tags:
+      - ClientServices
+      operationId: WithdrawalIBanBeneficiaryBank
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/cs/v2/clientinfo/clients/search/:
+    post:
+      tags:
+      - ClientServices
+      operationId: Search
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps:
+    post:
+      tags:
+      - Developer
+      operationId: CreateApp
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/:
+    get:
+      tags:
+      - Developer
+      operationId: GetApps
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}:
+    delete:
+      tags:
+      - Developer
+      operationId: DeactivateApp
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    get:
+      tags:
+      - Developer
+      operationId: GetAppByAppKey
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Developer
+      operationId: UpdateApp
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/redirecturis:
+    post:
+      tags:
+      - Developer
+      operationId: CreateRedirectUri
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/redirecturis/:
+    get:
+      tags:
+      - Developer
+      operationId: GetRedirectUris
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/redirecturis/{RedirectUriId}:
+    delete:
+      tags:
+      - Developer
+      operationId: DeleteRedirectUri
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: RedirectUriId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Developer
+      operationId: UpdateRedirectUri
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: RedirectUriId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/redirecturis/{RedirectUriId}/:
+    get:
+      tags:
+      - Developer
+      operationId: GetRedirectUriFromId
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: RedirectUriId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/secrets:
+    post:
+      tags:
+      - Developer
+      operationId: CreateSecret
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/secrets/:
+    get:
+      tags:
+      - Developer
+      operationId: GetSecrets
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/{AppKey}/secrets/{SecretId}:
+    delete:
+      tags:
+      - Developer
+      operationId: DeleteSecret
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: SecretId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+    get:
+      tags:
+      - Developer
+      operationId: GetSecretById
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: SecretId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Developer
+      operationId: UpdateSecret
+      parameters:
+      - name: AppKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: SecretId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/developer/apps/flowtypes/:
+    get:
+      tags:
+      - Developer
+      operationId: GetFlowTypes
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ens/v1/activities/:
+    get:
+      tags:
+      - Ens
+      operationId: GetActivitiesAsync
+      parameters:
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: Activities
+        in: query
+        required: true
+        schema:
+          type: activitytype []
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      - name: Duration
+        in: query
+        schema:
+          type: openorderduration
+      - name: ExpirationDateTime
+        in: query
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: activityfieldgroup []
+      - name: FromDateTime
+        in: query
+        schema:
+          type: string
+      - name: IncludeSubAccounts
+        in: query
+        schema:
+          type: boolean
+      - name: OrderStatuses
+        in: query
+        schema:
+          type: orderstatus []
+      - name: OrderTypes
+        in: query
+        schema:
+          type: placeableordertype []
+      - name: PositionEventFilter
+        in: query
+        schema:
+          type: positioneventfilter
+      - name: SequenceId
+        in: query
+        schema:
+          type: string
+      - name: ToDateTime
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ens/v1/activities/subscriptions:
+    post:
+      tags:
+      - Ens
+      operationId: AddSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ens/v1/activities/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Ens
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ens/v1/activities/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Ens
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/hist/v3/accountValues/{ClientKey}/:
+    get:
+      tags:
+      - AccountHistory
+      operationId: GetStandardPeriodAccountValues
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: MockDataId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/hist/v3/perf/{ClientKey}/:
+    get:
+      tags:
+      - AccountHistory
+      operationId: GetPerformance
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: accountperformancefieldgroup []
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: MockDataId
+        in: query
+        schema:
+          type: string
+      - name: StandardPeriod
+        in: query
+        schema:
+          type: accountperformancestandardperiod
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/hist/v3/positions/{ClientKey}/:
+    get:
+      tags:
+      - AccountHistory
+      operationId: GetHistoricalPositions
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: AssetType
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FromDate
+        in: query
+        schema:
+          type: string
+      - name: MockDataId
+        in: query
+        schema:
+          type: string
+      - name: StandardPeriod
+        in: query
+        schema:
+          type: accountperformancestandardperiod
+      - name: Symbol
+        in: query
+        schema:
+          type: string []
+      - name: ToDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/partnerintegration/v1/InteractiveIdVerification/idnow/complete:
+    post:
+      tags:
+      - PartnerIntegration
+      operationId: IdNowInteractiveVerificationComplete
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/partnerintegration/v1/InteractiveIdVerification/verify/{Correlationid}:
+    post:
+      tags:
+      - PartnerIntegration
+      operationId: VerifyInteractiveVerification
+      parameters:
+      - name: Correlationid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accountgroups/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAccountGroups
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accountgroups/{AccountGroupKey}/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAccountGroup
+      parameters:
+      - name: AccountGroupKey
+        in: path
+        required: true
+        schema:
+          type: accountgroupkey
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdateAccountGroup
+      parameters:
+      - name: AccountGroupKey
+        in: path
+        required: true
+        schema:
+          type: accountgroupkey
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accountgroups/me/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAccountGroupsForLoggedInUser
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAccounts
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: IncludeSubAccounts
+        in: query
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/{AccountKey}:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAccount
+      parameters:
+      - name: AccountKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdateAccount
+      parameters:
+      - name: AccountKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/{AccountKey}/reset:
+    put:
+      tags:
+      - Portfolio
+      operationId: ResetAccount
+      parameters:
+      - name: AccountKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/me/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAccounts
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/subscriptions:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/accounts/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/balances/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetBalance
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: balancefieldgroup []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/balances/marginoverview/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetMarginOverview
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/balances/me:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetBalance
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/balances/subscriptions:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/balances/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/balances/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/clients/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetClients
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: OwnerKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdateClientSettingsForPartner
+      parameters:
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/clients/{ClientKey}:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetClient
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/clients/me:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetClient
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdateClientSettings
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetClosedPositions
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ClosedPositionId
+        in: query
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: closedpositionfieldgroup []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/{ClosedPositionId}/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetClosedPosition
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ClosedPositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: closedpositionfieldgroup []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/{ClosedPositionId}/details/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetPositionDetails
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ClosedPositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/me/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetClosedPositions
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: FieldGroups
+        in: query
+        schema:
+          type: closedpositionfieldgroup []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/subscriptions/:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      parameters:
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/closedpositions/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdateClosedPositionSubscriptionPagesize
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/currency/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetCurrencyExposuresForLoggedInUser
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/currency/me:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetCurrencyExposures
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/fxspot/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetFxSpotNetExposuresForLoggedInUser
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/fxspot/me:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetFxSpotNetExposures
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/instruments/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetInstrumentsExposuresForLoggedInUser
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: AssetType
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ExpiryDate
+        in: query
+        schema:
+          type: string
+      - name: LowerBarrier
+        in: query
+        schema:
+          type: double
+      - name: PutCall
+        in: query
+        schema:
+          type: putcall
+      - name: Strike
+        in: query
+        schema:
+          type: double
+      - name: Uic
+        in: query
+        schema:
+          type: integer
+      - name: UpperBarrier
+        in: query
+        schema:
+          type: double
+      - name: ValueDate
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/instruments/me:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetInstrumentsExposures
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/instruments/subscriptions:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/instruments/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/exposure/instruments/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetNetPositions
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: AssetType
+        in: query
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: ExpiryDate
+        in: query
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: netpositionfieldgroup []
+      - name: LowerBarrier
+        in: query
+        schema:
+          type: double
+      - name: NetPositionId
+        in: query
+        schema:
+          type: string
+      - name: PutCall
+        in: query
+        schema:
+          type: putcall
+      - name: Strike
+        in: query
+        schema:
+          type: double
+      - name: Uic
+        in: query
+        schema:
+          type: integer
+      - name: UpperBarrier
+        in: query
+        schema:
+          type: double
+      - name: ValueDate
+        in: query
+        schema:
+          type: string
+      - name: WatchlistId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/{NetPositionId}/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetNetPosition
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: netpositionfieldgroup []
+      - name: NetPositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/{NetPositionId}/details/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetNetPositionDetails
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: NetPositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/me/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetNetPositions
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: FieldGroups
+        in: query
+        schema:
+          type: netpositionfieldgroup []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/subscriptions:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/netpositions/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetOpenOrders
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: orderfieldgroup []
+      - name: OrderId
+        in: query
+        schema:
+          type: string
+      - name: Status
+        in: query
+        schema:
+          type: orderstatusfilter
+      - name: WatchlistId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/{ClientKey}/{OrderId}/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetOpenOrder
+      parameters:
+      - name: ClientKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: orderfieldgroup []
+      - name: OrderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/{OrderId}/details/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetOpenOrderDetails
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: OrderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/me/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetOpenOrders
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: FieldGroups
+        in: query
+        schema:
+          type: orderfieldgroup []
+      - name: MultiLegOrderId
+        in: query
+        schema:
+          type: string
+      - name: Status
+        in: query
+        schema:
+          type: orderstatusfilter
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/subscriptions/:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $skiptoken
+        in: query
+        schema:
+          type: string
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/orders/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetPositions
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: positionfieldgroup []
+      - name: NetPositionId
+        in: query
+        schema:
+          type: string
+      - name: PositionId
+        in: query
+        schema:
+          type: string
+      - name: WatchlistId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/{PositionId}/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetPosition
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: positionfieldgroup []
+      - name: PositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/{PositionId}/details/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetPositionDetails
+      parameters:
+      - name: AccountGroupKey
+        in: query
+        schema:
+          type: accountgroupkey
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: PositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/me/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetPositions
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: FieldGroups
+        in: query
+        schema:
+          type: positionfieldgroup []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/subscriptions/:
+    post:
+      tags:
+      - Portfolio
+      operationId: AddActiveSubscription
+      parameters:
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/positions/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Portfolio
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdatePositionSubscriptionPagesize
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/users/:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetUsers
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: ClientKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: IncludeSubUsers
+        in: query
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/users/{UserKey}:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetUser
+      parameters:
+      - name: UserKey
+        in: path
+        required: true
+        schema:
+          type: userkey
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/users/me:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetUser
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Portfolio
+      operationId: UpdateUserPreferences
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/port/v1/users/me/entitlements:
+    get:
+      tags:
+      - Portfolio
+      operationId: GetAllClientEntitlements
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/algostrategies/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetAllStrategies
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/algostrategies/{Name}:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetStrategyByName
+      parameters:
+      - name: Name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/countries:
+    get:
+      tags:
+      - ReferenceData
+      operationId: Get
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/cultures:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetCultures
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/currencies:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetCurrencies
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/currencypairs/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetAllCurrencyPairs
+      parameters:
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/exchanges/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetAllExchanges
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/exchanges/{ExchangeId}:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetExchange
+      parameters:
+      - name: ExchangeId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/instruments/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetSummaries
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: AssetTypes
+        in: query
+        schema:
+          type: assettype []
+      - name: CanParticipateInMultiLegOrder
+        in: query
+        schema:
+          type: boolean
+      - name: Class
+        in: query
+        schema:
+          type: class []
+      - name: ExchangeId
+        in: query
+        schema:
+          type: string
+      - name: IncludeNonTradable
+        in: query
+        schema:
+          type: boolean
+      - name: Keywords
+        in: query
+        schema:
+          type: string
+      - name: SectorId
+        in: query
+        schema:
+          type: string
+      - name: Tags
+        in: query
+        schema:
+          type: string []
+      - name: Uics
+        in: query
+        schema:
+          type: int []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/instruments/contractoptionspaces/{OptionRootId}/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetContractOptionSpace
+      parameters:
+      - name: CanParticipateInMultiLegOrder
+        in: query
+        schema:
+          type: boolean
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      - name: ExpiryDates
+        in: query
+        schema:
+          type: datetime []
+      - name: OptionRootId
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: OptionSpaceSegment
+        in: query
+        schema:
+          type: optionspacesegment
+      - name: TradingStatus
+        in: query
+        schema:
+          type: tradingstatus
+      - name: UnderlyingUic
+        in: query
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/instruments/details/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetDetailsForManyInstruments
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: AssetTypes
+        in: query
+        schema:
+          type: assettype []
+      - name: FieldGroups
+        in: query
+        schema:
+          type: instrumentfieldgroup []
+      - name: Tags
+        in: query
+        schema:
+          type: string []
+      - name: Uics
+        in: query
+        schema:
+          type: int []
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/instruments/details/{Uic}/{AssetType}/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetDetailsForOneInstrument
+      parameters:
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: AssetType
+        in: path
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: instrumentfieldgroup []
+      - name: Uic
+        in: path
+        required: true
+        schema:
+          type: uic
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/instruments/futuresspaces/{ContinuousFuturesUic}:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetFuturesSpace
+      parameters:
+      - name: ContinuousFuturesUic
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/instruments/tradingschedule/{Uic}/{AssetType}:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetTradingSchedule
+      parameters:
+      - name: AssetType
+        in: path
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: Uic
+        in: path
+        required: true
+        schema:
+          type: uic
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/languages:
+    get:
+      tags:
+      - ReferenceData
+      operationId: Get
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/standarddates/forwardtenor/{Uic}/:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetForwardTenorDates
+      parameters:
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: Uic
+        in: path
+        required: true
+        schema:
+          type: uic
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/standarddates/fxoptionexpiry/{Uic}:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetFxOptionExpiryDates
+      parameters:
+      - name: Uic
+        in: path
+        required: true
+        schema:
+          type: uic
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/ref/v1/timezones:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetTimeZones
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/delete:
+    delete:
+      tags:
+      - Root
+      operationId: Delete
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/get:
+    get:
+      tags:
+      - Root
+      operationId: Get
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/head:
+    head:
+      tags:
+      - Root
+      operationId: Head
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/options:
+    options:
+      tags:
+      - Root
+      operationId: Options
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/patch:
+    patch:
+      tags:
+      - Root
+      operationId: Patch
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/post:
+    post:
+      tags:
+      - Root
+      operationId: Post
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/diagnostics/put:
+    put:
+      tags:
+      - Root
+      operationId: Put
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/features/availability:
+    get:
+      tags:
+      - Root
+      operationId: Get
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/features/availability/subscriptions:
+    post:
+      tags:
+      - Root
+      operationId: Post
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/features/availability/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Root
+      operationId: Delete
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/sessions/capabilities:
+    get:
+      tags:
+      - Root
+      operationId: GetCapabilities
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Root
+      operationId: PatchCapabilities
+      responses:
+        "200":
+          description: ""
+          content: {}
+    put:
+      tags:
+      - Root
+      operationId: SetCapabilities
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/sessions/events/subscriptions:
+    post:
+      tags:
+      - Root
+      operationId: AddSubscription
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/sessions/events/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Root
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Root
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/root/v1/user:
+    get:
+      tags:
+      - Root
+      operationId: UserInfo
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/allocationkeys:
+    post:
+      tags:
+      - Trading
+      operationId: AddAllocationKey
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/allocationkeys/:
+    get:
+      tags:
+      - Trading
+      operationId: GetAllocationKeys
+      parameters:
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: ClientKey
+        in: query
+        schema:
+          type: string
+      - name: Statuses
+        in: query
+        schema:
+          type: allocationkeystatus
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/allocationkeys/{AllocationKeyId}:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteAllocationKey
+      parameters:
+      - name: AllocationKeyId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    get:
+      tags:
+      - Trading
+      operationId: GetAllocationKey
+      parameters:
+      - name: AllocationKeyId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/allocationkeys/distributions/{AllocationKeyId}/:
+    get:
+      tags:
+      - Trading
+      operationId: DistributeAmountAccordingToAllocationKey
+      parameters:
+      - name: AllocationKeyId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Totalamount
+        in: query
+        schema:
+          type: double
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/infoprices/:
+    get:
+      tags:
+      - Trading
+      operationId: GetInfoPriceAsync
+      parameters:
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: Amount
+        in: query
+        schema:
+          type: decimal
+      - name: AmountType
+        in: query
+        schema:
+          type: orderamounttype
+      - name: AssetType
+        in: query
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: ExpiryDate
+        in: query
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: infopricegroupspec []
+      - name: ForwardDate
+        in: query
+        schema:
+          type: string
+      - name: LowerBarrier
+        in: query
+        schema:
+          type: decimal
+      - name: OrderAskPrice
+        in: query
+        schema:
+          type: decimal
+      - name: OrderBidPrice
+        in: query
+        schema:
+          type: decimal
+      - name: PutCall
+        in: query
+        schema:
+          type: putcall
+      - name: QuoteCurrency
+        in: query
+        schema:
+          type: boolean
+      - name: StrikePrice
+        in: query
+        schema:
+          type: decimal
+      - name: ToOpenClose
+        in: query
+        schema:
+          type: toopenclose
+      - name: Uic
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: UpperBarrier
+        in: query
+        schema:
+          type: decimal
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/infoprices/list/:
+    get:
+      tags:
+      - Trading
+      operationId: GetInfoPriceListAsync
+      parameters:
+      - name: AccountKey
+        in: query
+        schema:
+          type: string
+      - name: Amount
+        in: query
+        schema:
+          type: decimal
+      - name: AmountType
+        in: query
+        schema:
+          type: orderamounttype
+      - name: AssetType
+        in: query
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: ExpiryDate
+        in: query
+        schema:
+          type: string
+      - name: FieldGroups
+        in: query
+        schema:
+          type: infopricegroupspec []
+      - name: ForwardDate
+        in: query
+        schema:
+          type: string
+      - name: ForwardDateFarLeg
+        in: query
+        schema:
+          type: string
+      - name: ForwardDateNearLeg
+        in: query
+        schema:
+          type: string
+      - name: LowerBarrier
+        in: query
+        schema:
+          type: decimal
+      - name: OrderAskPrice
+        in: query
+        schema:
+          type: decimal
+      - name: OrderBidPrice
+        in: query
+        schema:
+          type: decimal
+      - name: PutCall
+        in: query
+        schema:
+          type: putcall
+      - name: QuoteCurrency
+        in: query
+        schema:
+          type: boolean
+      - name: StrikePrice
+        in: query
+        schema:
+          type: decimal
+      - name: ToOpenClose
+        in: query
+        schema:
+          type: toopenclose
+      - name: Uics
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: UpperBarrier
+        in: query
+        schema:
+          type: decimal
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/infoprices/subscriptions:
+    post:
+      tags:
+      - Trading
+      operationId: AddSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/infoprices/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/messages:
+    get:
+      tags:
+      - Trading
+      operationId: GetMessagesAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/messages/seen/{MessageId}:
+    put:
+      tags:
+      - Trading
+      operationId: MarkMessageAsSeen
+      parameters:
+      - name: MessageId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/messages/subscriptions:
+    post:
+      tags:
+      - Trading
+      operationId: AddSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/messages/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/messages/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/optionschain/subscriptions:
+    post:
+      tags:
+      - Trading
+      operationId: AddSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+    patch:
+      tags:
+      - Trading
+      operationId: ModifySubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}/ResetATM:
+    put:
+      tags:
+      - Trading
+      operationId: ResetSubscriptionAtTheMoney
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/positions:
+    post:
+      tags:
+      - Trading
+      operationId: CreatePosition
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/positions/{PositionId}:
+    patch:
+      tags:
+      - Trading
+      operationId: UpdatePosition
+      parameters:
+      - name: PositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/positions/{PositionId}/exercise:
+    put:
+      tags:
+      - Trading
+      operationId: ExercisePositionAsync
+      parameters:
+      - name: PositionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/positions/exercise:
+    put:
+      tags:
+      - Trading
+      operationId: ExerciseAmountAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/multileg:
+    post:
+      tags:
+      - Trading
+      operationId: GetMultiLegPriceAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/multileg/subscriptions:
+    post:
+      tags:
+      - Trading
+      operationId: AddMultiLegPricesSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/multileg/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteMultiLegPricesSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/multileg/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteMultiLegPricesSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/subscriptions:
+    post:
+      tags:
+      - Trading
+      operationId: AddSubscriptionAsync
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/subscriptions/{ContextId}/:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscriptions
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Tag
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/subscriptions/{ContextId}/{ReferenceId}:
+    delete:
+      tags:
+      - Trading
+      operationId: DeleteSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v1/prices/subscriptions/{ContextId}/{ReferenceId}/MarginImpact:
+    put:
+      tags:
+      - Trading
+      operationId: RequestMarginImpactOnSubscription
+      parameters:
+      - name: ContextId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ReferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders:
+    patch:
+      tags:
+      - Trading
+      operationId: ChangeOrder
+      responses:
+        "200":
+          description: ""
+          content: {}
+    post:
+      tags:
+      - Trading
+      operationId: PlaceOrder
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/:
+    delete:
+      tags:
+      - Trading
+      operationId: CancelAllOrder
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: AssetType
+        in: query
+        required: true
+        schema:
+          type: string
+          items:
+            enum:
+            - Bond
+            - Cash
+            - CfdIndexOption
+            - CfdOnFutures
+            - CfdOnIndex
+            - CfdOnStock
+            - ContractFutures
+            - FuturesOption
+            - FuturesStrategy
+            - FxBinaryOption
+            - FxForwards
+            - FxKnockInOption
+            - FxKnockOutOption
+            - FxNoTouchOption
+            - FxOneTouchOption
+            - FxSpot
+            - FxVanillaOption
+            - IpoOnStock
+            - ManagedFund
+            - MutualFund
+            - Stock
+            - StockIndex
+            - StockIndexOption
+            - StockOption
+      - name: Uic
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/{OrderIds}/:
+    delete:
+      tags:
+      - Trading
+      operationId: CancelOrder
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: OrderIds
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/multileg:
+    patch:
+      tags:
+      - Trading
+      operationId: ChangeMultiLegStrategyOrder
+      responses:
+        "200":
+          description: ""
+          content: {}
+    post:
+      tags:
+      - Trading
+      operationId: PlaceMultiLegStrategyOrder
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/multileg/{MultiLegOrderId}/:
+    delete:
+      tags:
+      - Trading
+      operationId: CancelMultiLegStrategyOrder
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: MultiLegOrderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/multileg/defaults/:
+    get:
+      tags:
+      - Trading
+      operationId: GetMultiLegOrderStrategyDefaults
+      parameters:
+      - name: AccountKey
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: OptionRootId
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: OptionsStrategyType
+        in: query
+        required: true
+        schema:
+          type: optionsstrategytype
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/multileg/precheck:
+    post:
+      tags:
+      - Trading
+      operationId: PreCheckMultilegOrder
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/trade/v2/orders/precheck:
+    post:
+      tags:
+      - Trading
+      operationId: PreCheckOrder
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/vas/v1/pricealerts/definitions:
+    post:
+      tags:
+      - ValueAdd
+      operationId: PostAlertDefinition
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/vas/v1/pricealerts/definitions/:
+    get:
+      tags:
+      - ValueAdd
+      operationId: GetAllAlertDefinitionsFilteredByState
+      parameters:
+      - name: $inlinecount
+        in: query
+        schema:
+          type: inlinecountvalue
+      - name: $skip
+        in: query
+        schema:
+          type: integer
+      - name: $top
+        in: query
+        schema:
+          type: integer
+      - name: State
+        in: query
+        schema:
+          type: pricealertdefinitionstate
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/vas/v1/pricealerts/definitions/{AlertDefinitionId}:
+    get:
+      tags:
+      - ValueAdd
+      operationId: GetAlertDefinition
+      parameters:
+      - name: AlertDefinitionId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+    put:
+      tags:
+      - ValueAdd
+      operationId: PutAlertDefinition
+      parameters:
+      - name: AlertDefinitionId
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/vas/v1/pricealerts/definitions/{AlertDefinitionIds}:
+    delete:
+      tags:
+      - ValueAdd
+      operationId: DeleteAlertDefinitions
+      parameters:
+      - name: AlertDefinitionIds
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content: {}
+  /openapi/vas/v1/pricealerts/usersettings:
+    get:
+      tags:
+      - ValueAdd
+      operationId: GetUserSettings
+      responses:
+        "200":
+          description: ""
+          content: {}
+    put:
+      tags:
+      - ValueAdd
+      operationId: PutUserSettings
+      responses:
+        "200":
+          description: ""
+          content: {}
+

@@ -64,6 +64,16 @@ func main() {
 				}
 				m := e.Methods[method]
 
+				m.Responses.Num200.Content.ApplicationJSON.Schema.Type = "object"
+				m.Responses.Num201.Content.ApplicationJSON.Schema.Type = "object"
+				m.Responses.Num204.Description = "The resource was deleted successfully."
+				m.Responses.Num400.Content.ApplicationJSON.Schema.Type = "object"
+				m.Responses.Num400.Content.ApplicationJSON.Schema.Properties = map[string]Schema{
+					"ErrorCode":  Schema{Type: "string"},
+					"Message":    Schema{Type: "string"},
+					"ModelState": Schema{Type: "object"},
+				}
+
 				m.OperationID = key["Key"].(string)
 
 				operationsIDs[m.OperationID]++
@@ -119,8 +129,8 @@ info:
 	description: Saxo Bank openapi for trading
 	version: 1.0.0
 servers:
-  - url: 'https://gateway.saxobank.com/sim/openapi'
-	- url: 'https://gateway.saxobank.com/openapi'
+  - url: 'https://gateway.saxobank.com/sim'
+	- url: 'https://gateway.saxobank.com'
 security: 
 	- openapi_auth: []`)
 

@@ -41,8 +41,39 @@ type Method struct {
 		Num200 struct {
 			Description string `json:"description"`
 			Content     struct {
+				ApplicationJSON struct {
+					Schema struct {
+						Type       string            `json:"type"`
+						Properties map[string]Schema `json:"properties"`
+					} `json:"schema"`
+				} `json:"application/json" yaml:"application/json"`
 			} `json:"content"`
-		} `json:"200" yaml:"200"`
+		} `json:"200" yaml:"200,omitempty"`
+		Num201 struct {
+			Description string `json:"description"`
+			Content     struct {
+				ApplicationJSON struct {
+					Schema struct {
+						Type       string            `json:"type"`
+						Properties map[string]Schema `json:"properties"`
+					} `json:"schema"`
+				} `json:"application/json" yaml:"application/json"`
+			} `json:"content"`
+		} `json:"201" yaml:"201,omitempty"`
+		Num204 struct {
+			Description string `json:"description"`
+		} `json:"204" yaml:"204,omitempty"`
+		Num400 struct {
+			Description string `json:"description"`
+			Content     struct {
+				ApplicationJSON struct {
+					Schema struct {
+						Type       string            `json:"type"`
+						Properties map[string]Schema `json:"properties"`
+					} `json:"schema"`
+				} `json:"application/json" yaml:"application/json"`
+			} `json:"content"`
+		} `json:"400" yaml:"400"`
 	} `json:"responses"`
 	Security []struct {
 		PetstoreAuth []string `json:"petstore_auth" yaml:",omitempty"`

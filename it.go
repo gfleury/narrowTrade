@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gfleury/intensiveTrade/saxo_models"
 	"github.com/gfleury/intensiveTrade/saxo_oauth2"
 	"github.com/gfleury/intensiveTrade/saxo_openapi"
+	"github.com/gfleury/intensiveTrade/trader"
 
 	"golang.org/x/oauth2"
 )
@@ -37,12 +39,52 @@ func main() {
 	auth := context.WithValue(oauth2.NoContext, saxo_openapi.ContextOAuth2, tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
-	r, httpResponse, err := client.AccountHistoryApi.GetStandardPeriodAccountValues(auth, "ma6hsMLLkwRlPXxGx|KepQ==", nil)
+	ma := &saxo_models.ModeledAPI{
+		Ctx:    auth,
+		Client: client,
+	}
+
+	acc, err := ma.GetAccounts()
 	if err != nil {
-		fmt.Println(httpResponse)
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	fmt.Println(r)
+	fmt.Println(acc.GetAccountKey(0))
+
+	bal, err := ma.GetBalanceMe()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println(bal)
+
+	i, err := ma.GetInstrument("VWAGY")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println(i)
+
+	trader := trader.BasicSaxoTrader{
+		AccountKey: acc.GetAccountKeyMe(),
+		API:        ma,
+	}
+
+	or, err := trader.Buy(i, saxo_models.Market, 1000)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println(or)
+
+	// Always write token back if everything went ok
+	err = saxo_oauth2.PersistToken(token)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

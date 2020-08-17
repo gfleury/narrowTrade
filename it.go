@@ -8,6 +8,7 @@ import (
 	"github.com/gfleury/intensiveTrade/saxo_models"
 	"github.com/gfleury/intensiveTrade/saxo_oauth2"
 	"github.com/gfleury/intensiveTrade/saxo_openapi"
+	"github.com/gfleury/intensiveTrade/trader"
 
 	iex "github.com/goinvest/iexcloud/v2"
 	"golang.org/x/oauth2"
@@ -68,27 +69,34 @@ func main() {
 
 	fmt.Println(i)
 
-	// trader := trader.BasicSaxoTrader{
-	// 	AccountKey: acc.GetAccountKeyMe(),
-	// 	API:        ma,
-	// }
-
-	// or, err := trader.Buy(i, saxo_models.Market, 1000)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
-
-	// fmt.Println(or)
+	trader := trader.BasicSaxoTrader{
+		AccountKey: acc.GetAccountKeyMe(),
+		API:        ma,
+	}
 
 	iexClient := iex.NewClient("Tsk_c1ee184113dc42bdae6907741c07d6ac", iex.WithBaseURL("https://sandbox.iexapis.com/v1"))
-	bs, err := iexClient.TechIndicators(ctx, "VWAGY", "ema", "3m", iex.NewTechIndicatorOpt("period", "10"))
+	mostAttractives, err := iexClient.MostActive(ctx)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	fmt.Println(bs)
+	buyingInstruments := []saxo_models.Instrument{}
+	for _, quote := range mostAttractives {
+		i, err := ma.GetInstrument(quote.Symbol)
+		if err != nil {
+			continue
+		}
+		buyingInstruments = append(buyingInstruments, i)
+	}
+
+	for _, i := range buyingInstruments {
+		_, err := trader.Buy(i, saxo_models.Market, 1000)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
 
 	// Always write token back if everything went ok
 	err = saxo_oauth2.PersistToken(token)

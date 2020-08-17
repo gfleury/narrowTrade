@@ -11,6 +11,7 @@ import (
 type Instrument interface {
 	GetSymbol() string
 	GetID() int
+	GetPrice() float64
 	GetOrder(bs BuySell, ot OrderType, amount int) *Order
 }
 
@@ -54,6 +55,10 @@ func (i *SaxoInstrument) GetSymbol() string {
 
 func (i *SaxoInstrument) GetID() int {
 	return i.Identifier
+}
+
+func (i *SaxoInstrument) GetPrice() float64 {
+	return 0.1
 }
 
 func (i *SaxoInstrument) GetOrder(bs BuySell, ot OrderType, amount int) *Order {

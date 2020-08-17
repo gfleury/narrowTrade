@@ -18,6 +18,7 @@ type Order struct {
 		DurationType DurationType `json:"DurationType"`
 	} `json:"OrderDuration"`
 	Orders         []Order `json:"Orders"`
+	OrderPrice     float64 `json:"OrderPrice,omitempty"`
 	GoodToGo       bool    `json:"-"`
 	EstimatedPrice float64 `json:"-"`
 }

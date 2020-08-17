@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/gfleury/intensiveTrade/saxo_models"
 	"github.com/gfleury/intensiveTrade/saxo_oauth2"
@@ -69,7 +70,7 @@ func main() {
 
 	fmt.Println(i)
 
-	trader := trader.BasicSaxoTrader{
+	t := trader.BasicSaxoTrader{
 		AccountKey: acc.GetAccountKeyMe(),
 		API:        ma,
 	}
@@ -91,11 +92,15 @@ func main() {
 	}
 
 	for _, i := range buyingInstruments {
-		_, err := trader.Buy(i, saxo_models.Market, 1000)
+		_, err := t.Buy(i, saxo_models.Market, 1000,
+			trader.NewOrderOption(trader.TakeProfit, i.GetPrice()+1),
+		)
 		if err != nil {
 			fmt.Println(err)
+			fmt.Println(saxo_models.GetStringError(err))
 			os.Exit(1)
 		}
+		time.Sleep(time.Second)
 	}
 
 	// Always write token back if everything went ok

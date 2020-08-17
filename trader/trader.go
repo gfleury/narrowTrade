@@ -6,9 +6,18 @@ import (
 	"github.com/gfleury/intensiveTrade/saxo_models"
 )
 
+type OrderOption int
+
+const (
+	DurationType OrderOption = iota
+	AccountKey
+	TakeProfit
+	StopLoss
+)
+
 type OrderOptions struct {
-	Name  string
-	Value string
+	Type  OrderOption
+	Value interface{}
 }
 
 type Trader interface {
@@ -23,6 +32,37 @@ type BasicSaxoTrader struct {
 	tradedOrdersID []*saxo_models.OrderResponse
 }
 
+func NewOrderOption(opt OrderOption, v interface{}) OrderOptions {
+	return OrderOptions{
+		Type:  opt,
+		Value: v,
+	}
+}
+
+func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
+	switch op.Type {
+	case DurationType:
+		order.OrderDuration.DurationType = op.Value.(saxo_models.DurationType)
+	case AccountKey:
+		order.AccountKey = op.Value.(string)
+	case TakeProfit:
+		takeProfitOrder := *order
+		takeProfitOrder.OrderType = saxo_models.Limit
+		takeProfitOrder.BuySell = saxo_models.Sell
+		takeProfitOrder.OrderDuration.DurationType = saxo_models.GoodTillCancel
+		takeProfitOrder.OrderPrice = op.Value.(float64)
+		order.Orders = append(order.Orders, takeProfitOrder)
+	case StopLoss:
+		stopLossOrder := *order
+		stopLossOrder.OrderType = saxo_models.Stop
+		stopLossOrder.BuySell = saxo_models.Sell
+		stopLossOrder.OrderDuration.DurationType = saxo_models.GoodTillCancel
+		stopLossOrder.OrderPrice = op.Value.(float64)
+		order.Orders = append(order.Orders, stopLossOrder)
+	}
+	return nil
+}
+
 func (t *BasicSaxoTrader) Buy(i saxo_models.Instrument, ot saxo_models.OrderType, amount int, opts ...OrderOptions) (*saxo_models.OrderResponse, error) {
 	return t.placeOrder(i, saxo_models.Buy, ot, amount, opts...)
 }
@@ -31,11 +71,15 @@ func (t *BasicSaxoTrader) Sell(i saxo_models.Instrument, ot saxo_models.OrderTyp
 	return t.placeOrder(i, saxo_models.Sell, ot, amount, opts...)
 }
 
-func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.BuySell, ot saxo_models.OrderType, amount int, op ...OrderOptions) (*saxo_models.OrderResponse, error) {
+func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.BuySell, ot saxo_models.OrderType, amount int, opts ...OrderOptions) (*saxo_models.OrderResponse, error) {
 	order := i.GetOrder(bs, ot, amount)
 
+	order.OrderDuration.DurationType = saxo_models.Market
 	order.AccountKey = t.AccountKey
-	order.OrderDuration.DurationType = saxo_models.DayOrder
+
+	for _, opt := range opts {
+		opt.ApplyOption(order)
+	}
 
 	r, err := t.API.PreOrder(order)
 	if err != nil {

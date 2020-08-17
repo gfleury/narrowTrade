@@ -10,8 +10,8 @@ import (
 
 type Instrument interface {
 	GetSymbol() string
-	GetID() int
-	GetPrice() float64
+	GetID() int32
+	GetAssetType() AssetType
 	GetOrder(bs BuySell, ot OrderType, amount int) *Order
 }
 
@@ -25,7 +25,7 @@ type SaxoInstrument struct {
 	Description    string    `json:"Description"`
 	ExchangeID     string    `json:"ExchangeId"`
 	GroupID        int       `json:"GroupId"`
-	Identifier     int       `json:"Identifier"`
+	Identifier     int32     `json:"Identifier"`
 	IssuerCountry  string    `json:"IssuerCountry"`
 	PrimaryListing int       `json:"PrimaryListing"`
 	SummaryType    string    `json:"SummaryType"`
@@ -49,16 +49,31 @@ func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 	return i, err
 }
 
+func (ma *ModeledAPI) GetInstrumentPrice(i Instrument) (float64, error) {
+	iprice := &InstrumentPrice{}
+	data, _, err := ma.Client.TradingApi.GetInfoPriceAsync(ma.Ctx, []string{string(i.GetAssetType())}, i.GetID(), nil)
+	if err != nil {
+		return 0, err
+	}
+
+	err = mapstructure.Decode(data, iprice)
+	if err != nil {
+		return 0, err
+	}
+
+	return iprice.Quote.Ask, nil
+}
+
+func (i *SaxoInstrument) GetAssetType() AssetType {
+	return i.AssetType
+}
+
 func (i *SaxoInstrument) GetSymbol() string {
 	return i.Symbol
 }
 
-func (i *SaxoInstrument) GetID() int {
+func (i *SaxoInstrument) GetID() int32 {
 	return i.Identifier
-}
-
-func (i *SaxoInstrument) GetPrice() float64 {
-	return 0.1
 }
 
 func (i *SaxoInstrument) GetOrder(bs BuySell, ot OrderType, amount int) *Order {

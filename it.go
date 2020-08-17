@@ -62,21 +62,13 @@ func main() {
 
 	fmt.Println(bal)
 
-	i, err := ma.GetInstrument("VWAGY")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	fmt.Println(i)
-
 	t := trader.BasicSaxoTrader{
 		AccountKey: acc.GetAccountKeyMe(),
 		API:        ma,
 	}
 
-	iexClient := iex.NewClient("Tsk_c1ee184113dc42bdae6907741c07d6ac", iex.WithBaseURL("https://sandbox.iexapis.com/v1"))
-	mostAttractives, err := iexClient.MostActive(ctx)
+	iexClient := iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1"))
+	mostAttractives, err := iexClient.Gainers(ctx)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -92,15 +84,26 @@ func main() {
 	}
 
 	for _, i := range buyingInstruments {
-		_, err := t.Buy(i, saxo_models.Market, 1000,
-			trader.NewOrderOption(trader.TakeProfit, i.GetPrice()+1),
-		)
+		time.Sleep(time.Second)
+		fmt.Println("Trying to get price", i.GetAssetType(), i.GetSymbol())
+		buyPrice, err := ma.GetInstrumentPrice(i)
 		if err != nil {
 			fmt.Println(err)
 			fmt.Println(saxo_models.GetStringError(err))
-			os.Exit(1)
+			continue
 		}
-		time.Sleep(time.Second)
+
+		fmt.Println("Trying to buy", i.GetAssetType(), i.GetSymbol(), "for", buyPrice)
+		_, err = t.Buy(i, saxo_models.Market, 1000,
+			trader.NewOrderOption(trader.TakeProfit, buyPrice+1),
+			trader.NewOrderOption(trader.DurationType, saxo_models.DayOrder),
+		)
+
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println(saxo_models.GetStringError(err))
+			continue
+		}
 	}
 
 	// Always write token back if everything went ok

@@ -42,7 +42,7 @@ func NewOrderOption(opt OrderOption, v interface{}) OrderOptions {
 func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
 	switch op.Type {
 	case DurationType:
-		order.OrderDuration.DurationType = op.Value.(saxo_models.DurationType)
+		order.OrderDuration.DurationType = saxo_models.DurationType(op.Value.(string))
 	case AccountKey:
 		order.AccountKey = op.Value.(string)
 	case TakeProfit:
@@ -74,11 +74,14 @@ func (t *BasicSaxoTrader) Sell(i saxo_models.Instrument, ot saxo_models.OrderTyp
 func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.BuySell, ot saxo_models.OrderType, amount int, opts ...OrderOptions) (*saxo_models.OrderResponse, error) {
 	order := i.GetOrder(bs, ot, amount)
 
-	order.OrderDuration.DurationType = saxo_models.Market
+	order.OrderDuration.DurationType = saxo_models.DayOrder
 	order.AccountKey = t.AccountKey
 
 	for _, opt := range opts {
-		opt.ApplyOption(order)
+		err := opt.ApplyOption(order)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	r, err := t.API.PreOrder(order)
@@ -92,7 +95,9 @@ func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.Bu
 
 	or, err := t.API.Order(order)
 
-	t.tradedOrdersID = append(t.tradedOrdersID, or)
+	if err == nil {
+		t.tradedOrdersID = append(t.tradedOrdersID, or)
+	}
 
 	return or, err
 }

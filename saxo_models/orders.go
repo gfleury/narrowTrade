@@ -12,7 +12,7 @@ type Order struct {
 	BuySell       BuySell   `json:"BuySell"`
 	OrderType     OrderType `json:"OrderType"`
 	ManualOrder   bool      `json:"ManualOrder"`
-	Uic           int       `json:"Uic"`
+	Uic           int32     `json:"Uic"`
 	AssetType     AssetType `json:"AssetType"`
 	OrderDuration struct {
 		DurationType DurationType `json:"DurationType"`
@@ -31,10 +31,8 @@ type PreOrderResponse struct {
 }
 
 type OrderResponse struct {
-	OrderID string `json:"OrderId"`
-	Orders  struct {
-		OrderID string `json:"OrderId"`
-	} `json:"OrderId"`
+	OrderID string          `json:"OrderId"`
+	Orders  []OrderResponse `json:"Orders"`
 }
 
 func (ma *ModeledAPI) PreOrder(o *Order) (*PreOrderResponse, error) {

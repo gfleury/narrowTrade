@@ -35,7 +35,11 @@ type SaxoInstrument struct {
 
 func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 	i := &SaxoInstrument{}
-	data, _, err := ma.Client.ReferenceDataApi.GetSummaries(ma.Ctx, &saxo_openapi.ReferenceDataApiGetSummariesOpts{Keywords: optional.NewString(symbol)})
+	data, _, err := ma.Client.ReferenceDataApi.GetSummaries(ma.Ctx,
+		&saxo_openapi.ReferenceDataApiGetSummariesOpts{
+			Keywords:   optional.NewString(symbol),
+			AssetTypes: optional.NewInterface(Stock),
+		})
 	if err != nil {
 		return nil, err
 	}

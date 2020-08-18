@@ -23,16 +23,26 @@ type Order struct {
 	EstimatedPrice float64 `json:"-"`
 }
 
+type ErrorInfo struct {
+	ErrorCode string `json:"ErrorCode"`
+	Message   string `json:"Message"`
+}
+
 type PreOrderResponse struct {
-	EstimatedCashRequired             float64 `json:"EstimatedCashRequired"`
-	EstimatedCashRequiredCurrency     string  `json:"EstimatedCashRequiredCurrency"`
-	InstrumentToAccountConversionRate float64 `json:"InstrumentToAccountConversionRate"`
-	PreCheckResult                    string  `json:"PreCheckResult"`
+	EstimatedCashRequired             float64   `json:"EstimatedCashRequired"`
+	EstimatedCashRequiredCurrency     string    `json:"EstimatedCashRequiredCurrency"`
+	InstrumentToAccountConversionRate float64   `json:"InstrumentToAccountConversionRate"`
+	PreCheckResult                    string    `json:"PreCheckResult"`
+	ErrorInfo                         ErrorInfo `json:"ErrorInfo"`
 }
 
 type OrderResponse struct {
-	OrderID string          `json:"OrderId"`
-	Orders  []OrderResponse `json:"Orders"`
+	OrderID   string          `json:"OrderId"`
+	Orders    []OrderResponse `json:"Orders"`
+	ErrorInfo *struct {
+		ErrorCode string `json:"ErrorCode,omitempty"`
+		Message   string `json:"Message,omitempty"`
+	} `json:"ErrorInfo,omitempty"`
 }
 
 func (ma *ModeledAPI) PreOrder(o *Order) (*PreOrderResponse, error) {
@@ -54,7 +64,15 @@ func (ma *ModeledAPI) Order(o *Order) (*OrderResponse, error) {
 	b := &OrderResponse{}
 	data, _, err := ma.Client.TradingApi.PlaceOrder(ma.Ctx, &saxo_openapi.TradingApiPlaceOrderOpts{Body: optional.NewInterface(&o)})
 	if err != nil {
-		return nil, err
+		mapErr := GetMapError(err)
+		if mapErr == nil {
+			return nil, err
+		}
+		errMarsh := mapstructure.Decode(mapErr, b)
+		if errMarsh != nil {
+			return nil, err
+		}
+		return b, err
 	}
 
 	err = mapstructure.Decode(data, b)

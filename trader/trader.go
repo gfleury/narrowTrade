@@ -13,6 +13,7 @@ const (
 	AccountKey
 	TakeProfit
 	StopLoss
+	OrderPrice
 )
 
 type OrderOptions struct {
@@ -45,6 +46,8 @@ func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
 		order.OrderDuration.DurationType = saxo_models.DurationType(op.Value.(string))
 	case AccountKey:
 		order.AccountKey = op.Value.(string)
+	case OrderPrice:
+		order.OrderPrice = op.Value.(float64)
 	case TakeProfit:
 		takeProfitOrder := *order
 		takeProfitOrder.OrderType = saxo_models.Limit
@@ -54,7 +57,7 @@ func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
 		order.Orders = append(order.Orders, takeProfitOrder)
 	case StopLoss:
 		stopLossOrder := *order
-		stopLossOrder.OrderType = saxo_models.Stop
+		stopLossOrder.OrderType = saxo_models.StopIfTraded
 		stopLossOrder.BuySell = saxo_models.Sell
 		stopLossOrder.OrderDuration.DurationType = saxo_models.GoodTillCancel
 		stopLossOrder.OrderPrice = op.Value.(float64)
@@ -90,7 +93,7 @@ func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.Bu
 	}
 
 	if !order.GoodToGo {
-		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %d", r.PreCheckResult, r.EstimatedCashRequired)
+		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
 	}
 
 	or, err := t.API.Order(order)

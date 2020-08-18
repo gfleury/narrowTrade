@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/gfleury/intensiveTrade/saxo_models"
 	"github.com/gfleury/intensiveTrade/saxo_oauth2"
@@ -74,39 +73,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	buyingInstruments := []saxo_models.Instrument{}
-	for _, quote := range mostAttractives {
+	buyingInstruments := make([]saxo_models.Instrument, len(mostAttractives))
+	iexQuotes := make([]iex.Quote, len(mostAttractives))
+	for idx, quote := range mostAttractives {
+		fmt.Println("Getting Saxo Bank symbol for", quote.Symbol)
 		i, err := ma.GetInstrument(quote.Symbol)
 		if err != nil {
 			continue
 		}
-		buyingInstruments = append(buyingInstruments, i)
-	}
+		buyingInstruments[idx] = i
 
-	for _, i := range buyingInstruments {
-		time.Sleep(time.Second)
-		fmt.Println("Trying to get price", i.GetAssetType(), i.GetSymbol())
-		buyPrice, err := ma.GetInstrumentPrice(i)
+		fmt.Println("Trying to get price IEXCloud price", i.GetAssetType(), i.GetSymbol())
+		iexQuotes[idx], err = iexClient.Quote(ctx, mostAttractives[idx].Symbol)
 		if err != nil {
-			fmt.Println(err)
-			fmt.Println(saxo_models.GetStringError(err))
-			continue
-		}
-
-		fmt.Println("Trying to buy", i.GetAssetType(), i.GetSymbol(), "for", buyPrice)
-		_, err = t.Buy(i, saxo_models.Market, 1000,
-			trader.NewOrderOption(trader.TakeProfit, buyPrice+1),
-			trader.NewOrderOption(trader.DurationType, saxo_models.DayOrder),
-		)
-
-		if err != nil {
-			fmt.Println(err)
-			fmt.Println(saxo_models.GetStringError(err))
-			continue
+			iexQuotes[idx] = iex.Quote{}
 		}
 	}
+
+	t.BuyStocksNaive(buyingInstruments, iexQuotes)
 
 	// Always write token back if everything went ok
+	token, err = tokenSource.Token()
+	if err != nil {
+		fmt.Println(err)
+	}
 	err = saxo_oauth2.PersistToken(token)
 	if err != nil {
 		fmt.Println(err)

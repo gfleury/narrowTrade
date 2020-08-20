@@ -52,7 +52,9 @@ type Balance struct {
 
 func (ma *ModeledAPI) GetBalanceMe() (*Balance, error) {
 	b := &Balance{}
+	ma.Throttle()
 	data, _, err := ma.Client.PortfolioApi.GetBalance(ma.Ctx)
+	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err
 	}

@@ -10,12 +10,17 @@ github.com/goinvest/iexcloud/v2
 github.com/golang/protobuf/proto
 # github.com/google/go-querystring v1.0.0
 github.com/google/go-querystring/query
+# github.com/kr/text v0.1.0
+github.com/kr/text
 # github.com/mitchellh/go-homedir v1.1.0
 ## explicit
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/mapstructure v1.3.3
 ## explicit
 github.com/mitchellh/mapstructure
+# github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
+## explicit
+github.com/niemeyer/pretty
 # golang.org/x/net v0.0.0-20190108225652-1e06a53dbb7e
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
@@ -31,3 +36,6 @@ google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
+# gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f
+## explicit
+gopkg.in/check.v1

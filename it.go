@@ -10,23 +10,16 @@ import (
 	"github.com/gfleury/intensiveTrade/saxo_openapi"
 	"github.com/gfleury/intensiveTrade/trader"
 
+	"github.com/gfleury/intensiveTrade/tests"
+
 	iex "github.com/goinvest/iexcloud/v2"
 	"golang.org/x/oauth2"
 )
 
 func main() {
 	ctx := context.Background()
-	oauth2cfg := &oauth2.Config{
-		ClientID:     "4e7b5f42dae64ad889cc4e0ae499c398",
-		ClientSecret: "abcdefghijklmn",
-		Scopes:       []string{},
-		Endpoint: oauth2.Endpoint{
-			AuthURL:   "https://sim.logonvalidation.net/authorize",
-			TokenURL:  "https://sim.logonvalidation.net/token",
-			AuthStyle: oauth2.AuthStyleInParams,
-		},
-		RedirectURL: "http://localhost/redirect",
-	}
+
+	oauth2cfg := tests.GetTestOauth()
 
 	token, err := saxo_oauth2.GetToken(ctx, oauth2cfg)
 	if err != nil {
@@ -52,14 +45,6 @@ func main() {
 	}
 
 	fmt.Println(acc.GetAccountKey(0))
-
-	bal, err := ma.GetBalanceMe()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	fmt.Println(bal)
 
 	t := trader.BasicSaxoTrader{
 		AccountKey: acc.GetAccountKeyMe(),

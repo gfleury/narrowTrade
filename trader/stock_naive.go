@@ -2,7 +2,6 @@ package trader
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/gfleury/intensiveTrade/saxo_models"
 	"github.com/gfleury/intensiveTrade/utils"
@@ -13,7 +12,10 @@ import (
 func (t *BasicSaxoTrader) BuyStocksNaive(buyingInstruments []saxo_models.Instrument, iexQuotes []iex.Quote) {
 
 	for idx, i := range buyingInstruments {
-		time.Sleep(time.Second)
+		if i == nil {
+			continue
+		}
+
 		iexQuote := iexQuotes[idx]
 		fmt.Println("Trying to get price Saxo Bank price", i.GetAssetType(), i.GetSymbol())
 		buyPrice, err := t.API.GetInstrumentPrice(i)
@@ -30,7 +32,7 @@ func (t *BasicSaxoTrader) BuyStocksNaive(buyingInstruments []saxo_models.Instrum
 		durationType := saxo_models.DayOrder
 
 		fmt.Printf("Got price %f - %f\n", buyPrice, iexQuote.IEXRealtimePrice)
-		if buyPrice > iexQuote.IEXRealtimePrice {
+		if buyPrice > iexQuote.IEXRealtimePrice && buyPrice*0.8 < iexQuote.IEXRealtimePrice {
 			buyPrice = iexQuote.IEXRealtimePrice
 			orderType = saxo_models.Limit
 			opts = append(opts, NewOrderOption(OrderPrice, utils.Round(buyPrice)))

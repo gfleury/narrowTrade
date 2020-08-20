@@ -684,34 +684,6 @@ func (c Client) PriceTarget(ctx context.Context, symbol string) (PriceTarget, er
 	return pt, err
 }
 
-// PriceTarget returns the latest average, high, and low analyst price target
-// for a given stock symbol.
-type TechIndicator struct {
-	Indicator [][]float64   `json:"indicator"`
-	Chart     []interface{} `json:"chart"`
-}
-
-type TechIndicatorOpts struct {
-	Key, Value string
-}
-
-func NewTechIndicatorOpt(Key, Value string) TechIndicatorOpts {
-	return TechIndicatorOpts{
-		Key:   Key,
-		Value: Value,
-	}
-}
-
-func (c Client) TechIndicators(ctx context.Context, symbol, indicator, rangex string, opts ...TechIndicatorOpts) (TechIndicator, error) {
-	pt := TechIndicator{}
-	endpoint := fmt.Sprintf("/stock/%s/indicator/%s?range=%s", url.PathEscape(symbol), url.PathEscape(indicator), url.QueryEscape(rangex))
-	for _, opt := range opts {
-		endpoint = fmt.Sprintf("%s&%s=%s", endpoint, opt.Key, opt.Value)
-	}
-	err := c.GetJSON(ctx, endpoint, &pt)
-	return pt, err
-}
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // Corporate Actions Endpoints

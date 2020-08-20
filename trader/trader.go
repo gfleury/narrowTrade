@@ -2,6 +2,7 @@ package trader
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gfleury/intensiveTrade/saxo_models"
 )
@@ -14,6 +15,9 @@ const (
 	TakeProfit
 	StopLoss
 	OrderPrice
+	StopLimitPrice
+	TrailingstopDistanceToMarket
+	TrailingStopStep
 )
 
 type OrderOptions struct {
@@ -31,6 +35,7 @@ type BasicSaxoTrader struct {
 	AccountKey     string
 	API            *saxo_models.ModeledAPI
 	tradedOrdersID []*saxo_models.OrderResponse
+	openOrders     *saxo_models.OrderList
 }
 
 func NewOrderOption(opt OrderOption, v interface{}) OrderOptions {
@@ -62,6 +67,17 @@ func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
 		stopLossOrder.OrderDuration.DurationType = saxo_models.GoodTillCancel
 		stopLossOrder.OrderPrice = op.Value.(float64)
 		order.Orders = append(order.Orders, stopLossOrder)
+	case StopLimitPrice:
+		order.StopLimitPrice = op.Value.(float64)
+	case TrailingstopDistanceToMarket:
+		trailingstopDistanceToMarket := *order
+		trailingstopDistanceToMarket.OrderType = saxo_models.StopIfTraded
+		trailingstopDistanceToMarket.BuySell = saxo_models.Sell
+		trailingstopDistanceToMarket.OrderDuration.DurationType = saxo_models.GoodTillCancel
+		trailingstopDistanceToMarket.TrailingStopStep = op.Value.(float64)
+		order.Orders = append(order.Orders, trailingstopDistanceToMarket)
+	case TrailingStopStep:
+		order.TrailingStopStep = op.Value.(float64)
 	}
 	return nil
 }
@@ -92,8 +108,21 @@ func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.Bu
 		return nil, err
 	}
 
+	bal, err := t.API.GetBalanceMe()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	costOpenOrders := t.OpenOrders()
+
+	if (r.EstimatedCashRequired*r.InstrumentToAccountConversionRate)+costOpenOrders >=
+		float64(bal.InitialMargin.MarginAvailable) {
+		order.GoodToGo = false
+	}
+
 	if !order.GoodToGo {
-		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
+		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, initial margin available: %d, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
 	}
 
 	or, err := t.API.Order(order)
@@ -103,4 +132,23 @@ func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.Bu
 	}
 
 	return or, err
+}
+
+func (t *BasicSaxoTrader) OpenOrders() float64 {
+	ol, err := t.API.GetOrdersMe()
+	if err == nil {
+		t.openOrders = ol
+	}
+
+	total := float64(0)
+
+	if t.openOrders != nil {
+		for _, oo := range t.openOrders.Data {
+			if oo.BuySell == saxo_models.Buy {
+				total += oo.Price * float64(oo.Amount)
+			}
+		}
+	}
+
+	return total
 }

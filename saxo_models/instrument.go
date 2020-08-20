@@ -35,11 +35,13 @@ type SaxoInstrument struct {
 
 func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 	i := &SaxoInstrument{}
+	ma.Throttle()
 	data, _, err := ma.Client.ReferenceDataApi.GetSummaries(ma.Ctx,
 		&saxo_openapi.ReferenceDataApiGetSummariesOpts{
 			Keywords:   optional.NewString(symbol),
 			AssetTypes: optional.NewInterface(Stock),
 		})
+	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +57,9 @@ func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 
 func (ma *ModeledAPI) GetInstrumentPrice(i Instrument) (float64, error) {
 	iprice := &InstrumentPrice{}
+	ma.Throttle()
 	data, _, err := ma.Client.TradingApi.GetInfoPriceAsync(ma.Ctx, []string{string(i.GetAssetType())}, i.GetID(), nil)
+	defer ma.UpdateLastCall()
 	if err != nil {
 		return 0, err
 	}

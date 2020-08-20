@@ -35,7 +35,9 @@ type Accounts struct {
 
 func (ma *ModeledAPI) GetAccounts() (*Accounts, error) {
 	a := &Accounts{}
+	ma.Throttle()
 	data, _, err := ma.Client.PortfolioApi.GetAccounts(ma.Ctx, nil)
+	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err
 	}

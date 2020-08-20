@@ -24,18 +24,22 @@ const (
 type OrderType string
 
 const (
-	Algorithmic          OrderType = "Algorithmic"
-	GuaranteedStop                 = "GuaranteedStop"
-	Limit                          = "Limit"
-	Market                         = "Market"
-	Stop                           = "Stop"
-	StopIfTraded                   = "StopIfTraded"
-	StopLimit                      = "StopLimit"
-	Switch                         = "Switch"
-	TrailingStop                   = "TrailingStop"
-	TrailingStopIfTraded           = "TrailingStopIfTraded"
-	Traspaso                       = "Traspaso"
-	TraspasoIn                     = "TraspasoIn"
+	Algorithmic           OrderType = "Algorithmic"
+	GuaranteedStop                  = "GuaranteedStop"
+	Limit                           = "Limit"
+	Market                          = "Market"
+	Stop                            = "Stop"
+	StopIfBid                       = "StopIfBid"
+	StopIfOffered                   = "StopIfOffered"
+	StopIfTraded                    = "StopIfTraded"
+	StopLimit                       = "StopLimit"
+	Switch                          = "Switch"
+	TrailingStop                    = "TrailingStop"
+	TrailingStopIfBid               = "TrailingStopIfBid"
+	TrailingStopIfOffered           = "TrailingStopIfOffered"
+	TrailingStopIfTraded            = "TrailingStopIfTraded"
+	Traspaso                        = "Traspaso"
+	TraspasoIn                      = "TraspasoIn"
 )
 
 type AssetType string

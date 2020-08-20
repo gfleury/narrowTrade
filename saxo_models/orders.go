@@ -23,7 +23,7 @@ type Order struct {
 	Orders                       []Order   `json:"Orders"`
 	OrderPrice                   float64   `json:"OrderPrice,omitempty"`
 	StopLimitPrice               float64   `json:"StopLimitPrice,omitempty"`
-	TrailingstopDistanceToMarket float64   `json:"TrailingstopDistanceToMarket,omitempty"`
+	TrailingStopDistanceToMarket float64   `json:"TrailingStopDistanceToMarket,omitempty"`
 	TrailingStopStep             float64   `json:"TrailingStopStep,omitempty"`
 
 	// Internal fields
@@ -43,12 +43,14 @@ type Exchange struct {
 }
 
 type RelatedOpenOrders struct {
-	Amount        int      `json:"Amount"`
-	Duration      Duration `json:"Duration"`
-	OpenOrderType string   `json:"OpenOrderType"`
-	OrderID       string   `json:"OrderId"`
-	OrderPrice    float64  `json:"OrderPrice"`
-	Status        string   `json:"Status"`
+	Amount                       int      `json:"Amount"`
+	Duration                     Duration `json:"Duration"`
+	OpenOrderType                string   `json:"OpenOrderType"`
+	OrderID                      string   `json:"OrderId"`
+	OrderPrice                   float64  `json:"OrderPrice"`
+	Status                       string   `json:"Status"`
+	TrailingStopDistanceToMarket float64  `json:"TrailingStopDistanceToMarket"`
+	TrailingStopStep             float64  `json:"TrailingStopStep"`
 }
 
 // ActiveOrder Is used on the GET Orders Endpoints (EX. List/Getting an Order)

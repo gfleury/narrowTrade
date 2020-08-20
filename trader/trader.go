@@ -16,13 +16,18 @@ const (
 	StopLoss
 	OrderPrice
 	StopLimitPrice
-	TrailingstopDistanceToMarket
-	TrailingStopStep
+	TrailingStop
 )
 
 type OrderOptions struct {
 	Type  OrderOption
 	Value interface{}
+}
+
+type TrailingStopValues struct {
+	TrailingStopDistanceToMarket float64
+	TrailingStopStep             float64
+	OrderPrice                   float64
 }
 
 type Trader interface {
@@ -69,15 +74,16 @@ func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
 		order.Orders = append(order.Orders, stopLossOrder)
 	case StopLimitPrice:
 		order.StopLimitPrice = op.Value.(float64)
-	case TrailingstopDistanceToMarket:
-		trailingstopDistanceToMarket := *order
-		trailingstopDistanceToMarket.OrderType = saxo_models.StopIfTraded
-		trailingstopDistanceToMarket.BuySell = saxo_models.Sell
-		trailingstopDistanceToMarket.OrderDuration.DurationType = saxo_models.GoodTillCancel
-		trailingstopDistanceToMarket.TrailingStopStep = op.Value.(float64)
-		order.Orders = append(order.Orders, trailingstopDistanceToMarket)
-	case TrailingStopStep:
-		order.TrailingStopStep = op.Value.(float64)
+	case TrailingStop:
+		values := op.Value.(TrailingStopValues)
+		trailingStop := *order
+		trailingStop.OrderType = saxo_models.TrailingStopIfTraded
+		trailingStop.BuySell = saxo_models.Sell
+		trailingStop.OrderDuration.DurationType = saxo_models.GoodTillCancel
+		trailingStop.TrailingStopDistanceToMarket = values.TrailingStopDistanceToMarket
+		trailingStop.TrailingStopStep = values.TrailingStopStep
+		trailingStop.OrderPrice = values.OrderPrice
+		order.Orders = append(order.Orders, trailingStop)
 	}
 	return nil
 }

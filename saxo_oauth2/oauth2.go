@@ -13,6 +13,7 @@ import (
 	"time"
 
 	homedir "github.com/mitchellh/go-homedir"
+	cv "github.com/nirasan/go-oauth-pkce-code-verifier"
 	"golang.org/x/oauth2"
 )
 
@@ -40,12 +41,20 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 		}
 		token = &t
 
-		return token, nil
+		if token.Valid() {
+			return token, nil
+		}
 	}
 
-	opts := []oauth2.AuthCodeOption{oauth2.SetAuthURLParam("code_verifier", "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"),
-		oauth2.SetAuthURLParam("code_challenge", "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"),
-		oauth2.SetAuthURLParam("code_challenge_method", "plain"),
+	codeVerifier, _ := cv.CreateCodeVerifier()
+	codeChallenge := codeVerifier.CodeChallengeS256()
+
+	urlParam := oauth2.SetAuthURLParam("redirect_uri", "http://localhost:8888/redirect")
+
+	opts := []oauth2.AuthCodeOption{
+		urlParam,
+		oauth2.SetAuthURLParam("code_challenge", codeChallenge),
+		oauth2.SetAuthURLParam("code_challenge_method", "S256"),
 	}
 
 	loginURL := oauth2cfg.AuthCodeURL("y90dsygas98dygoidsahf8sa", opts...)
@@ -89,7 +98,7 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 	})
 
 	// set up a listener on the redirect port
-	l, err := net.Listen("tcp", "127.0.0.1:80")
+	l, err := net.Listen("tcp", "127.0.0.1:8888")
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +114,10 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 	httpClient := &http.Client{Timeout: 2 * time.Second}
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, httpClient)
 
+	opts = []oauth2.AuthCodeOption{
+		urlParam,
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier.String()),
+	}
 	token, err = oauth2cfg.Exchange(ctx, code, opts...)
 	if err != nil {
 		return nil, err

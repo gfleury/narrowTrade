@@ -36,7 +36,7 @@ type OrderList struct {
 	Data  []ActiveOrder `json:"Data"`
 }
 
-type Exchange struct {
+type ExchangeOrder struct {
 	Description string `json:"Description"`
 	ExchangeID  string `json:"ExchangeId"`
 	IsOpen      bool   `json:"IsOpen"`
@@ -69,7 +69,7 @@ type ActiveOrder struct {
 	CurrentPriceType         string              `json:"CurrentPriceType,omitempty"`
 	DistanceToMarket         float64             `json:"DistanceToMarket,omitempty"`
 	Duration                 *Duration           `json:"Duration,omitempty"`
-	Exchange                 *Exchange           `json:"Exchange,omitempty"`
+	Exchange                 *ExchangeOrder      `json:"Exchange,omitempty"`
 	IsForceOpen              bool                `json:"IsForceOpen,omitempty"`
 	Isin                     string              `json:"Isin,omitempty"`
 	IsMarketOpen             bool                `json:"IsMarketOpen,omitempty"`

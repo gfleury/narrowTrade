@@ -10,6 +10,7 @@ import (
 
 type Instrument interface {
 	GetSymbol() string
+	GetExchangeID() string
 	GetID() int32
 	GetAssetType() AssetType
 	GetOrder(bs BuySell, ot OrderType, amount int) *Order
@@ -93,4 +94,8 @@ func (i *SaxoInstrument) GetOrder(bs BuySell, ot OrderType, amount int) *Order {
 		OrderType:   ot,
 		ManualOrder: true,
 	}
+}
+
+func (i *SaxoInstrument) GetExchangeID() string {
+	return i.ExchangeID
 }

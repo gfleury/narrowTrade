@@ -7,32 +7,9 @@ import (
 	"github.com/gfleury/intensiveTrade/saxo_models"
 )
 
-type OrderOption int
-
-const (
-	DurationType OrderOption = iota
-	AccountKey
-	TakeProfit
-	StopLoss
-	OrderPrice
-	StopLimitPrice
-	TrailingStop
-)
-
-type OrderOptions struct {
-	Type  OrderOption
-	Value interface{}
-}
-
-type TrailingStopValues struct {
-	TrailingStopDistanceToMarket float64
-	TrailingStopStep             float64
-	OrderPrice                   float64
-}
-
 type Trader interface {
-	Buy(i saxo_models.Instrument, t saxo_models.OrderType, amount int, op ...OrderOptions) error
-	Sell(i saxo_models.Instrument, t saxo_models.OrderType, amount int, op ...OrderOptions) error
+	Buy(order saxo_models.Order) (*saxo_models.OrderResponse, error)
+	Sell(order saxo_models.Order) (*saxo_models.OrderResponse, error)
 }
 
 type BasicSaxoTrader struct {
@@ -43,70 +20,19 @@ type BasicSaxoTrader struct {
 	openOrders     *saxo_models.OrderList
 }
 
-func NewOrderOption(opt OrderOption, v interface{}) OrderOptions {
-	return OrderOptions{
-		Type:  opt,
-		Value: v,
-	}
+func (t *BasicSaxoTrader) Buy(o *saxo_models.Order) (*saxo_models.OrderResponse, error) {
+	return t.placeOrder(o.WithBuySell(saxo_models.Buy))
 }
 
-func (op *OrderOptions) ApplyOption(order *saxo_models.Order) error {
-	switch op.Type {
-	case DurationType:
-		order.OrderDuration.DurationType = saxo_models.DurationType(op.Value.(string))
-	case AccountKey:
-		order.AccountKey = op.Value.(string)
-	case OrderPrice:
-		order.OrderPrice = op.Value.(float64)
-	case TakeProfit:
-		takeProfitOrder := *order
-		takeProfitOrder.OrderType = saxo_models.Limit
-		takeProfitOrder.BuySell = saxo_models.Sell
-		takeProfitOrder.OrderDuration.DurationType = saxo_models.GoodTillCancel
-		takeProfitOrder.OrderPrice = op.Value.(float64)
-		order.Orders = append(order.Orders, takeProfitOrder)
-	case StopLoss:
-		stopLossOrder := *order
-		stopLossOrder.OrderType = saxo_models.StopIfTraded
-		stopLossOrder.BuySell = saxo_models.Sell
-		stopLossOrder.OrderDuration.DurationType = saxo_models.GoodTillCancel
-		stopLossOrder.OrderPrice = op.Value.(float64)
-		order.Orders = append(order.Orders, stopLossOrder)
-	case StopLimitPrice:
-		order.StopLimitPrice = op.Value.(float64)
-	case TrailingStop:
-		values := op.Value.(TrailingStopValues)
-		trailingStop := *order
-		trailingStop.OrderType = saxo_models.TrailingStopIfTraded
-		trailingStop.BuySell = saxo_models.Sell
-		trailingStop.OrderDuration.DurationType = saxo_models.GoodTillCancel
-		trailingStop.TrailingStopDistanceToMarket = values.TrailingStopDistanceToMarket
-		trailingStop.TrailingStopStep = values.TrailingStopStep
-		trailingStop.OrderPrice = values.OrderPrice
-		order.Orders = append(order.Orders, trailingStop)
-	}
-	return nil
+func (t *BasicSaxoTrader) Sell(o *saxo_models.Order) (*saxo_models.OrderResponse, error) {
+	return t.placeOrder(o.WithBuySell(saxo_models.Sell))
 }
 
-func (t *BasicSaxoTrader) Buy(i saxo_models.Instrument, ot saxo_models.OrderType, amount int, opts ...OrderOptions) (*saxo_models.OrderResponse, error) {
-	return t.placeOrder(i, saxo_models.Buy, ot, amount, opts...)
-}
-
-func (t *BasicSaxoTrader) Sell(i saxo_models.Instrument, ot saxo_models.OrderType, amount int, opts ...OrderOptions) (*saxo_models.OrderResponse, error) {
-	return t.placeOrder(i, saxo_models.Sell, ot, amount, opts...)
-}
-
-func (t *BasicSaxoTrader) placeOrder(i saxo_models.Instrument, bs saxo_models.BuySell, ot saxo_models.OrderType, amount int, opts ...OrderOptions) (*saxo_models.OrderResponse, error) {
-	order := i.GetOrder(bs, ot, amount)
-
-	order.OrderDuration.DurationType = saxo_models.DayOrder
+func (t *BasicSaxoTrader) placeOrder(order *saxo_models.Order) (*saxo_models.OrderResponse, error) {
+	// Define AccontKey from trader in all Orders
 	order.AccountKey = t.AccountKey
-
-	for _, opt := range opts {
-		err := opt.ApplyOption(order)
-		if err != nil {
-			return nil, err
-		}
+	for idx := range order.Orders {
+		order.Orders[idx].AccountKey = t.AccountKey
 	}
 
 	r, err := t.API.PreOrder(order)

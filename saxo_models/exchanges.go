@@ -26,6 +26,7 @@ type Exchange struct {
 	Mic                  string             `json:"Mic"`
 	Name                 string             `json:"Name"`
 	PriceSourceName      string             `json:"PriceSourceName,omitempty"`
+	TimeZoneID           string             `json:"TimeZoneId"`
 	TimeZone             int                `json:"TimeZone"`
 	TimeZoneAbbreviation string             `json:"TimeZoneAbbreviation"`
 	TimeZoneOffset       string             `json:"TimeZoneOffset"`

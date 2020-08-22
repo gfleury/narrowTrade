@@ -2,22 +2,24 @@ package trader
 
 import (
 	"context"
+	"fmt"
+	"testing"
 
-	"github.com/antihax/optional"
 	"github.com/gfleury/intensiveTrade/saxo_models"
 	"github.com/gfleury/intensiveTrade/saxo_oauth2"
 	"github.com/gfleury/intensiveTrade/saxo_openapi"
 	"github.com/gfleury/intensiveTrade/tests"
+
+	"github.com/antihax/optional"
 	"golang.org/x/oauth2"
 	check "gopkg.in/check.v1"
-
-	"testing"
 )
 
 type Suite struct {
 	acc         *saxo_models.Accounts
 	ma          *saxo_models.ModeledAPI
 	tokenSource oauth2.TokenSource
+	ex          *saxo_models.Exchange
 }
 
 func (s *Suite) SetUpSuite(c *check.C) {
@@ -41,6 +43,13 @@ func (s *Suite) SetUpSuite(c *check.C) {
 
 	s.acc, err = s.ma.GetAccounts()
 	c.Assert(err, check.IsNil)
+
+	i, err := s.ma.GetInstrument("AAPL:xnas")
+	c.Assert(err, check.IsNil)
+
+	s.ex, err = s.ma.GetExchange(i.GetExchangeID())
+	c.Assert(err, check.IsNil)
+
 }
 
 func (s *Suite) TearDownSuite(c *check.C) {
@@ -57,10 +66,12 @@ func (s *Suite) TearDownSuite(c *check.C) {
 }
 
 func (s *Suite) SetUpTest(c *check.C) {
+	s.ma.Throttle()
 	_, _, err := s.ma.Client.PortfolioApi.ResetAccount(s.ma.Ctx,
 		s.acc.GetAccountKeyMe(), &saxo_openapi.PortfolioApiResetAccountOpts{
 			Body: optional.NewInterface(map[string]string{"NewBalance": "10000"}),
 		})
+	s.ma.UpdateLastCall()
 	c.Assert(err, check.IsNil)
 }
 
@@ -76,20 +87,21 @@ func (s *Suite) TestTradeSimple_Buy_Market_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.Market, 10)
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.Market))
+
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
 
 	ol, err := s.ma.GetOrdersMe()
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
@@ -102,13 +114,17 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.Limit, 10, NewOrderOption(OrderPrice, ip.Quote.Mid))
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.Limit).
+			WithPrice(ip.Quote.Ask))
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -116,14 +132,11 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Limit)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Mid)
+		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 	}
 }
 
@@ -133,13 +146,17 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.Market, 10, NewOrderOption(StopLoss, ip.Quote.Bid-5))
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.Market).
+			WithStopLoss(ip.Quote.Bid - 5))
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -147,10 +164,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
@@ -161,7 +175,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 				DurationType: "GoodTillCancel",
 			},
 			OpenOrderType: "StopIfTraded",
-			OrderPrice:    ip.Quote.Bid,
+			OrderPrice:    ip.Quote.Bid - 5,
 			OrderID:       or.Orders[0].OrderID,
 			Status:        "NotWorking",
 		}
@@ -176,15 +190,18 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.Market, 10,
-		NewOrderOption(StopLoss, ip.Quote.Bid-3),
-		NewOrderOption(TakeProfit, ip.Quote.Ask+3))
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.Market).
+			WithStopLoss(ip.Quote.Bid - 3).
+			WithTakeProfit(ip.Quote.Ask + 3))
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -192,10 +209,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
@@ -232,17 +246,24 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.Limit, 10,
-		NewOrderOption(StopLoss, ip.Quote.Bid-3),
-		NewOrderOption(TakeProfit, ip.Quote.Ask+3),
-		NewOrderOption(OrderPrice, ip.Quote.Mid),
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.Limit).
+			WithDuration(saxo_models.GoodTillCancel).
+			WithPrice(ip.Quote.Ask).
+			WithStopLoss(ip.Quote.Bid - 3).
+			WithTakeProfit(ip.Quote.Ask + 3),
 	)
+	if err != nil {
+		fmt.Println(saxo_models.GetStringError(err))
+	}
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -250,13 +271,10 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Limit)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Mid)
+		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 
 		relatedOrders := []saxo_models.RelatedOpenOrders{{
@@ -291,15 +309,19 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.StopIfTraded, 10,
-		NewOrderOption(OrderPrice, ip.Quote.Mid),
-	)
+	or, err := t.Buy(i.GetOrder().
+		WithAmount(10).
+		WithType(saxo_models.StopIfTraded).
+		WithPrice(ip.Quote.Ask))
+	if err != nil {
+		fmt.Println(saxo_models.GetStringError(err))
+	}
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -313,7 +335,7 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 	if !ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.StopIfTraded)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Mid)
+		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }
@@ -324,16 +346,21 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.StopLimit, 10,
-		NewOrderOption(OrderPrice, ip.Quote.Mid),
-		NewOrderOption(StopLimitPrice, ip.Quote.Mid+3),
-	)
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.StopLimit).
+			WithPrice(ip.Quote.Ask).
+			WithStopLimitPrice(ip.Quote.Ask + 3))
+	if err != nil {
+		fmt.Println(saxo_models.GetStringError(err))
+	}
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -341,13 +368,10 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.StopLimit)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Mid)
+		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }
@@ -358,19 +382,26 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL")
+	i, err := s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
 	ip, err := s.ma.GetInfoPrice(i)
 	c.Assert(err, check.IsNil)
 
-	or, err := t.Buy(i, saxo_models.Market, 10,
-		NewOrderOption(TrailingStop, TrailingStopValues{
-			OrderPrice:                   ip.Quote.Mid - 2.37,
-			TrailingStopDistanceToMarket: 2.37,
-			TrailingStopStep:             0.5,
-		}),
-	)
+	id, err := s.ma.GetInstrumentDetails(i)
+	c.Assert(err, check.IsNil)
+
+	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 1)
+
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(saxo_models.Market).
+			// WithPrice(ip.Quote.Ask).
+			WithStopLossTrailingStop(stopLossPrice, ip.Quote.Ask-stopLossPrice, 0.05))
+	if err != nil {
+		fmt.Println(saxo_models.GetStringError(err))
+	}
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -378,10 +409,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
-	c.Assert(err, check.IsNil)
-
-	if !ex.IsOpen {
+	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
@@ -392,7 +420,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 				DurationType: saxo_models.GoodTillCancel,
 			},
 			OpenOrderType:                saxo_models.TrailingStopIfTraded,
-			OrderPrice:                   ip.Quote.Mid - 2.37,
+			OrderPrice:                   ip.Quote.Ask - 2.37,
 			TrailingStopDistanceToMarket: 2.37,
 			TrailingStopStep:             0.5,
 			OrderID:                      or.Orders[0].OrderID,

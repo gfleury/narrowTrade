@@ -25,27 +25,25 @@ func (t *BasicSaxoTrader) BuyStocksNaive(buyingInstruments []saxo_models.Instrum
 			continue
 		}
 
-		opts := []OrderOptions{}
-
 		orderType := saxo_models.OrderType(saxo_models.Market)
 
-		durationType := saxo_models.DayOrder
+		durationType := saxo_models.DurationType(saxo_models.DayOrder)
 
 		fmt.Printf("Got price %f - %f\n", buyPrice, iexQuote.IEXRealtimePrice)
 		if buyPrice > iexQuote.IEXRealtimePrice && buyPrice*0.8 < iexQuote.IEXRealtimePrice {
 			buyPrice = iexQuote.IEXRealtimePrice
 			orderType = saxo_models.Limit
-			opts = append(opts, NewOrderOption(OrderPrice, utils.Round(buyPrice)))
 			durationType = saxo_models.GoodTillCancel
 		}
 
-		opts = append(opts, NewOrderOption(DurationType, durationType))
-		opts = append(opts, NewOrderOption(TakeProfit, utils.Round(buyPrice*1.03)))
-		opts = append(opts, NewOrderOption(StopLoss, utils.Round(buyPrice*0.97)))
-
 		fmt.Println("Trying to buy", i.GetAssetType(), i.GetSymbol(), "for", buyPrice)
-		or, err := t.Buy(i, orderType, 1000, opts...)
-
+		or, err := t.Buy(
+			i.GetOrder().
+				WithType(orderType).
+				WithAmount(1000).
+				WithDuration(durationType).
+				WithStopLoss(utils.Round(buyPrice*0.97, 2)).
+				WithTakeProfit(utils.Round(buyPrice*1.03, 2)))
 		if err != nil {
 			fmt.Println(err)
 			fmt.Println(saxo_models.GetStringError(err))

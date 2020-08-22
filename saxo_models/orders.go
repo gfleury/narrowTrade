@@ -163,3 +163,80 @@ func (ma *ModeledAPI) GetOrdersMe() (*OrderList, error) {
 
 	return b, err
 }
+
+func (o *Order) WithType(orderType OrderType) *Order {
+	o.OrderType = orderType
+	return o
+}
+
+func (o *Order) WithBuySell(buySell BuySell) *Order {
+	o.BuySell = buySell
+	return o
+}
+
+func (o *Order) WithAmount(amount int) *Order {
+	o.Amount = amount
+	return o
+}
+
+func (o *Order) WithPrice(price float64) *Order {
+	o.OrderPrice = price
+	return o
+}
+
+func (o *Order) WithStopLimitPrice(stopLimitPrice float64) *Order {
+	o.StopLimitPrice = stopLimitPrice
+	return o
+}
+
+func (o *Order) WithDuration(duration DurationType) *Order {
+	o.OrderDuration.DurationType = duration
+	return o
+}
+
+func (o *Order) WithTakeProfit(sellingPrice float64) *Order {
+	// Copy original order to keep uic/amout
+	takeProfitOrder := *o
+	takeProfitOrder.OrderType = Limit
+	takeProfitOrder.BuySell = Sell
+	takeProfitOrder.OrderDuration.DurationType = GoodTillCancel
+	takeProfitOrder.OrderPrice = sellingPrice
+	o.Orders = append(o.Orders, takeProfitOrder)
+	return o
+}
+
+func (o *Order) WithStopLoss(sellingPrice float64) *Order {
+	// Copy original order to keep uic/amout
+	stopLossOrder := *o
+	stopLossOrder.OrderType = StopIfTraded
+	stopLossOrder.BuySell = Sell
+	stopLossOrder.OrderDuration.DurationType = GoodTillCancel
+	stopLossOrder.OrderPrice = sellingPrice
+	o.Orders = append(o.Orders, stopLossOrder)
+	return o
+}
+
+func (o *Order) WithStopLossTrailingStop(sellingPrice, distanceToMarket, step float64) *Order {
+	// Copy original order to keep uic/amout
+	trailingStop := *o
+	trailingStop.OrderType = TrailingStopIfTraded
+	trailingStop.BuySell = Sell
+	trailingStop.OrderDuration.DurationType = GoodTillCancel
+	trailingStop.TrailingStopDistanceToMarket = distanceToMarket
+	trailingStop.TrailingStopStep = step
+	trailingStop.OrderPrice = sellingPrice
+	o.Orders = append(o.Orders, trailingStop)
+	return o
+}
+
+func (o *Order) WithStopLossStopLimit(sellingPrice, stopLimitPrice float64) *Order {
+	// Copy original order to keep uic/amout
+	stopLimit := *o
+	stopLimit.OrderType = StopLimit
+	stopLimit.BuySell = Sell
+	stopLimit.OrderDuration.DurationType = GoodTillCancel
+	stopLimit.StopLimitPrice = stopLimitPrice
+	stopLimit.OrderPrice = sellingPrice
+	o.Orders = append(o.Orders, stopLimit)
+	return o
+}

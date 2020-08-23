@@ -20,6 +20,9 @@ type Suite struct {
 	ma          *models.ModeledAPI
 	tokenSource oauth2.TokenSource
 	ex          *models.Exchange
+	ip          *models.InfoPrice
+	id          models.InstrumentDetails
+	i           models.Instrument
 }
 
 func (s *Suite) SetUpSuite(c *check.C) {
@@ -44,10 +47,16 @@ func (s *Suite) SetUpSuite(c *check.C) {
 	s.acc, err = s.ma.GetAccounts()
 	c.Assert(err, check.IsNil)
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
+	s.i, err = s.ma.GetInstrument("AAPL:xnas")
 	c.Assert(err, check.IsNil)
 
-	s.ex, err = s.ma.GetExchange(i.GetExchangeID())
+	s.ex, err = s.ma.GetExchange(s.i.GetExchangeID())
+	c.Assert(err, check.IsNil)
+
+	s.ip, err = s.ma.GetInfoPrice(s.i)
+	c.Assert(err, check.IsNil)
+
+	s.id, err = s.ma.GetInstrumentDetails(s.i)
 	c.Assert(err, check.IsNil)
 
 }
@@ -66,6 +75,7 @@ func (s *Suite) TearDownSuite(c *check.C) {
 }
 
 func (s *Suite) SetUpTest(c *check.C) {
+	// time.Sleep(2 * time.Second)
 	s.ma.Throttle()
 	_, _, err := s.ma.Client.PortfolioApi.ResetAccount(s.ma.Ctx,
 		s.acc.GetAccountKeyMe(), &saxo_openapi.PortfolioApiResetAccountOpts{
@@ -114,17 +124,11 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Limit).
-			WithPrice(ip.Quote.Ask))
+			WithPrice(s.ip.Quote.Ask))
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -136,7 +140,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Limit)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
+		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)
 	}
 }
 
@@ -146,17 +150,11 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Market).
-			WithStopLoss(ip.Quote.Bid - 5))
+			WithStopLoss(s.ip.Quote.Bid - 5))
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -175,7 +173,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 				DurationType: "GoodTillCancel",
 			},
 			OpenOrderType: "StopIfTraded",
-			OrderPrice:    ip.Quote.Bid - 5,
+			OrderPrice:    s.ip.Quote.Bid - 5,
 			OrderID:       or.Orders[0].OrderID,
 			Status:        "NotWorking",
 		}
@@ -190,18 +188,12 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Market).
-			WithStopLoss(ip.Quote.Bid - 3).
-			WithTakeProfit(ip.Quote.Ask + 3))
+			WithStopLoss(s.ip.Quote.Bid - 3).
+			WithTakeProfit(s.ip.Quote.Ask + 3))
 	c.Assert(err, check.IsNil)
 
 	c.Assert(or.ErrorInfo, check.IsNil)
@@ -220,7 +212,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 				DurationType: models.GoodTillCancel,
 			},
 			OpenOrderType: models.StopIfTraded,
-			OrderPrice:    ip.Quote.Bid - 3,
+			OrderPrice:    s.ip.Quote.Bid - 3,
 			OrderID:       or.Orders[1].OrderID,
 			Status:        "NotWorking",
 		},
@@ -230,7 +222,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 					DurationType: models.GoodTillCancel,
 				},
 				OpenOrderType: models.Limit,
-				OrderPrice:    ip.Quote.Ask + 3,
+				OrderPrice:    s.ip.Quote.Ask + 3,
 				OrderID:       or.Orders[0].OrderID,
 				Status:        "NotWorking",
 			},
@@ -246,20 +238,14 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Limit).
 			WithDuration(models.GoodTillCancel).
-			WithPrice(ip.Quote.Ask).
-			WithStopLoss(ip.Quote.Bid - 3).
-			WithTakeProfit(ip.Quote.Ask + 3),
+			WithPrice(s.ip.Quote.Ask).
+			WithStopLoss(s.ip.Quote.Bid - 3).
+			WithTakeProfit(s.ip.Quote.Ask + 3),
 	)
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
@@ -274,7 +260,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Limit)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
+		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 
 		relatedOrders := []models.RelatedOpenOrders{{
@@ -283,7 +269,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 				DurationType: models.GoodTillCancel,
 			},
 			OpenOrderType: models.StopIfTraded,
-			OrderPrice:    ip.Quote.Bid - 3,
+			OrderPrice:    s.ip.Quote.Bid - 3,
 			OrderID:       or.Orders[1].OrderID,
 			Status:        "NotWorking",
 		},
@@ -293,7 +279,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 					DurationType: models.GoodTillCancel,
 				},
 				OpenOrderType: models.Limit,
-				OrderPrice:    ip.Quote.Ask + 3,
+				OrderPrice:    s.ip.Quote.Ask + 3,
 				OrderID:       or.Orders[0].OrderID,
 				Status:        "NotWorking",
 			},
@@ -309,16 +295,11 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
-	or, err := t.Buy(i.GetOrder().
-		WithAmount(10).
-		WithType(models.StopIfTraded).
-		WithPrice(ip.Quote.Ask))
+	or, err := t.Buy(
+		s.i.GetOrder().
+			WithAmount(10).
+			WithType(models.StopIfTraded).
+			WithPrice(s.ip.Quote.Ask))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
 	}
@@ -329,13 +310,13 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 	ol, err := s.ma.GetOrdersMe()
 	c.Assert(err, check.IsNil)
 
-	ex, err := s.ma.GetExchange(i.GetExchangeID())
+	ex, err := s.ma.GetExchange(s.i.GetExchangeID())
 	c.Assert(err, check.IsNil)
 
 	if !ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopIfTraded)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
+		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }
@@ -346,18 +327,12 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.StopLimit).
-			WithPrice(ip.Quote.Ask).
-			WithStopLimitPrice(ip.Quote.Ask + 3))
+			WithPrice(s.ip.Quote.Ask).
+			WithStopLimitPrice(s.ip.Quote.Ask + 3))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
 	}
@@ -371,7 +346,7 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopLimit)
-		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
+		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }
@@ -382,20 +357,11 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
-	id, err := s.ma.GetInstrumentDetails(i)
-	c.Assert(err, check.IsNil)
-
-	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
-	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
+	distanceToMarket := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask-stopLossPrice, 0)
 
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Market).
 			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
@@ -438,23 +404,14 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TrailingStop_10_APPL(c *check.C) {
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
-	id, err := s.ma.GetInstrumentDetails(i)
-	c.Assert(err, check.IsNil)
-
-	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
-	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
+	distanceToMarket := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask-stopLossPrice, 0)
 
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Limit).
-			WithPrice(ip.Quote.Ask).
+			WithPrice(s.ip.Quote.Ask).
 			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
@@ -495,24 +452,15 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_TrailingStop_10_APPL(c *che
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
-	id, err := s.ma.GetInstrumentDetails(i)
-	c.Assert(err, check.IsNil)
-
-	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
-	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
+	distanceToMarket := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask-stopLossPrice, 0)
 
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Limit).
-			WithPrice(ip.Quote.Ask).
-			WithTakeProfit(ip.Quote.Ask+3).
+			WithPrice(s.ip.Quote.Ask).
+			WithTakeProfit(s.ip.Quote.Ask+3).
 			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
@@ -547,7 +495,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_TrailingStop_10_APPL(c *che
 					DurationType: models.GoodTillCancel,
 				},
 				OpenOrderType: models.Limit,
-				OrderPrice:    ip.Quote.Ask + 3,
+				OrderPrice:    s.ip.Quote.Ask + 3,
 				OrderID:       or.Orders[0].OrderID,
 				Status:        "NotWorking",
 			},
@@ -563,23 +511,14 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_TrailingStop_10_APPL(c *ch
 		API:        s.ma,
 	}
 
-	i, err := s.ma.GetInstrument("AAPL:xnas")
-	c.Assert(err, check.IsNil)
-
-	ip, err := s.ma.GetInfoPrice(i)
-	c.Assert(err, check.IsNil)
-
-	id, err := s.ma.GetInstrumentDetails(i)
-	c.Assert(err, check.IsNil)
-
-	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
-	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
+	distanceToMarket := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask-stopLossPrice, 0)
 
 	or, err := t.Buy(
-		i.GetOrder().
+		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.Market).
-			WithTakeProfit(ip.Quote.Ask+3).
+			WithTakeProfit(s.ip.Quote.Ask+3).
 			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
@@ -614,7 +553,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_TrailingStop_10_APPL(c *ch
 					DurationType: models.GoodTillCancel,
 				},
 				OpenOrderType: models.Limit,
-				OrderPrice:    ip.Quote.Ask + 3,
+				OrderPrice:    s.ip.Quote.Ask + 3,
 				OrderID:       or.Orders[0].OrderID,
 				Status:        "NotWorking",
 			},

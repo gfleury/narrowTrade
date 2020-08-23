@@ -20,8 +20,8 @@ type Instrument interface {
 }
 
 type InstrumentDetails interface {
+	Instrument
 	CalculatePriceWithThickSize(price float64, percentage float64) float64
-	GetSymbol() string
 	GetDecimals() int
 	GetMinimumTradeSize() int
 	GetMinimumOrderValue() int
@@ -47,7 +47,7 @@ type SaxoInstrument struct {
 
 type SaxoInstrumentDetails struct {
 	AmountDecimals        int                  `json:"AmountDecimals"`
-	AssetType             string               `json:"AssetType"`
+	AssetType             AssetType            `json:"AssetType"`
 	CurrencyCode          string               `json:"CurrencyCode"`
 	DefaultAmount         int                  `json:"DefaultAmount"`
 	DefaultSlippage       int                  `json:"DefaultSlippage"`
@@ -76,7 +76,7 @@ type SaxoInstrumentDetails struct {
 	TradableOn            []string             `json:"TradableOn"`
 	TradingSignals        string               `json:"TradingSignals"`
 	TurboDirection        string               `json:"TurboDirection"`
-	Uic                   int                  `json:"Uic"`
+	Uic                   int32                `json:"Uic"`
 }
 
 type Format struct {
@@ -195,6 +195,35 @@ func (i *SaxoInstrument) GetExchangeID() string {
 	return i.ExchangeID
 }
 
+// SaxoInstrumentDetails
+
+func (i *SaxoInstrumentDetails) GetAssetType() AssetType {
+	return i.AssetType
+}
+
+func (i *SaxoInstrumentDetails) GetSymbol() string {
+	return i.Symbol
+}
+
+func (i *SaxoInstrumentDetails) GetID() int32 {
+	return i.Uic
+}
+
+func (i *SaxoInstrumentDetails) GetOrder() *Order {
+	return &Order{
+		Uic:         i.Uic,
+		AssetType:   i.AssetType,
+		ManualOrder: true,
+		OrderDuration: Duration{
+			DurationType: DayOrder,
+		},
+	}
+}
+
+func (i *SaxoInstrumentDetails) GetExchangeID() string {
+	return i.Exchange.ExchangeID
+}
+
 func (id *SaxoInstrumentDetails) CalculatePriceWithThickSize(price float64, percentage float64) float64 {
 	//orderPrice = Round((currentPrice- currentPrice*n/100)/tickSize)*tickSize
 	tickSize := 1.0
@@ -246,8 +275,4 @@ func GetPriceTick(price float64, elements []Elements) float64 {
 		}
 	}
 	return 0
-}
-
-func (id *SaxoInstrumentDetails) GetSymbol() string {
-	return id.Symbol
 }

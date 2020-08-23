@@ -58,7 +58,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	buyingInstruments := make([]models.Instrument, len(mostAttractives))
+	buyingInstruments := make([]models.InstrumentDetails, len(mostAttractives))
 	iexQuotes := make([]iex.Quote, len(mostAttractives))
 	for idx, quote := range mostAttractives {
 		log.Println("Getting Saxo Bank symbol for", quote.Symbol)
@@ -66,7 +66,11 @@ func main() {
 		if err != nil {
 			continue
 		}
-		buyingInstruments[idx] = i
+		id, err := ma.GetInstrumentDetails(i)
+		if err != nil {
+			continue
+		}
+		buyingInstruments[idx] = id
 
 		log.Println("Trying to get price IEXCloud price", i.GetAssetType(), i.GetSymbol())
 		iexQuotes[idx], err = iexClient.Quote(ctx, mostAttractives[idx].Symbol)
@@ -75,7 +79,7 @@ func main() {
 		}
 	}
 
-	t.BuyStocksNaive(buyingInstruments, iexQuotes)
+	t.BuyStocksNaive(buyingInstruments, iexQuotes, 2, 5)
 
 	// Always write token back if everything went ok
 	token, err = tokenSource.Token()

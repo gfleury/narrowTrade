@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gfleury/narrowTrade/models"
+	iex "github.com/goinvest/iexcloud/v2"
 )
 
 type Trader interface {
@@ -14,7 +15,8 @@ type Trader interface {
 type BasicSaxoTrader struct {
 	Trader
 	AccountKey     string
-	API            *models.ModeledAPI
+	ModeledAPI     *models.ModeledAPI
+	IEXClient      *iex.Client
 	tradedOrdersID []*models.OrderResponse
 	openOrders     *models.OrderList
 }
@@ -34,12 +36,12 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 		order.Orders[idx].AccountKey = t.AccountKey
 	}
 
-	r, err := t.API.PreOrder(order)
+	r, err := t.ModeledAPI.PreOrder(order)
 	if err != nil {
 		return nil, err
 	}
 
-	bal, err := t.API.GetBalanceMe()
+	bal, err := t.ModeledAPI.GetBalanceMe()
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +57,7 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, initial margin available: %d, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
 	}
 
-	or, err := t.API.Order(order)
+	or, err := t.ModeledAPI.Order(order)
 
 	if err == nil {
 		t.tradedOrdersID = append(t.tradedOrdersID, or)
@@ -65,7 +67,7 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 }
 
 func (t *BasicSaxoTrader) OpenOrders() float64 {
-	ol, err := t.API.GetOrdersMe()
+	ol, err := t.ModeledAPI.GetOrdersMe()
 	if err == nil {
 		t.openOrders = ol
 	}

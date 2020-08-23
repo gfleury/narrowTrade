@@ -48,38 +48,23 @@ func main() {
 
 	t := trader.BasicSaxoTrader{
 		AccountKey: acc.GetAccountKeyMe(),
-		API:        ma,
+		ModeledAPI: ma,
+		IEXClient:  iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
 	}
 
-	iexClient := iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1"))
-	mostAttractives, err := iexClient.Gainers(ctx)
+	mostAttractives, err := t.IEXClient.Gainers(ctx)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
-	buyingInstruments := make([]models.InstrumentDetails, len(mostAttractives))
-	iexQuotes := make([]iex.Quote, len(mostAttractives))
-	for idx, quote := range mostAttractives {
-		log.Println("Getting Saxo Bank symbol for", quote.Symbol)
-		i, err := ma.GetInstrument(quote.Symbol)
-		if err != nil {
-			continue
-		}
-		id, err := ma.GetInstrumentDetails(i)
-		if err != nil {
-			continue
-		}
-		buyingInstruments[idx] = id
+	symbols := []string{}
 
-		log.Println("Trying to get price IEXCloud price", i.GetAssetType(), i.GetSymbol())
-		iexQuotes[idx], err = iexClient.Quote(ctx, mostAttractives[idx].Symbol)
-		if err != nil {
-			iexQuotes[idx] = iex.Quote{}
-		}
+	for _, instrument := range mostAttractives {
+		symbols = append(symbols, instrument.Symbol)
 	}
 
-	t.BuyStocksNaive(buyingInstruments, iexQuotes, 2, 5)
+	t.BuyStocksNaive(symbols, 2, 5)
 
 	// Always write token back if everything went ok
 	token, err = tokenSource.Token()

@@ -8,21 +8,23 @@ import (
 	iex "github.com/goinvest/iexcloud/v2"
 )
 
-func (t *BasicSaxoTrader) BuyStocksNaive(buyingInstruments []models.InstrumentDetails,
-	iexQuotes []iex.Quote, percentLoss, percentProfit float64) {
+type NaiveStockData struct {
+	instrument models.InstrumentDetails
+	iexQuote   iex.Quote
+}
 
-	for idx, i := range buyingInstruments {
-		if i == nil {
-			continue
-		}
+func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentProfit float64) error {
 
-		iexQuote := iexQuotes[idx]
+	naiveStockData := t.createStocksNaive(symbols)
+
+	for _, n := range naiveStockData {
+		iexQuote := n.iexQuote
+		i := n.instrument
+
 		log.Println("Trying to get price Saxo Bank price", i.GetAssetType(), i.GetSymbol())
-		buyPrice, err := t.API.GetInstrumentPrice(i)
+		buyPrice, err := t.ModeledAPI.GetInstrumentPrice(i)
 		if err != nil {
-			log.Println(err)
-			log.Println(models.GetStringError(err))
-			continue
+			return err
 		}
 
 		orderType := models.OrderType(models.Market)
@@ -44,16 +46,41 @@ func (t *BasicSaxoTrader) BuyStocksNaive(buyingInstruments []models.InstrumentDe
 		or, err := t.Buy(
 			i.GetOrder().
 				WithType(orderType).
-				WithAmount(1000).
+				WithAmount(10).
 				WithDuration(durationType).
 				WithTakeProfit(profitPrice).
 				WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 		if err != nil {
-			log.Println(err)
-			log.Println(models.GetStringError(err))
-			continue
+			return err
 		}
 
 		log.Println(or)
 	}
+	return nil
+}
+
+func (t *BasicSaxoTrader) createStocksNaive(symbols []string) []NaiveStockData {
+	naiveStockData := make([]NaiveStockData, len(symbols))
+	for idx, symbol := range symbols {
+		n := NaiveStockData{}
+		log.Println("Getting Saxo Bank symbol for", symbol)
+		i, err := t.ModeledAPI.GetInstrument(symbol)
+		if err != nil {
+			continue
+		}
+		id, err := t.ModeledAPI.GetInstrumentDetails(i)
+		if err != nil {
+			continue
+		}
+		n.instrument = id
+
+		log.Println("Trying to get price IEXCloud price", i.GetAssetType(), i.GetSymbolSimple())
+		n.iexQuote, err = t.IEXClient.Quote(t.ModeledAPI.Ctx, i.GetSymbolSimple())
+		if err != nil {
+			n.iexQuote = iex.Quote{}
+		}
+		naiveStockData[idx] = n
+	}
+
+	return naiveStockData
 }

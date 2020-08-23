@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/utils"
@@ -13,6 +14,7 @@ import (
 
 type Instrument interface {
 	GetSymbol() string
+	GetSymbolSimple() string
 	GetExchangeID() string
 	GetID() int32
 	GetAssetType() AssetType
@@ -176,6 +178,10 @@ func (i *SaxoInstrument) GetSymbol() string {
 	return i.Symbol
 }
 
+func (i *SaxoInstrument) GetSymbolSimple() string {
+	return strings.Split(i.GetSymbol(), ":")[0]
+}
+
 func (i *SaxoInstrument) GetID() int32 {
 	return i.Identifier
 }
@@ -203,6 +209,10 @@ func (i *SaxoInstrumentDetails) GetAssetType() AssetType {
 
 func (i *SaxoInstrumentDetails) GetSymbol() string {
 	return i.Symbol
+}
+
+func (i *SaxoInstrumentDetails) GetSymbolSimple() string {
+	return strings.Split(i.GetSymbol(), ":")[0]
 }
 
 func (i *SaxoInstrumentDetails) GetID() int32 {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/saxo_oauth2"
@@ -75,7 +76,7 @@ func (s *Suite) TearDownSuite(c *check.C) {
 }
 
 func (s *Suite) SetUpTest(c *check.C) {
-	// time.Sleep(2 * time.Second)
+	time.Sleep(2 * time.Second)
 	s.ma.Throttle()
 	_, _, err := s.ma.Client.PortfolioApi.ResetAccount(s.ma.Ctx,
 		s.acc.GetAccountKeyMe(), &saxo_openapi.PortfolioApiResetAccountOpts{
@@ -94,7 +95,7 @@ func Test(t *testing.T) {
 func (s *Suite) TestTradeSimple_Buy_Market_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	i, err := s.ma.GetInstrument("AAPL:xnas")
@@ -121,7 +122,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	or, err := t.Buy(
@@ -147,7 +148,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	or, err := t.Buy(
@@ -185,7 +186,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	or, err := t.Buy(
@@ -235,7 +236,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	or, err := t.Buy(
@@ -292,7 +293,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	or, err := t.Buy(
@@ -324,7 +325,7 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	or, err := t.Buy(
@@ -354,7 +355,7 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
@@ -401,7 +402,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_Limit_TrailingStop_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
@@ -449,7 +450,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TrailingStop_10_APPL(c *check.C) {
 func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_TrailingStop_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)
@@ -508,7 +509,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_TrailingStop_10_APPL(c *che
 func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_TrailingStop_10_APPL(c *check.C) {
 	t := BasicSaxoTrader{
 		AccountKey: s.acc.GetAccountKeyMe(),
-		API:        s.ma,
+		ModeledAPI: s.ma,
 	}
 
 	stopLossPrice := s.id.CalculatePriceWithThickSize(s.ip.Quote.Ask, 2)

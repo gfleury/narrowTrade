@@ -1,7 +1,8 @@
 PKGS = $$(go list ./... | grep -v /vendor/)
+CMDS = $$(go list ./... | grep /cmd/)
 
 default:
-	go build
+	go build $(CMDS)
 
 test:
 	go clean $(PKGS)

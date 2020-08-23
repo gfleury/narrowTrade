@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -76,7 +77,7 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 		// get the authorization code
 		code = r.URL.Query().Get("code")
 		if code == "" {
-			fmt.Println("snap: Url Param 'code' is missing")
+			log.Println("snap: Url Param 'code' is missing")
 			io.WriteString(w, "Error: could not find 'code' URL parameter\n")
 
 			// close the HTTP server and return

@@ -2,7 +2,6 @@ package trader
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/gfleury/narrowTrade/models"
 )
@@ -42,8 +41,7 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 
 	bal, err := t.API.GetBalanceMe()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	costOpenOrders := t.OpenOrders()

@@ -1,32 +1,26 @@
-package saxo_models
+package models
 
 import (
-	"testing"
-
 	check "gopkg.in/check.v1"
 )
 
-type Suite struct {
+type InstrumentSuite struct {
 }
 
-func (s *Suite) SetUpSuite(c *check.C) {
+func (s *InstrumentSuite) SetUpSuite(c *check.C) {
 }
 
-func (s *Suite) TearDownSuite(c *check.C) {
+func (s *InstrumentSuite) TearDownSuite(c *check.C) {
 }
 
-func (s *Suite) SetUpTest(c *check.C) {
+func (s *InstrumentSuite) SetUpTest(c *check.C) {
 }
 
-var _ = check.Suite(&Suite{})
-
-func Test(t *testing.T) {
-	check.TestingT(t)
-}
+var _ = check.Suite(&InstrumentSuite{})
 
 // TestGetPriceTick tests the instrument tick based on the order price
 // https://www.developer.saxo/openapi/learn/order-placement#TickSizeandTickSizeSchemes
-func (s *Suite) TestGetPriceTick(c *check.C) {
+func (s *InstrumentSuite) TestGetPriceTick(c *check.C) {
 	e := []Elements{
 		{0.4999, 0.0001},
 		{0.9995, 0.0005},
@@ -64,7 +58,7 @@ func (s *Suite) TestGetPriceTick(c *check.C) {
 }
 
 // TestCalculatePriceWithThickSize tests the Price rounding rule based on the instrument tick
-func (s *Suite) TestCalculatePriceWithThickSize(c *check.C) {
+func (s *InstrumentSuite) TestCalculatePriceWithThickSize(c *check.C) {
 	id := &SaxoInstrumentDetails{
 		Format: Format{
 			Decimals:      2,

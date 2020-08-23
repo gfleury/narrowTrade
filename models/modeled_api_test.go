@@ -1,12 +1,12 @@
-package saxo_models
+package models
 
 import (
 	"context"
 
 	"github.com/antihax/optional"
-	"github.com/gfleury/intensiveTrade/saxo_oauth2"
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
-	"github.com/gfleury/intensiveTrade/tests"
+	"github.com/gfleury/narrowTrade/saxo_oauth2"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/tests"
 	"golang.org/x/oauth2"
 	check "gopkg.in/check.v1"
 

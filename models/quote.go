@@ -1,4 +1,4 @@
-package saxo_models
+package models
 
 type InstrumentPrice struct {
 	AssetType   string `json:"AssetType"`

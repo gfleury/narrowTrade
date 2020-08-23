@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gfleury/intensiveTrade/saxo_models"
-	"github.com/gfleury/intensiveTrade/saxo_oauth2"
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
-	"github.com/gfleury/intensiveTrade/trader"
+	"github.com/gfleury/narrowTrade/models"
+	"github.com/gfleury/narrowTrade/saxo_oauth2"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/trader"
 
-	"github.com/gfleury/intensiveTrade/tests"
+	"github.com/gfleury/narrowTrade/tests"
 
 	iex "github.com/goinvest/iexcloud/v2"
 	"golang.org/x/oauth2"
@@ -33,7 +33,7 @@ func main() {
 	auth := context.WithValue(oauth2.NoContext, saxo_openapi.ContextOAuth2, tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
-	ma := &saxo_models.ModeledAPI{
+	ma := &models.ModeledAPI{
 		Ctx:    auth,
 		Client: client,
 	}
@@ -58,7 +58,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	buyingInstruments := make([]saxo_models.Instrument, len(mostAttractives))
+	buyingInstruments := make([]models.Instrument, len(mostAttractives))
 	iexQuotes := make([]iex.Quote, len(mostAttractives))
 	for idx, quote := range mostAttractives {
 		fmt.Println("Getting Saxo Bank symbol for", quote.Symbol)

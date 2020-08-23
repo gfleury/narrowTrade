@@ -1,9 +1,9 @@
-package saxo_models
+package models
 
 import (
 	"encoding/json"
 
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
 )
 
 func GetStringError(err error) string {

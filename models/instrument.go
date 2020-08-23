@@ -1,13 +1,13 @@
-package saxo_models
+package models
 
 import (
 	"fmt"
 	"sort"
 
-	"github.com/gfleury/intensiveTrade/utils"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/utils"
 
 	"github.com/antihax/optional"
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -205,7 +205,7 @@ func (id *SaxoInstrumentDetails) CalculatePriceWithThickSize(price float64, perc
 		}
 	}
 
-	return utils.Round(utils.Round(((price-(price*percentage)/100)/tickSize), 1)*tickSize, id.GetDecimals())
+	return utils.Round(utils.RoundNearestTick(price, percentage, tickSize), id.GetDecimals())
 }
 
 func (id *SaxoInstrumentDetails) GetDecimals() int {

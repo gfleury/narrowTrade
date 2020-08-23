@@ -1,4 +1,4 @@
-module github.com/gfleury/intensiveTrade
+module github.com/gfleury/narrowTrade
 
 go 1.14
 

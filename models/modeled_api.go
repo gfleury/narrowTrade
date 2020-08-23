@@ -1,10 +1,10 @@
-package saxo_models
+package models
 
 import (
 	"context"
 	"time"
 
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
 )
 
 type ModeledAPI struct {

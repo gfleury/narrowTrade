@@ -4,31 +4,31 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gfleury/intensiveTrade/saxo_models"
+	"github.com/gfleury/narrowTrade/models"
 )
 
 type Trader interface {
-	Buy(order saxo_models.Order) (*saxo_models.OrderResponse, error)
-	Sell(order saxo_models.Order) (*saxo_models.OrderResponse, error)
+	Buy(order models.Order) (*models.OrderResponse, error)
+	Sell(order models.Order) (*models.OrderResponse, error)
 }
 
 type BasicSaxoTrader struct {
 	Trader
 	AccountKey     string
-	API            *saxo_models.ModeledAPI
-	tradedOrdersID []*saxo_models.OrderResponse
-	openOrders     *saxo_models.OrderList
+	API            *models.ModeledAPI
+	tradedOrdersID []*models.OrderResponse
+	openOrders     *models.OrderList
 }
 
-func (t *BasicSaxoTrader) Buy(o *saxo_models.Order) (*saxo_models.OrderResponse, error) {
-	return t.placeOrder(o.WithBuySell(saxo_models.Buy))
+func (t *BasicSaxoTrader) Buy(o *models.Order) (*models.OrderResponse, error) {
+	return t.placeOrder(o.WithBuySell(models.Buy))
 }
 
-func (t *BasicSaxoTrader) Sell(o *saxo_models.Order) (*saxo_models.OrderResponse, error) {
-	return t.placeOrder(o.WithBuySell(saxo_models.Sell))
+func (t *BasicSaxoTrader) Sell(o *models.Order) (*models.OrderResponse, error) {
+	return t.placeOrder(o.WithBuySell(models.Sell))
 }
 
-func (t *BasicSaxoTrader) placeOrder(order *saxo_models.Order) (*saxo_models.OrderResponse, error) {
+func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse, error) {
 	// Define AccontKey from trader in all Orders
 	order.AccountKey = t.AccountKey
 	for idx := range order.Orders {
@@ -76,7 +76,7 @@ func (t *BasicSaxoTrader) OpenOrders() float64 {
 
 	if t.openOrders != nil {
 		for _, oo := range t.openOrders.Data {
-			if oo.BuySell == saxo_models.Buy {
+			if oo.BuySell == models.Buy {
 				total += oo.Price * float64(oo.Amount)
 			}
 		}

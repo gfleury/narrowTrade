@@ -1,8 +1,8 @@
-package saxo_models
+package models
 
 import (
 	"github.com/antihax/optional"
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/mitchellh/mapstructure"
 )
 

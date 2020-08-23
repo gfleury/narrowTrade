@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gfleury/intensiveTrade/saxo_models"
-	"github.com/gfleury/intensiveTrade/saxo_oauth2"
-	"github.com/gfleury/intensiveTrade/saxo_openapi"
-	"github.com/gfleury/intensiveTrade/tests"
+	"github.com/gfleury/narrowTrade/models"
+	"github.com/gfleury/narrowTrade/saxo_oauth2"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/tests"
 
 	"github.com/antihax/optional"
 	"golang.org/x/oauth2"
@@ -16,10 +16,10 @@ import (
 )
 
 type Suite struct {
-	acc         *saxo_models.Accounts
-	ma          *saxo_models.ModeledAPI
+	acc         *models.Accounts
+	ma          *models.ModeledAPI
 	tokenSource oauth2.TokenSource
-	ex          *saxo_models.Exchange
+	ex          *models.Exchange
 }
 
 func (s *Suite) SetUpSuite(c *check.C) {
@@ -36,7 +36,7 @@ func (s *Suite) SetUpSuite(c *check.C) {
 	auth := context.WithValue(oauth2.NoContext, saxo_openapi.ContextOAuth2, s.tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
-	s.ma = &saxo_models.ModeledAPI{
+	s.ma = &models.ModeledAPI{
 		Ctx:    auth,
 		Client: client,
 	}
@@ -93,7 +93,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_10_APPL(c *check.C) {
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.Market))
+			WithType(models.Market))
 
 	c.Assert(err, check.IsNil)
 
@@ -102,8 +102,8 @@ func (s *Suite) TestTradeSimple_Buy_Market_10_APPL(c *check.C) {
 	ol, err := s.ma.GetOrdersMe()
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }
@@ -123,7 +123,7 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.Limit).
+			WithType(models.Limit).
 			WithPrice(ip.Quote.Ask))
 	c.Assert(err, check.IsNil)
 
@@ -133,8 +133,8 @@ func (s *Suite) TestTradeSimple_Buy_Limit_10_APPL(c *check.C) {
 	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Limit)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Limit)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 	}
@@ -155,7 +155,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.Market).
+			WithType(models.Market).
 			WithStopLoss(ip.Quote.Bid - 5))
 	c.Assert(err, check.IsNil)
 
@@ -165,13 +165,13 @@ func (s *Suite) TestTradeSimple_Buy_Market_StopLoss_10_APPL(c *check.C) {
 	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 
-		relatedOrder := saxo_models.RelatedOpenOrders{
+		relatedOrder := models.RelatedOpenOrders{
 			Amount: 10,
-			Duration: saxo_models.Duration{
+			Duration: models.Duration{
 				DurationType: "GoodTillCancel",
 			},
 			OpenOrderType: "StopIfTraded",
@@ -199,7 +199,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.Market).
+			WithType(models.Market).
 			WithStopLoss(ip.Quote.Bid - 3).
 			WithTakeProfit(ip.Quote.Ask + 3))
 	c.Assert(err, check.IsNil)
@@ -210,26 +210,26 @@ func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_StopLoss_10_APPL(c *check.
 	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 
-		relatedOrders := []saxo_models.RelatedOpenOrders{{
+		relatedOrders := []models.RelatedOpenOrders{{
 			Amount: 10,
-			Duration: saxo_models.Duration{
-				DurationType: saxo_models.GoodTillCancel,
+			Duration: models.Duration{
+				DurationType: models.GoodTillCancel,
 			},
-			OpenOrderType: saxo_models.StopIfTraded,
+			OpenOrderType: models.StopIfTraded,
 			OrderPrice:    ip.Quote.Bid - 3,
 			OrderID:       or.Orders[1].OrderID,
 			Status:        "NotWorking",
 		},
 			{
 				Amount: 10,
-				Duration: saxo_models.Duration{
-					DurationType: saxo_models.GoodTillCancel,
+				Duration: models.Duration{
+					DurationType: models.GoodTillCancel,
 				},
-				OpenOrderType: saxo_models.Limit,
+				OpenOrderType: models.Limit,
 				OrderPrice:    ip.Quote.Ask + 3,
 				OrderID:       or.Orders[0].OrderID,
 				Status:        "NotWorking",
@@ -255,14 +255,14 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.Limit).
-			WithDuration(saxo_models.GoodTillCancel).
+			WithType(models.Limit).
+			WithDuration(models.GoodTillCancel).
 			WithPrice(ip.Quote.Ask).
 			WithStopLoss(ip.Quote.Bid - 3).
 			WithTakeProfit(ip.Quote.Ask + 3),
 	)
 	if err != nil {
-		fmt.Println(saxo_models.GetStringError(err))
+		fmt.Println(models.GetStringError(err))
 	}
 	c.Assert(err, check.IsNil)
 
@@ -272,27 +272,27 @@ func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_StopLoss_10_APPL(c *check.C
 	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Limit)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Limit)
 		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 
-		relatedOrders := []saxo_models.RelatedOpenOrders{{
+		relatedOrders := []models.RelatedOpenOrders{{
 			Amount: 10,
-			Duration: saxo_models.Duration{
-				DurationType: saxo_models.GoodTillCancel,
+			Duration: models.Duration{
+				DurationType: models.GoodTillCancel,
 			},
-			OpenOrderType: saxo_models.StopIfTraded,
+			OpenOrderType: models.StopIfTraded,
 			OrderPrice:    ip.Quote.Bid - 3,
 			OrderID:       or.Orders[1].OrderID,
 			Status:        "NotWorking",
 		},
 			{
 				Amount: 10,
-				Duration: saxo_models.Duration{
-					DurationType: saxo_models.GoodTillCancel,
+				Duration: models.Duration{
+					DurationType: models.GoodTillCancel,
 				},
-				OpenOrderType: saxo_models.Limit,
+				OpenOrderType: models.Limit,
 				OrderPrice:    ip.Quote.Ask + 3,
 				OrderID:       or.Orders[0].OrderID,
 				Status:        "NotWorking",
@@ -317,10 +317,10 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 
 	or, err := t.Buy(i.GetOrder().
 		WithAmount(10).
-		WithType(saxo_models.StopIfTraded).
+		WithType(models.StopIfTraded).
 		WithPrice(ip.Quote.Ask))
 	if err != nil {
-		fmt.Println(saxo_models.GetStringError(err))
+		fmt.Println(models.GetStringError(err))
 	}
 	c.Assert(err, check.IsNil)
 
@@ -333,8 +333,8 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 	c.Assert(err, check.IsNil)
 
 	if !ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.StopIfTraded)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopIfTraded)
 		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
@@ -355,11 +355,11 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.StopLimit).
+			WithType(models.StopLimit).
 			WithPrice(ip.Quote.Ask).
 			WithStopLimitPrice(ip.Quote.Ask + 3))
 	if err != nil {
-		fmt.Println(saxo_models.GetStringError(err))
+		fmt.Println(models.GetStringError(err))
 	}
 	c.Assert(err, check.IsNil)
 
@@ -369,8 +369,8 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.StopLimit)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopLimit)
 		c.Assert(ol.Data[0].Price, check.Equals, ip.Quote.Ask)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
@@ -391,16 +391,16 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 	id, err := s.ma.GetInstrumentDetails(i)
 	c.Assert(err, check.IsNil)
 
-	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 1)
+	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
+	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
 
 	or, err := t.Buy(
 		i.GetOrder().
 			WithAmount(10).
-			WithType(saxo_models.Market).
-			// WithPrice(ip.Quote.Ask).
-			WithStopLossTrailingStop(stopLossPrice, ip.Quote.Ask-stopLossPrice, 0.05))
+			WithType(models.Market).
+			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 	if err != nil {
-		fmt.Println(saxo_models.GetStringError(err))
+		fmt.Println(models.GetStringError(err))
 	}
 	c.Assert(err, check.IsNil)
 
@@ -410,22 +410,214 @@ func (s *Suite) TestTradeSimple_Buy_Market_TrailingStop_10_APPL(c *check.C) {
 	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
-		c.Assert(ol.Data[0].BuySell, check.Equals, saxo_models.Buy)
-		c.Assert(ol.Data[0].OpenOrderType, check.Equals, saxo_models.Market)
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Market)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 
-		relatedOrders := []saxo_models.RelatedOpenOrders{{
+		relatedOrders := []models.RelatedOpenOrders{{
 			Amount: 10,
-			Duration: saxo_models.Duration{
-				DurationType: saxo_models.GoodTillCancel,
+			Duration: models.Duration{
+				DurationType: models.GoodTillCancel,
 			},
-			OpenOrderType:                saxo_models.TrailingStopIfTraded,
-			OrderPrice:                   ip.Quote.Ask - 2.37,
-			TrailingStopDistanceToMarket: 2.37,
-			TrailingStopStep:             0.5,
+			OpenOrderType:                models.TrailingStopIfTraded,
+			OrderPrice:                   stopLossPrice,
+			TrailingStopDistanceToMarket: distanceToMarket,
+			TrailingStopStep:             0.05,
 			OrderID:                      or.Orders[0].OrderID,
 			Status:                       "NotWorking",
 		},
+		}
+
+		c.Assert(ol.Data[0].RelatedOpenOrders, check.DeepEquals, relatedOrders)
+	}
+}
+
+func (s *Suite) TestTradeSimple_Buy_Limit_TrailingStop_10_APPL(c *check.C) {
+	t := BasicSaxoTrader{
+		AccountKey: s.acc.GetAccountKeyMe(),
+		API:        s.ma,
+	}
+
+	i, err := s.ma.GetInstrument("AAPL:xnas")
+	c.Assert(err, check.IsNil)
+
+	ip, err := s.ma.GetInfoPrice(i)
+	c.Assert(err, check.IsNil)
+
+	id, err := s.ma.GetInstrumentDetails(i)
+	c.Assert(err, check.IsNil)
+
+	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
+	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(models.Limit).
+			WithPrice(ip.Quote.Ask).
+			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
+	if err != nil {
+		fmt.Println(models.GetStringError(err))
+	}
+	c.Assert(err, check.IsNil)
+
+	c.Assert(or.ErrorInfo, check.IsNil)
+
+	ol, err := s.ma.GetOrdersMe()
+	c.Assert(err, check.IsNil)
+
+	if !s.ex.IsOpen {
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Limit)
+		c.Assert(ol.Data[0].Amount, check.Equals, 10)
+
+		relatedOrders := []models.RelatedOpenOrders{{
+			Amount: 10,
+			Duration: models.Duration{
+				DurationType: models.GoodTillCancel,
+			},
+			OpenOrderType:                models.TrailingStopIfTraded,
+			OrderPrice:                   stopLossPrice,
+			TrailingStopDistanceToMarket: distanceToMarket,
+			TrailingStopStep:             0.05,
+			OrderID:                      or.Orders[0].OrderID,
+			Status:                       "NotWorking",
+		},
+		}
+
+		c.Assert(ol.Data[0].RelatedOpenOrders, check.DeepEquals, relatedOrders)
+	}
+}
+
+func (s *Suite) TestTradeSimple_Buy_Limit_TakeProfit_TrailingStop_10_APPL(c *check.C) {
+	t := BasicSaxoTrader{
+		AccountKey: s.acc.GetAccountKeyMe(),
+		API:        s.ma,
+	}
+
+	i, err := s.ma.GetInstrument("AAPL:xnas")
+	c.Assert(err, check.IsNil)
+
+	ip, err := s.ma.GetInfoPrice(i)
+	c.Assert(err, check.IsNil)
+
+	id, err := s.ma.GetInstrumentDetails(i)
+	c.Assert(err, check.IsNil)
+
+	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
+	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(models.Limit).
+			WithPrice(ip.Quote.Ask).
+			WithTakeProfit(ip.Quote.Ask+3).
+			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
+	if err != nil {
+		fmt.Println(models.GetStringError(err))
+	}
+	c.Assert(err, check.IsNil)
+
+	c.Assert(or.ErrorInfo, check.IsNil)
+
+	ol, err := s.ma.GetOrdersMe()
+	c.Assert(err, check.IsNil)
+
+	if !s.ex.IsOpen {
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Limit)
+		c.Assert(ol.Data[0].Amount, check.Equals, 10)
+
+		relatedOrders := []models.RelatedOpenOrders{{
+			Amount: 10,
+			Duration: models.Duration{
+				DurationType: models.GoodTillCancel,
+			},
+			OpenOrderType:                models.TrailingStopIfTraded,
+			OrderPrice:                   stopLossPrice,
+			TrailingStopDistanceToMarket: distanceToMarket,
+			TrailingStopStep:             0.05,
+			OrderID:                      or.Orders[1].OrderID,
+			Status:                       "NotWorking",
+		},
+			{
+				Amount: 10,
+				Duration: models.Duration{
+					DurationType: models.GoodTillCancel,
+				},
+				OpenOrderType: models.Limit,
+				OrderPrice:    ip.Quote.Ask + 3,
+				OrderID:       or.Orders[0].OrderID,
+				Status:        "NotWorking",
+			},
+		}
+
+		c.Assert(ol.Data[0].RelatedOpenOrders, check.DeepEquals, relatedOrders)
+	}
+}
+
+func (s *Suite) TestTradeSimple_Buy_Market_TakeProfit_TrailingStop_10_APPL(c *check.C) {
+	t := BasicSaxoTrader{
+		AccountKey: s.acc.GetAccountKeyMe(),
+		API:        s.ma,
+	}
+
+	i, err := s.ma.GetInstrument("AAPL:xnas")
+	c.Assert(err, check.IsNil)
+
+	ip, err := s.ma.GetInfoPrice(i)
+	c.Assert(err, check.IsNil)
+
+	id, err := s.ma.GetInstrumentDetails(i)
+	c.Assert(err, check.IsNil)
+
+	stopLossPrice := id.CalculatePriceWithThickSize(ip.Quote.Ask, 2)
+	distanceToMarket := id.CalculatePriceWithThickSize(ip.Quote.Ask-stopLossPrice, 0)
+
+	or, err := t.Buy(
+		i.GetOrder().
+			WithAmount(10).
+			WithType(models.Market).
+			WithTakeProfit(ip.Quote.Ask+3).
+			WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
+	if err != nil {
+		fmt.Println(models.GetStringError(err))
+	}
+	c.Assert(err, check.IsNil)
+
+	c.Assert(or.ErrorInfo, check.IsNil)
+
+	ol, err := s.ma.GetOrdersMe()
+	c.Assert(err, check.IsNil)
+
+	if !s.ex.IsOpen {
+		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
+		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.Market)
+		c.Assert(ol.Data[0].Amount, check.Equals, 10)
+
+		relatedOrders := []models.RelatedOpenOrders{{
+			Amount: 10,
+			Duration: models.Duration{
+				DurationType: models.GoodTillCancel,
+			},
+			OpenOrderType:                models.TrailingStopIfTraded,
+			OrderPrice:                   stopLossPrice,
+			TrailingStopDistanceToMarket: distanceToMarket,
+			TrailingStopStep:             0.05,
+			OrderID:                      or.Orders[1].OrderID,
+			Status:                       "NotWorking",
+		},
+			{
+				Amount: 10,
+				Duration: models.Duration{
+					DurationType: models.GoodTillCancel,
+				},
+				OpenOrderType: models.Limit,
+				OrderPrice:    ip.Quote.Ask + 3,
+				OrderID:       or.Orders[0].OrderID,
+				Status:        "NotWorking",
+			},
 		}
 
 		c.Assert(ol.Data[0].RelatedOpenOrders, check.DeepEquals, relatedOrders)

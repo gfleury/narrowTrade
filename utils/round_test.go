@@ -35,3 +35,24 @@ func (s *Suite) TestRound(c *check.C) {
 	c.Assert(Round(499.23456, 4), check.Equals, 499.2346)
 
 }
+
+func (s *Suite) TestRoundNearestTick(c *check.C) {
+	c.Assert(RoundNearestTick(446.4, 2, 0.1), check.Equals, 437.5)
+	c.Assert(RoundNearestTick(446.4, 0, 0.1), check.Equals, 446.4)
+	c.Assert(RoundNearestTick(446.467, 0, 0.01), check.Equals, 446.47)
+	c.Assert(RoundNearestTick(446.467, 0, 0.001), check.Equals, 446.467)
+	c.Assert(RoundNearestTick(446.467, 0, 0.005), check.Equals, 446.465)
+	c.Assert(RoundNearestTick(446.468, 0, 0.005), check.Equals, 446.470)
+	c.Assert(RoundNearestTick(446.468, 0, 0.0005), check.Equals, 446.468)
+	c.Assert(RoundNearestTick(446.4682, 0, 0.0005), check.Equals, 446.468)
+
+}
+
+func (s *Suite) TestGetTickDecimals(c *check.C) {
+	c.Assert(GetTickDecimals(0.1), check.Equals, 1)
+	c.Assert(GetTickDecimals(0.01), check.Equals, 2)
+	c.Assert(GetTickDecimals(0.001), check.Equals, 3)
+	c.Assert(GetTickDecimals(0.001), check.Equals, 3)
+	c.Assert(GetTickDecimals(0.005), check.Equals, 3)
+	c.Assert(GetTickDecimals(0.0099999), check.Equals, 3)
+}

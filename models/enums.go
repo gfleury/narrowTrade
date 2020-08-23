@@ -1,4 +1,4 @@
-package saxo_models
+package models
 
 type DurationType string
 

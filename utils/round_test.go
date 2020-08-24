@@ -46,6 +46,8 @@ func (s *Suite) TestRoundNearestTick(c *check.C) {
 	c.Assert(RoundNearestTick(446.468, 0, 0.0005), check.Equals, 446.468)
 	c.Assert(RoundNearestTick(446.4682, 0, 0.0005), check.Equals, 446.468)
 
+	c.Assert(RoundNearestTick(446.4682, -2, 0.1), check.Equals, 455.4)
+	c.Assert(RoundNearestTick(446.4682, -4, 0.1), check.Equals, 464.3)
 }
 
 func (s *Suite) TestGetTickDecimals(c *check.C) {

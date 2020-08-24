@@ -38,11 +38,13 @@ func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentP
 			durationType = models.GoodTillCancel
 		}
 
-		profitPrice := i.CalculatePriceWithThickSize(buyPrice, 100+percentProfit)
+		profitPrice := i.CalculatePriceWithThickSize(buyPrice, -percentProfit)
 		stopLossPrice := i.CalculatePriceWithThickSize(buyPrice, percentLoss)
 		distanceToMarket := i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
 
-		log.Println("Trying to buy", i.GetAssetType(), i.GetSymbol(), "for", buyPrice)
+		log.Printf("Trying to buy %s %s for %f with stopLoss %f (%f) and takeProfit %f\n",
+			i.GetAssetType(), i.GetSymbol(), buyPrice, stopLossPrice, distanceToMarket, profitPrice)
+
 		or, err := t.Buy(
 			i.GetOrder().
 				WithType(orderType).

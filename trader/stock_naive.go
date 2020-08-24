@@ -17,13 +17,35 @@ type NaiveStockData struct {
 	betterBuy        bool
 }
 
+func (t *BasicSaxoTrader) GetCashPerSymbol(n int) (float64, error) {
+	balance, err := t.ModeledAPI.GetBalanceMe()
+	if err != nil {
+		return 0, err
+	}
+
+	openOrdersTotal := t.getOpenOrders()
+
+	return (balance.InitialMargin.MarginAvailable - openOrdersTotal) / float64(n), nil
+}
+
 func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentProfit float64) error {
 
 	naiveStockData := t.createStocksNaive(symbols)
 
+	cashPerSymbol, err := t.GetCashPerSymbol(len(naiveStockData))
+	if err != nil {
+		return err
+	}
+	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(naiveStockData)))
+
 	for _, n := range naiveStockData {
 		iexQuote := n.iexQuote
 		i := n.instrument
+
+		if i == nil {
+			log.Println("Instrument is nil, something is wrong:", n)
+			continue
+		}
 
 		log.Println("Trying to get price Saxo Bank price", i.GetAssetType(), i.GetSymbol())
 		buyPrice, err := t.ModeledAPI.GetInstrumentPrice(i)
@@ -36,23 +58,33 @@ func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentP
 		durationType := models.DurationType(models.DayOrder)
 
 		log.Printf("Got price %f - %f\n", buyPrice, iexQuote.IEXRealtimePrice)
-		if buyPrice > iexQuote.IEXRealtimePrice && buyPrice*0.8 < iexQuote.IEXRealtimePrice {
+		if (buyPrice > iexQuote.IEXRealtimePrice && buyPrice*0.8 < iexQuote.IEXRealtimePrice) ||
+			buyPrice == 0 {
 			buyPrice = i.CalculatePriceWithThickSize(iexQuote.IEXRealtimePrice, 0)
 			orderType = models.Limit
 			durationType = models.GoodTillCancel
+		}
+
+		if buyPrice <= 0 {
+			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
+			continue
 		}
 
 		profitPrice := i.CalculatePriceWithThickSize(buyPrice, -percentProfit)
 		stopLossPrice := i.CalculatePriceWithThickSize(buyPrice, percentLoss)
 		distanceToMarket := i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
 
-		log.Printf("Trying to buy %s %s for %f with stopLoss %f (%f) and takeProfit %f\n",
-			i.GetAssetType(), i.GetSymbol(), buyPrice, stopLossPrice, distanceToMarket, profitPrice)
+		amount := int(utils.RoundDown(float64(cashPerSymbol)/buyPrice, 0))
+
+		log.Printf("Trying to buy %s %s for %d x %f with stopLoss %f (%f) and takeProfit %f\n",
+			i.GetAssetType(), i.GetSymbol(), amount, buyPrice, stopLossPrice,
+			distanceToMarket, profitPrice)
 
 		or, err := t.Buy(
 			i.GetOrder().
 				WithType(orderType).
-				WithAmount(10).
+				WithAmount(amount).
+				WithPrice(buyPrice).
 				WithDuration(durationType).
 				WithTakeProfit(profitPrice).
 				WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
@@ -66,8 +98,8 @@ func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentP
 }
 
 func (t *BasicSaxoTrader) createStocksNaive(symbols []string) []NaiveStockData {
-	naiveStockData := make([]NaiveStockData, len(symbols))
-	for idx, symbol := range symbols {
+	naiveStockData := []NaiveStockData{}
+	for _, symbol := range symbols {
 		n := NaiveStockData{}
 		log.Println("Getting Saxo Bank symbol for", symbol)
 		i, err := t.ModeledAPI.GetInstrument(symbol)
@@ -94,7 +126,8 @@ func (t *BasicSaxoTrader) createStocksNaive(symbols []string) []NaiveStockData {
 		recommendation := utils.IEXRecomendationReduce(recommendations)
 		n.buyRecomendation = recommendation.BuyRatings
 		n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
-		naiveStockData[idx] = n
+
+		naiveStockData = append(naiveStockData, n)
 	}
 
 	sort.Slice(naiveStockData, func(i, j int) bool {

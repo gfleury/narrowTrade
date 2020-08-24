@@ -63,17 +63,19 @@ func main() {
 		symbols = append(symbols, instrument.Symbol)
 	}
 
-	err = t.BuyStocksNaive(symbols, 2, 5)
+	err = t.BuyStocksNaive(symbols[0:5], 2, 5)
 
 	if err != nil {
 		log.Println(err)
 		log.Println(models.GetStringError(err))
 		os.Exit(1)
 	}
+
 	// Always write token back if everything went ok
 	token, err = tokenSource.Token()
 	if err != nil {
 		log.Println(err)
+		os.Exit(1)
 	}
 	err = saxo_oauth2.PersistToken(token)
 	if err != nil {

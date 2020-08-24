@@ -77,3 +77,28 @@ func (s *ModeledApiSuite) TestGetInstrumentDetails(c *check.C) {
 
 	c.Assert(id.GetSymbol(), check.Equals, i.GetSymbol())
 }
+
+func (s *ModeledApiSuite) TestGetInstrumentPrice(c *check.C) {
+
+	i, err := s.ma.GetInstrument("IBIO:xase")
+	c.Assert(err, check.IsNil)
+
+	p, err := s.ma.GetInstrumentPrice(i)
+	c.Assert(err, check.IsNil)
+
+	c.Assert(p, check.Equals, 0.0)
+}
+
+func (s *ModeledApiSuite) TestGetInstrumentDetails_IBIO(c *check.C) {
+
+	i, err := s.ma.GetInstrument("IBIO:xase")
+	c.Assert(err, check.IsNil)
+
+	id, err := s.ma.GetInstrumentDetails(i)
+	c.Assert(err, check.IsNil)
+
+	c.Assert(id.GetSymbol(), check.Equals, i.GetSymbol())
+
+	priceTick := id.CalculatePriceWithThickSize(2.12345, 0)
+	c.Assert(priceTick, check.Equals, 2.12)
+}

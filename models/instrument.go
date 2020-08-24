@@ -236,7 +236,7 @@ func (i *SaxoInstrumentDetails) GetExchangeID() string {
 
 func (id *SaxoInstrumentDetails) CalculatePriceWithThickSize(price float64, percentage float64) float64 {
 	//orderPrice = Round((currentPrice- currentPrice*n/100)/tickSize)*tickSize
-	tickSize := 1.0
+	tickSize := 0.1
 	if id.TickSizeScheme.DefaultTickSize > 0 {
 		tickSize = GetPriceTick(price, id.TickSizeScheme.Elements)
 		if tickSize == 0 {
@@ -260,7 +260,7 @@ func (id *SaxoInstrumentDetails) GetMinimumOrderValue() int {
 }
 
 func GetPriceTick(price float64, elements []Elements) float64 {
-	if len(elements) < 1 {
+	if len(elements) < 2 {
 		return 0
 	}
 

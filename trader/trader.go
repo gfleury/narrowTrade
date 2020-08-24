@@ -2,6 +2,7 @@ package trader
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gfleury/narrowTrade/models"
 	iex "github.com/goinvest/iexcloud/v2"
@@ -10,6 +11,11 @@ import (
 type Trader interface {
 	Buy(order models.Order) (*models.OrderResponse, error)
 	Sell(order models.Order) (*models.OrderResponse, error)
+}
+
+type ComplexTrader interface {
+	Trader
+	GetCashPerSymbol(n int) (int, error)
 }
 
 type BasicSaxoTrader struct {
@@ -46,7 +52,7 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 		return nil, err
 	}
 
-	costOpenOrders := t.OpenOrders()
+	costOpenOrders := t.getOpenOrders()
 
 	if (r.EstimatedCashRequired*r.InstrumentToAccountConversionRate)+costOpenOrders >=
 		float64(bal.InitialMargin.MarginAvailable) {
@@ -54,7 +60,7 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 	}
 
 	if !order.GoodToGo {
-		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, initial margin available: %d, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
+		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, initial margin available: %f, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
 	}
 
 	or, err := t.ModeledAPI.Order(order)
@@ -66,10 +72,12 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 	return or, err
 }
 
-func (t *BasicSaxoTrader) OpenOrders() float64 {
+func (t *BasicSaxoTrader) getOpenOrders() float64 {
 	ol, err := t.ModeledAPI.GetOrdersMe()
 	if err == nil {
 		t.openOrders = ol
+	} else {
+		log.Println("Unable to GetOrdersMe:", err)
 	}
 
 	total := float64(0)

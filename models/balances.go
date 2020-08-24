@@ -3,51 +3,51 @@ package models
 import "github.com/mitchellh/mapstructure"
 
 type Balance struct {
-	CalculationReliability string `json:"CalculationReliability"`
-	CashBalance            int    `json:"CashBalance"`
-	ChangesScheduled       bool   `json:"ChangesScheduled"`
-	ClosedPositionsCount   int    `json:"ClosedPositionsCount"`
-	CollateralAvailable    int    `json:"CollateralAvailable"`
+	CalculationReliability string  `json:"CalculationReliability"`
+	CashBalance            float64 `json:"CashBalance"`
+	ChangesScheduled       bool    `json:"ChangesScheduled"`
+	ClosedPositionsCount   float64 `json:"ClosedPositionsCount"`
+	CollateralAvailable    float64 `json:"CollateralAvailable"`
 	CollateralCreditValue  struct {
-		Line           int `json:"Line"`
-		UtilizationPct int `json:"UtilizationPct"`
+		Line           float64 `json:"Line"`
+		UtilizationPct float64 `json:"UtilizationPct"`
 	} `json:"CollateralCreditValue"`
-	CostToClosePositions int    `json:"CostToClosePositions"`
-	Currency             string `json:"Currency"`
-	CurrencyDecimals     int    `json:"CurrencyDecimals"`
+	CostToClosePositions float64 `json:"CostToClosePositions"`
+	Currency             string  `json:"Currency"`
+	CurrencyDecimals     float64 `json:"CurrencyDecimals"`
 	InitialMargin        struct {
-		CollateralAvailable   int `json:"CollateralAvailable"`
+		CollateralAvailable   float64 `json:"CollateralAvailable"`
 		CollateralCreditValue struct {
-			Line           int `json:"Line"`
-			UtilizationPct int `json:"UtilizationPct"`
+			Line           float64 `json:"Line"`
+			UtilizationPct float64 `json:"UtilizationPct"`
 		} `json:"CollateralCreditValue"`
-		MarginAvailable              int `json:"MarginAvailable"`
-		MarginCollateralNotAvailable int `json:"MarginCollateralNotAvailable"`
-		MarginUsedByCurrentPositions int `json:"MarginUsedByCurrentPositions"`
-		MarginUtilizationPct         int `json:"MarginUtilizationPct"`
-		NetEquityForMargin           int `json:"NetEquityForMargin"`
+		MarginAvailable              float64 `json:"MarginAvailable"`
+		MarginCollateralNotAvailable float64 `json:"MarginCollateralNotAvailable"`
+		MarginUsedByCurrentPositions float64 `json:"MarginUsedByCurrentPositions"`
+		MarginUtilizationPct         float64 `json:"MarginUtilizationPct"`
+		NetEquityForMargin           float64 `json:"NetEquityForMargin"`
 	} `json:"InitialMargin"`
-	IsPortfolioMarginModelSimple     bool `json:"IsPortfolioMarginModelSimple"`
-	MarginAvailableForTrading        int  `json:"MarginAvailableForTrading"`
-	MarginCollateralNotAvailable     int  `json:"MarginCollateralNotAvailable"`
-	MarginExposureCoveragePct        int  `json:"MarginExposureCoveragePct"`
-	MarginNetExposure                int  `json:"MarginNetExposure"`
-	MarginUsedByCurrentPositions     int  `json:"MarginUsedByCurrentPositions"`
-	MarginUtilizationPct             int  `json:"MarginUtilizationPct"`
-	NetEquityForMargin               int  `json:"NetEquityForMargin"`
-	NetPositionsCount                int  `json:"NetPositionsCount"`
-	NonMarginPositionsValue          int  `json:"NonMarginPositionsValue"`
-	OpenPositionsCount               int  `json:"OpenPositionsCount"`
-	OptionPremiumsMarketValue        int  `json:"OptionPremiumsMarketValue"`
-	OrdersCount                      int  `json:"OrdersCount"`
-	OtherCollateral                  int  `json:"OtherCollateral"`
-	SettlementValue                  int  `json:"SettlementValue"`
-	TotalValue                       int  `json:"TotalValue"`
-	TransactionsNotBooked            int  `json:"TransactionsNotBooked"`
-	UnrealizedMarginClosedProfitLoss int  `json:"UnrealizedMarginClosedProfitLoss"`
-	UnrealizedMarginOpenProfitLoss   int  `json:"UnrealizedMarginOpenProfitLoss"`
-	UnrealizedMarginProfitLoss       int  `json:"UnrealizedMarginProfitLoss"`
-	UnrealizedPositionsValue         int  `json:"UnrealizedPositionsValue"`
+	IsPortfolioMarginModelSimple     bool    `json:"IsPortfolioMarginModelSimple"`
+	MarginAvailableForTrading        float64 `json:"MarginAvailableForTrading"`
+	MarginCollateralNotAvailable     float64 `json:"MarginCollateralNotAvailable"`
+	MarginExposureCoveragePct        float64 `json:"MarginExposureCoveragePct"`
+	MarginNetExposure                float64 `json:"MarginNetExposure"`
+	MarginUsedByCurrentPositions     float64 `json:"MarginUsedByCurrentPositions"`
+	MarginUtilizationPct             float64 `json:"MarginUtilizationPct"`
+	NetEquityForMargin               float64 `json:"NetEquityForMargin"`
+	NetPositionsCount                float64 `json:"NetPositionsCount"`
+	NonMarginPositionsValue          float64 `json:"NonMarginPositionsValue"`
+	OpenPositionsCount               float64 `json:"OpenPositionsCount"`
+	OptionPremiumsMarketValue        float64 `json:"OptionPremiumsMarketValue"`
+	OrdersCount                      float64 `json:"OrdersCount"`
+	OtherCollateral                  float64 `json:"OtherCollateral"`
+	SettlementValue                  float64 `json:"SettlementValue"`
+	TotalValue                       float64 `json:"TotalValue"`
+	TransactionsNotBooked            float64 `json:"TransactionsNotBooked"`
+	UnrealizedMarginClosedProfitLoss float64 `json:"UnrealizedMarginClosedProfitLoss"`
+	UnrealizedMarginOpenProfitLoss   float64 `json:"UnrealizedMarginOpenProfitLoss"`
+	UnrealizedMarginProfitLoss       float64 `json:"UnrealizedMarginProfitLoss"`
+	UnrealizedPositionsValue         float64 `json:"UnrealizedPositionsValue"`
 }
 
 func (ma *ModeledAPI) GetBalanceMe() (*Balance, error) {

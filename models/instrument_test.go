@@ -54,7 +54,7 @@ func (s *InstrumentSuite) TestGetPriceTick(c *check.C) {
 	}
 
 	tick = GetPriceTick(100, e)
-	c.Assert(tick, check.Equals, 0.0001)
+	c.Assert(tick, check.Equals, 0.0)
 }
 
 // TestCalculatePriceWithThickSize tests the Price rounding rule based on the instrument tick

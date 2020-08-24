@@ -301,7 +301,7 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.StopIfTraded).
-			WithPrice(s.ip.Quote.Ask))
+			WithPrice(s.ip.Quote.Ask - 5))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
 	}
@@ -318,7 +318,7 @@ func (s *Suite) TestTradeSimple_Buy_StopIfTraded_10_APPL(c *check.C) {
 	if !ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopIfTraded)
-		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)
+		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask-5)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }
@@ -333,7 +333,7 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 		s.i.GetOrder().
 			WithAmount(10).
 			WithType(models.StopLimit).
-			WithPrice(s.ip.Quote.Ask).
+			WithPrice(s.ip.Quote.Ask - 5).
 			WithStopLimitPrice(s.ip.Quote.Ask + 3))
 	if err != nil {
 		fmt.Println(models.GetStringError(err))
@@ -348,7 +348,7 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopLimit)
-		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)
+		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask-5)
 		c.Assert(ol.Data[0].Amount, check.Equals, 10)
 	}
 }

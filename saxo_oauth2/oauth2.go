@@ -113,12 +113,17 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 	if err != nil {
 		return nil, err
 	}
+	defer l.Close()
 
 	err = exec.Command("open", loginURL).Start()
 	if err != nil {
 		return nil, err
 	}
-	server.Serve(l)
+
+	err = server.Serve(l)
+	if err != nil {
+		log.Println("Server close:", err)
+	}
 
 	/* Perform OAuth2 round trip request and obtain a token */
 	// Use the custom HTTP client when requesting a token.

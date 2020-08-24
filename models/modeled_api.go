@@ -17,7 +17,7 @@ type ModeledAPI struct {
 
 func (ma *ModeledAPI) Throttle() {
 	ma.m.Lock()
-	timePassed := time.Now().Sub(ma.lastAPICall)
+	timePassed := time.Since(ma.lastAPICall)
 	ma.m.Unlock()
 	if timePassed < time.Second {
 		time.Sleep(time.Second - timePassed)

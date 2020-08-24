@@ -19,3 +19,6 @@ profile:
 clean:
 	rm -rf *.prof
 	go clean $(PKGS)
+
+lint:
+	golangci-lint run

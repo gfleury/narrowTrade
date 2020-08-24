@@ -13,7 +13,6 @@ import (
 	"github.com/gfleury/narrowTrade/tests"
 
 	iex "github.com/goinvest/iexcloud/v2"
-	"golang.org/x/oauth2"
 )
 
 func main() {
@@ -30,7 +29,7 @@ func main() {
 	tokenSource := oauth2cfg.TokenSource(ctx, token)
 
 	client := saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration())
-	auth := context.WithValue(oauth2.NoContext, saxo_openapi.ContextOAuth2, tokenSource)
+	auth := context.WithValue(ctx, saxo_openapi.ContextOAuth2, tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
 	ma := &models.ModeledAPI{
@@ -52,7 +51,7 @@ func main() {
 		IEXClient:  iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
 	}
 
-	mostAttractives, err := t.IEXClient.Gainers(ctx)
+	gainers, err := t.IEXClient.Gainers(ctx)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -60,12 +59,17 @@ func main() {
 
 	symbols := []string{}
 
-	for _, instrument := range mostAttractives {
+	for _, instrument := range gainers {
 		symbols = append(symbols, instrument.Symbol)
 	}
 
-	t.BuyStocksNaive(symbols, 2, 5)
+	err = t.BuyStocksNaive(symbols, 2, 5)
 
+	if err != nil {
+		log.Println(err)
+		log.Println(models.GetStringError(err))
+		os.Exit(1)
+	}
 	// Always write token back if everything went ok
 	token, err = tokenSource.Token()
 	if err != nil {

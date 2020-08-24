@@ -2,15 +2,19 @@ package trader
 
 import (
 	"log"
+	"sort"
 
 	"github.com/gfleury/narrowTrade/models"
+	"github.com/gfleury/narrowTrade/utils"
 
 	iex "github.com/goinvest/iexcloud/v2"
 )
 
 type NaiveStockData struct {
-	instrument models.InstrumentDetails
-	iexQuote   iex.Quote
+	instrument       models.InstrumentDetails
+	iexQuote         iex.Quote
+	buyRecomendation int
+	betterBuy        bool
 }
 
 func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentProfit float64) error {
@@ -81,8 +85,21 @@ func (t *BasicSaxoTrader) createStocksNaive(symbols []string) []NaiveStockData {
 		if err != nil {
 			n.iexQuote = iex.Quote{}
 		}
+
+		log.Println("Trying to get recommendation from IEXCloud analysis", i.GetAssetType(), i.GetSymbolSimple())
+		recommendations, err := t.IEXClient.RecommendationTrends(t.ModeledAPI.Ctx, i.GetSymbolSimple())
+		if err != nil {
+			continue
+		}
+		recommendation := utils.IEXRecomendationReduce(recommendations)
+		n.buyRecomendation = recommendation.BuyRatings
+		n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
 		naiveStockData[idx] = n
 	}
+
+	sort.Slice(naiveStockData, func(i, j int) bool {
+		return naiveStockData[i].buyRecomendation > naiveStockData[j].buyRecomendation
+	})
 
 	return naiveStockData
 }

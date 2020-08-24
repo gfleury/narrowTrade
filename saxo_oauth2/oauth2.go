@@ -71,14 +71,20 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 		cbError := r.URL.Query().Get("error")
 		if cbError != "" {
 			errorDescription := r.URL.Query().Get("error_description")
-			io.WriteString(w, fmt.Sprintf("Error: %s\n", errorDescription))
+			_, err := io.WriteString(w, fmt.Sprintf("Error: %s\n", errorDescription))
+			if err != nil {
+				log.Println("Error writing response to oauth client auth:", err)
+			}
 		}
 
 		// get the authorization code
 		code = r.URL.Query().Get("code")
 		if code == "" {
 			log.Println("snap: Url Param 'code' is missing")
-			io.WriteString(w, "Error: could not find 'code' URL parameter\n")
+			_, err := io.WriteString(w, "Error: could not find 'code' URL parameter\n")
+			if err != nil {
+				log.Println("Error writing response to oauth client auth:", err)
+			}
 
 			// close the HTTP server and return
 			cleanup(server)
@@ -86,13 +92,17 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 		}
 
 		// return an indication of success to the caller
-		io.WriteString(w, `
+		_, err := io.WriteString(w, `
 		<html>
 			<body>
 				<h1>Login successful!</h1>
 				<h2>You can close this window and return to the CLI.</h2>
 			</body>
 		</html>`)
+
+		if err != nil {
+			log.Println("Error writing response to oauth client auth:", err)
+		}
 
 		// close the HTTP server
 		cleanup(server)

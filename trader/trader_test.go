@@ -37,7 +37,7 @@ func (s *Suite) SetUpSuite(c *check.C) {
 	s.tokenSource = oauth2cfg.TokenSource(ctx, token)
 
 	client := saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration())
-	auth := context.WithValue(oauth2.NoContext, saxo_openapi.ContextOAuth2, s.tokenSource)
+	auth := context.WithValue(ctx, saxo_openapi.ContextOAuth2, s.tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
 	s.ma = &models.ModeledAPI{
@@ -111,6 +111,7 @@ func (s *Suite) TestTradeSimple_Buy_Market_10_APPL(c *check.C) {
 	c.Assert(or.ErrorInfo, check.IsNil)
 
 	ol, err := s.ma.GetOrdersMe()
+	c.Assert(err, check.IsNil)
 
 	if !s.ex.IsOpen {
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)

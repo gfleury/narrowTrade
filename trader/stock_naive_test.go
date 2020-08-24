@@ -12,7 +12,7 @@ func (s *Suite) TestBuyStocksNaive_2_5(c *check.C) {
 		IEXClient:  tests.GetIEXSandboxClient(),
 	}
 
-	err := t.BuyStocksNaive([]string{"AAPL"}, 2, 5)
+	err := t.BuyStocksNaive([]string{"AAPL", "INTC"}, 2, 5)
 	c.Assert(err, check.IsNil)
 }
 
@@ -23,6 +23,6 @@ func (s *Suite) TestBuyStocksNaive_1_2(c *check.C) {
 		IEXClient:  tests.GetIEXSandboxClient(),
 	}
 
-	err := t.BuyStocksNaive([]string{"AAPL"}, 1, 2)
+	err := t.BuyStocksNaive([]string{"AAPL", "INTC"}, 1, 2)
 	c.Assert(err, check.IsNil)
 }

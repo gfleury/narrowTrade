@@ -130,7 +130,8 @@ func (ma *ModeledAPI) PreOrder(o *Order) (*PreOrderResponse, error) {
 func (ma *ModeledAPI) Order(o *Order) (*OrderResponse, error) {
 	b := &OrderResponse{}
 	ma.Throttle()
-	data, _, err := ma.Client.TradingApi.PlaceOrder(ma.Ctx, &saxo_openapi.TradingApiPlaceOrderOpts{Body: optional.NewInterface(&o)})
+	data, _, err := ma.Client.TradingApi.PlaceOrder(ma.Ctx,
+		&saxo_openapi.TradingApiPlaceOrderOpts{Body: optional.NewInterface(&o)})
 	defer ma.UpdateLastCall()
 	if err != nil {
 		mapErr := GetMapError(err)

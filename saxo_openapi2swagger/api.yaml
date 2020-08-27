@@ -12956,6 +12956,46 @@ paths:
                     type: string
                   ModelState:
                     type: object
+  /openapi/trade/v1/watchlists/subscriptions:
+    post:
+      tags:
+      - Trading
+      operationId: GetWatchlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "204":
+          description: The resource was deleted successfully.
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ErrorCode:
+                    type: string
+                  Message:
+                    type: string
+                  ModelState:
+                    type: object
   /openapi/trade/v2/orders:
     patch:
       tags:

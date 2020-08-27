@@ -36,6 +36,7 @@ Method | HTTP request | Description
 [**GetMessagesAsync**](TradingApi.md#GetMessagesAsync) | **Get** /openapi/trade/v1/messages | 
 [**GetMultiLegOrderStrategyDefaults**](TradingApi.md#GetMultiLegOrderStrategyDefaults) | **Get** /openapi/trade/v2/orders/multileg/defaults/ | 
 [**GetMultiLegPriceAsync**](TradingApi.md#GetMultiLegPriceAsync) | **Post** /openapi/trade/v1/prices/multileg | 
+[**GetWatchlist**](TradingApi.md#GetWatchlist) | **Post** /openapi/trade/v1/watchlists/subscriptions | 
 [**MarkMessageAsSeen**](TradingApi.md#MarkMessageAsSeen) | **Put** /openapi/trade/v1/messages/seen/{MessageId} | 
 [**ModifySubscription**](TradingApi.md#ModifySubscription) | **Patch** /openapi/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId} | 
 [**PlaceMultiLegStrategyOrder**](TradingApi.md#PlaceMultiLegStrategyOrder) | **Post** /openapi/trade/v2/orders/multileg | 
@@ -1041,6 +1042,38 @@ Optional parameters are passed through a pointer to a TradingApiGetMultiLegPrice
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**optional.Interface of Body65**](Body65.md)|  | 
+
+### Return type
+
+[**interface{}**](interface{}.md)
+
+### Authorization
+
+[openapi_auth](../README.md#openapi_auth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **GetWatchlist**
+> interface{} GetWatchlist(ctx, optional)
+
+
+### Required Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+ **optional** | ***TradingApiGetWatchlistOpts** | optional parameters | nil if no parameters
+
+### Optional Parameters
+Optional parameters are passed through a pointer to a TradingApiGetWatchlistOpts struct
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**optional.Interface of interface{}**](interface{}.md)|  | 
 
 ### Return type
 

@@ -256,6 +256,7 @@ Class | Method | HTTP request | Description
 *TradingApi* | [**GetMessagesAsync**](docs/TradingApi.md#getmessagesasync) | **Get** /openapi/trade/v1/messages | 
 *TradingApi* | [**GetMultiLegOrderStrategyDefaults**](docs/TradingApi.md#getmultilegorderstrategydefaults) | **Get** /openapi/trade/v2/orders/multileg/defaults/ | 
 *TradingApi* | [**GetMultiLegPriceAsync**](docs/TradingApi.md#getmultilegpriceasync) | **Post** /openapi/trade/v1/prices/multileg | 
+*TradingApi* | [**GetWatchlist**](docs/TradingApi.md#getwatchlist) | **Post** /openapi/trade/v1/watchlists/subscriptions | 
 *TradingApi* | [**MarkMessageAsSeen**](docs/TradingApi.md#markmessageasseen) | **Put** /openapi/trade/v1/messages/seen/{MessageId} | 
 *TradingApi* | [**ModifySubscription**](docs/TradingApi.md#modifysubscription) | **Patch** /openapi/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId} | 
 *TradingApi* | [**PlaceMultiLegStrategyOrder**](docs/TradingApi.md#placemultilegstrategyorder) | **Post** /openapi/trade/v2/orders/multileg | 

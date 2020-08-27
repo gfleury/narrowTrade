@@ -9,19 +9,19 @@
 package saxo_openapi
 
 type Body69 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	AlgoOrderData *interface{} `json:"AlgoOrderData,omitempty"`
-	Amount float64 `json:"Amount,omitempty"`
-	AssetType []string `json:"AssetType,omitempty"`
-	DecisionMakerUserID int32 `json:"DecisionMakerUserID,omitempty"`
-	IsForceOpen bool `json:"IsForceOpen,omitempty"`
-	OrderDuration *interface{} `json:"OrderDuration,omitempty"`
-	OrderId string `json:"OrderId,omitempty"`
-	OrderPrice float64 `json:"OrderPrice,omitempty"`
-	OrderType []string `json:"OrderType,omitempty"`
-	Orders []interface{} `json:"Orders,omitempty"`
-	StopLimitPrice float64 `json:"StopLimitPrice,omitempty"`
-	TraderId string `json:"TraderId,omitempty"`
-	TrailingStopDistanceToMarket float64 `json:"TrailingStopDistanceToMarket,omitempty"`
-	TrailingStopStep float64 `json:"TrailingStopStep,omitempty"`
+	AccountKey                   string        `json:"AccountKey,omitempty"`
+	AlgoOrderData                *interface{}  `json:"AlgoOrderData,omitempty"`
+	Amount                       float64       `json:"Amount,omitempty"`
+	AssetType                    []string      `json:"AssetType,omitempty"`
+	DecisionMakerUserID          int32         `json:"DecisionMakerUserID,omitempty"`
+	IsForceOpen                  bool          `json:"IsForceOpen,omitempty"`
+	OrderDuration                *interface{}  `json:"OrderDuration,omitempty"`
+	OrderId                      string        `json:"OrderId,omitempty"`
+	OrderPrice                   float64       `json:"OrderPrice,omitempty"`
+	OrderType                    []string      `json:"OrderType,omitempty"`
+	Orders                       []interface{} `json:"Orders,omitempty"`
+	StopLimitPrice               float64       `json:"StopLimitPrice,omitempty"`
+	TraderId                     string        `json:"TraderId,omitempty"`
+	TrailingStopDistanceToMarket float64       `json:"TrailingStopDistanceToMarket,omitempty"`
+	TrailingStopStep             float64       `json:"TrailingStopStep,omitempty"`
 }

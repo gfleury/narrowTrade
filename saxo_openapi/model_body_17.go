@@ -9,9 +9,9 @@
 package saxo_openapi
 
 type Body17 struct {
-	CaseTitle string `json:"CaseTitle,omitempty"`
-	ClientKey string `json:"ClientKey,omitempty"`
-	Description string `json:"Description,omitempty"`
-	NotifyClient bool `json:"NotifyClient,omitempty"`
-	ShowInPortal bool `json:"ShowInPortal,omitempty"`
+	CaseTitle    string `json:"CaseTitle,omitempty"`
+	ClientKey    string `json:"ClientKey,omitempty"`
+	Description  string `json:"Description,omitempty"`
+	NotifyClient bool   `json:"NotifyClient,omitempty"`
+	ShowInPortal bool   `json:"ShowInPortal,omitempty"`
 }

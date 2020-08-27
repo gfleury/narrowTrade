@@ -9,10 +9,10 @@
 package saxo_openapi
 
 type Body11 struct {
-	Arguments *Openapichartv1chartssubscriptionsArguments `json:"Arguments,omitempty"`
-	ContextId string `json:"ContextId,omitempty"`
-	Format string `json:"Format,omitempty"`
-	ReferenceId string `json:"ReferenceId,omitempty"`
-	RefreshRate int32 `json:"RefreshRate,omitempty"`
-	Tag string `json:"Tag,omitempty"`
+	Arguments   *Openapichartv1chartssubscriptionsArguments `json:"Arguments,omitempty"`
+	ContextId   string                                      `json:"ContextId,omitempty"`
+	Format      string                                      `json:"Format,omitempty"`
+	ReferenceId string                                      `json:"ReferenceId,omitempty"`
+	RefreshRate int32                                       `json:"RefreshRate,omitempty"`
+	Tag         string                                      `json:"Tag,omitempty"`
 }

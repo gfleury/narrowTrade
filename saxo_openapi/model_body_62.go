@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body62 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	DisableForceOpen bool `json:"DisableForceOpen,omitempty"`
-	ExerciseMethod []string `json:"ExerciseMethod,omitempty"`
+	AccountKey       string   `json:"AccountKey,omitempty"`
+	DisableForceOpen bool     `json:"DisableForceOpen,omitempty"`
+	ExerciseMethod   []string `json:"ExerciseMethod,omitempty"`
 }

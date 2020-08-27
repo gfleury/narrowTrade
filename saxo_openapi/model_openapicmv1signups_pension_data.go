@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Openapicmv1signupsPensionData struct {
-	AdditionalPensionData string `json:"AdditionalPensionData,omitempty"`
-	EmployerReference string `json:"EmployerReference,omitempty"`
-	PensionProductTypes []string `json:"PensionProductTypes,omitempty"`
+	AdditionalPensionData string   `json:"AdditionalPensionData,omitempty"`
+	EmployerReference     string   `json:"EmployerReference,omitempty"`
+	PensionProductTypes   []string `json:"PensionProductTypes,omitempty"`
 }

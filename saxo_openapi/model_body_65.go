@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body65 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	FieldGroups []string `json:"FieldGroups,omitempty"`
-	Legs []interface{} `json:"Legs,omitempty"`
+	AccountKey  string        `json:"AccountKey,omitempty"`
+	FieldGroups []string      `json:"FieldGroups,omitempty"`
+	Legs        []interface{} `json:"Legs,omitempty"`
 }

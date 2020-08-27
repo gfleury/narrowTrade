@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body51 struct {
-	Culture string `json:"Culture,omitempty"`
-	Language string `json:"Language,omitempty"`
-	TimeZoneId int32 `json:"TimeZoneId,omitempty"`
+	Culture    string `json:"Culture,omitempty"`
+	Language   string `json:"Language,omitempty"`
+	TimeZoneId int32  `json:"TimeZoneId,omitempty"`
 }

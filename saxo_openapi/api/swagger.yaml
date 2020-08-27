@@ -9719,6 +9719,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_400'
+  /openapi/ref/v1/watchlists:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetWatchlists
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                example: {}
+                x-content-type: application/json
+        "201":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                x-content-type: application/json
+        "204":
+          description: The resource was deleted successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
   /openapi/root/v1/diagnostics/delete:
     delete:
       tags:

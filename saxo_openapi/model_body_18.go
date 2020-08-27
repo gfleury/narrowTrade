@@ -9,12 +9,12 @@
 package saxo_openapi
 
 type Body18 struct {
-	CaseStatus []string `json:"CaseStatus,omitempty"`
-	CaseType []string `json:"CaseType,omitempty"`
-	Description string `json:"Description,omitempty"`
-	FollowUpDueDate string `json:"FollowUpDueDate,omitempty"`
-	HandledByPartner bool `json:"HandledByPartner,omitempty"`
-	IsEscalated bool `json:"IsEscalated,omitempty"`
-	ShowInPortal bool `json:"ShowInPortal,omitempty"`
-	Title string `json:"Title,omitempty"`
+	CaseStatus       []string `json:"CaseStatus,omitempty"`
+	CaseType         []string `json:"CaseType,omitempty"`
+	Description      string   `json:"Description,omitempty"`
+	FollowUpDueDate  string   `json:"FollowUpDueDate,omitempty"`
+	HandledByPartner bool     `json:"HandledByPartner,omitempty"`
+	IsEscalated      bool     `json:"IsEscalated,omitempty"`
+	ShowInPortal     bool     `json:"ShowInPortal,omitempty"`
+	Title            string   `json:"Title,omitempty"`
 }

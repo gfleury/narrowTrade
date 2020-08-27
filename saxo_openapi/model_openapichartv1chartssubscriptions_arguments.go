@@ -9,9 +9,9 @@
 package saxo_openapi
 
 type Openapichartv1chartssubscriptionsArguments struct {
-	AssetType []string `json:"AssetType,omitempty"`
-	Count int32 `json:"Count,omitempty"`
+	AssetType   []string      `json:"AssetType,omitempty"`
+	Count       int32         `json:"Count,omitempty"`
 	FieldGroups []interface{} `json:"FieldGroups,omitempty"`
-	Horizon int32 `json:"Horizon,omitempty"`
-	Uic int32 `json:"Uic,omitempty"`
+	Horizon     int32         `json:"Horizon,omitempty"`
+	Uic         int32         `json:"Uic,omitempty"`
 }

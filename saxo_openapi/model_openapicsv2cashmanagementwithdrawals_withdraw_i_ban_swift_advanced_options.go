@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Openapicsv2cashmanagementwithdrawalsWithdrawIBanSwiftAdvancedOptions struct {
-	IntermediaryBank string `json:"IntermediaryBank,omitempty"`
-	RegulatedBroker *interface{} `json:"RegulatedBroker,omitempty"`
-	RequestClosureOfAccount string `json:"RequestClosureOfAccount,omitempty"`
+	IntermediaryBank        string       `json:"IntermediaryBank,omitempty"`
+	RegulatedBroker         *interface{} `json:"RegulatedBroker,omitempty"`
+	RequestClosureOfAccount string       `json:"RequestClosureOfAccount,omitempty"`
 }

@@ -10,9 +10,9 @@ package saxo_openapi
 
 type Openapicmv1signupsAccountInformation struct {
 	AdditionalChoiceOfAccounts []string `json:"AdditionalChoiceOfAccounts,omitempty"`
-	ClientCategoryId string `json:"ClientCategoryId,omitempty"`
-	CurrencyCode string `json:"CurrencyCode,omitempty"`
-	IntendedCommissionGroupId string `json:"IntendedCommissionGroupId,omitempty"`
-	IntendedTemplateId string `json:"IntendedTemplateId,omitempty"`
-	OtherInstructions string `json:"OtherInstructions,omitempty"`
+	ClientCategoryId           string   `json:"ClientCategoryId,omitempty"`
+	CurrencyCode               string   `json:"CurrencyCode,omitempty"`
+	IntendedCommissionGroupId  string   `json:"IntendedCommissionGroupId,omitempty"`
+	IntendedTemplateId         string   `json:"IntendedTemplateId,omitempty"`
+	OtherInstructions          string   `json:"OtherInstructions,omitempty"`
 }

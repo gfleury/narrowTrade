@@ -9,12 +9,12 @@
 package saxo_openapi
 
 type Body61 struct {
-	AppHint int32 `json:"AppHint,omitempty"`
-	BuySell []string `json:"BuySell,omitempty"`
-	ContextId string `json:"ContextId,omitempty"`
-	ExerciseMethod []string `json:"ExerciseMethod,omitempty"`
-	PriceReferenceId string `json:"PriceReferenceId,omitempty"`
-	QuoteId string `json:"QuoteId,omitempty"`
-	TradeIdeaId int32 `json:"TradeIdeaId,omitempty"`
-	UserPrice float64 `json:"UserPrice,omitempty"`
+	AppHint          int32    `json:"AppHint,omitempty"`
+	BuySell          []string `json:"BuySell,omitempty"`
+	ContextId        string   `json:"ContextId,omitempty"`
+	ExerciseMethod   []string `json:"ExerciseMethod,omitempty"`
+	PriceReferenceId string   `json:"PriceReferenceId,omitempty"`
+	QuoteId          string   `json:"QuoteId,omitempty"`
+	TradeIdeaId      int32    `json:"TradeIdeaId,omitempty"`
+	UserPrice        float64  `json:"UserPrice,omitempty"`
 }

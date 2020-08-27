@@ -9,6 +9,6 @@
 package saxo_openapi
 
 type Body60 struct {
-	Expiries []interface{} `json:"Expiries,omitempty"`
-	MaxStrikesPerExpiry int32 `json:"MaxStrikesPerExpiry,omitempty"`
+	Expiries            []interface{} `json:"Expiries,omitempty"`
+	MaxStrikesPerExpiry int32         `json:"MaxStrikesPerExpiry,omitempty"`
 }

@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body12 struct {
-	ClientKey string `json:"ClientKey,omitempty"`
-	Documents []string `json:"Documents,omitempty"`
+	ClientKey   string                                               `json:"ClientKey,omitempty"`
+	Documents   []string                                             `json:"Documents,omitempty"`
 	RenewalData *Openapicmv1clientrenewalsRenewalEntityIdRenewalData `json:"RenewalData,omitempty"`
 }

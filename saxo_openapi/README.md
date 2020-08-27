@@ -206,6 +206,7 @@ Class | Method | HTTP request | Description
 *ReferenceDataApi* | [**GetSummaries**](docs/ReferenceDataApi.md#getsummaries) | **Get** /openapi/ref/v1/instruments/ | 
 *ReferenceDataApi* | [**GetTimeZones**](docs/ReferenceDataApi.md#gettimezones) | **Get** /openapi/ref/v1/timezones | 
 *ReferenceDataApi* | [**GetTradingSchedule**](docs/ReferenceDataApi.md#gettradingschedule) | **Get** /openapi/ref/v1/instruments/tradingschedule/{Uic}/{AssetType} | 
+*ReferenceDataApi* | [**GetWatchlists**](docs/ReferenceDataApi.md#getwatchlists) | **Get** /openapi/ref/v1/watchlists | 
 *RootApi* | [**AddSubscriptionRoot**](docs/RootApi.md#addsubscriptionroot) | **Post** /openapi/root/v1/sessions/events/subscriptions | 
 *RootApi* | [**Delete**](docs/RootApi.md#delete) | **Delete** /openapi/root/v1/diagnostics/delete | 
 *RootApi* | [**DeleteRoot**](docs/RootApi.md#deleteroot) | **Delete** /openapi/root/v1/features/availability/subscriptions/{ContextId}/{ReferenceId} | 

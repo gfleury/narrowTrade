@@ -9,9 +9,9 @@
 package saxo_openapi
 
 type Body28 struct {
-	Description string `json:"Description,omitempty"`
-	Flow string `json:"Flow,omitempty"`
-	IsTradingEnabled bool `json:"IsTradingEnabled,omitempty"`
-	Name string `json:"Name,omitempty"`
-	RedirectUri string `json:"RedirectUri,omitempty"`
+	Description      string `json:"Description,omitempty"`
+	Flow             string `json:"Flow,omitempty"`
+	IsTradingEnabled bool   `json:"IsTradingEnabled,omitempty"`
+	Name             string `json:"Name,omitempty"`
+	RedirectUri      string `json:"RedirectUri,omitempty"`
 }

@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body43 struct {
-	AccountValueProtectionLimit float64 `json:"AccountValueProtectionLimit,omitempty"`
-	ForceOpenDefaultValue bool `json:"ForceOpenDefaultValue,omitempty"`
-	NewPositionNettingMode []string `json:"NewPositionNettingMode,omitempty"`
+	AccountValueProtectionLimit float64  `json:"AccountValueProtectionLimit,omitempty"`
+	ForceOpenDefaultValue       bool     `json:"ForceOpenDefaultValue,omitempty"`
+	NewPositionNettingMode      []string `json:"NewPositionNettingMode,omitempty"`
 }

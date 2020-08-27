@@ -9,6 +9,6 @@
 package saxo_openapi
 
 type Body2 struct {
-	Amount float64 `json:"Amount,omitempty"`
-	TargetAccountKey string `json:"TargetAccountKey,omitempty"`
+	Amount           float64 `json:"Amount,omitempty"`
+	TargetAccountKey string  `json:"TargetAccountKey,omitempty"`
 }

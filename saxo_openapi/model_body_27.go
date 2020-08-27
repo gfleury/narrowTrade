@@ -9,11 +9,11 @@
 package saxo_openapi
 
 type Body27 struct {
-	AccountId string `json:"AccountId,omitempty"`
-	AccountKey string `json:"AccountKey,omitempty"`
-	ClientId string `json:"ClientId,omitempty"`
-	ClientKey string `json:"ClientKey,omitempty"`
+	AccountId   string   `json:"AccountId,omitempty"`
+	AccountKey  string   `json:"AccountKey,omitempty"`
+	ClientId    string   `json:"ClientId,omitempty"`
+	ClientKey   string   `json:"ClientKey,omitempty"`
 	FieldGroups []string `json:"FieldGroups,omitempty"`
-	Keywords string `json:"Keywords,omitempty"`
-	UserId string `json:"UserId,omitempty"`
+	Keywords    string   `json:"Keywords,omitempty"`
+	UserId      string   `json:"UserId,omitempty"`
 }

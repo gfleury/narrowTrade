@@ -22,6 +22,7 @@ Method | HTTP request | Description
 [**GetSummaries**](ReferenceDataApi.md#GetSummaries) | **Get** /openapi/ref/v1/instruments/ | 
 [**GetTimeZones**](ReferenceDataApi.md#GetTimeZones) | **Get** /openapi/ref/v1/timezones | 
 [**GetTradingSchedule**](ReferenceDataApi.md#GetTradingSchedule) | **Get** /openapi/ref/v1/instruments/tradingschedule/{Uic}/{AssetType} | 
+[**GetWatchlists**](ReferenceDataApi.md#GetWatchlists) | **Get** /openapi/ref/v1/watchlists | 
 
 # **GetAllCurrencyPairs**
 > interface{} GetAllCurrencyPairs(ctx, optional)
@@ -539,6 +540,28 @@ Name | Type | Description  | Notes
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
   **assetType** | [**[]string**](string.md)|  | 
   **uic** | **int32**|  | 
+
+### Return type
+
+[**interface{}**](interface{}.md)
+
+### Authorization
+
+[openapi_auth](../README.md#openapi_auth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **GetWatchlists**
+> interface{} GetWatchlists(ctx, )
+
+
+### Required Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 

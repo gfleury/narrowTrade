@@ -9,8 +9,8 @@
 package saxo_openapi
 
 type Body38 struct {
-	AccountValueProtectionLimit float64 `json:"AccountValueProtectionLimit,omitempty"`
-	BenchmarkInstrument *Openapiportv1accountsAccountKeyBenchmarkInstrument `json:"BenchmarkInstrument,omitempty"`
-	DisplayName string `json:"DisplayName,omitempty"`
-	UseCashPositionsAsMarginCollateral bool `json:"UseCashPositionsAsMarginCollateral,omitempty"`
+	AccountValueProtectionLimit        float64                                             `json:"AccountValueProtectionLimit,omitempty"`
+	BenchmarkInstrument                *Openapiportv1accountsAccountKeyBenchmarkInstrument `json:"BenchmarkInstrument,omitempty"`
+	DisplayName                        string                                              `json:"DisplayName,omitempty"`
+	UseCashPositionsAsMarginCollateral bool                                                `json:"UseCashPositionsAsMarginCollateral,omitempty"`
 }

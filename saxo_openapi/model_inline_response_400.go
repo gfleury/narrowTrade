@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type InlineResponse400 struct {
-	ErrorCode string `json:"ErrorCode,omitempty"`
-	Message string `json:"Message,omitempty"`
+	ErrorCode  string       `json:"ErrorCode,omitempty"`
+	Message    string       `json:"Message,omitempty"`
 	ModelState *interface{} `json:"ModelState,omitempty"`
 }

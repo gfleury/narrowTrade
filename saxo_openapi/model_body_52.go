@@ -9,9 +9,9 @@
 package saxo_openapi
 
 type Body52 struct {
-	ContextId string `json:"ContextId,omitempty"`
-	Format string `json:"Format,omitempty"`
+	ContextId   string `json:"ContextId,omitempty"`
+	Format      string `json:"Format,omitempty"`
 	ReferenceId string `json:"ReferenceId,omitempty"`
-	RefreshRate int32 `json:"RefreshRate,omitempty"`
-	Tag string `json:"Tag,omitempty"`
+	RefreshRate int32  `json:"RefreshRate,omitempty"`
+	Tag         string `json:"Tag,omitempty"`
 }

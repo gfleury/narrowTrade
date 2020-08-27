@@ -9,6 +9,6 @@
 package saxo_openapi
 
 type Openapicmv1signupsBankInformation struct {
-	BeneficiaryBankName string `json:"BeneficiaryBankName,omitempty"`
+	BeneficiaryBankName     string `json:"BeneficiaryBankName,omitempty"`
 	ReceivingCountryIsoCode string `json:"ReceivingCountryIsoCode,omitempty"`
 }

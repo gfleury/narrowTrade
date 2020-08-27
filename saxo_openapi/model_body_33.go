@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body33 struct {
-	Regenerate bool `json:"Regenerate,omitempty"`
-	ValidFrom string `json:"ValidFrom,omitempty"`
+	Regenerate bool   `json:"Regenerate,omitempty"`
+	ValidFrom  string `json:"ValidFrom,omitempty"`
 	ValidUntil string `json:"ValidUntil,omitempty"`
 }

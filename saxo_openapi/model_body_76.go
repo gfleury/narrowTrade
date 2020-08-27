@@ -9,8 +9,8 @@
 package saxo_openapi
 
 type Body76 struct {
-	EmailAddress string `json:"EmailAddress,omitempty"`
-	NotifyWithMail bool `json:"NotifyWithMail,omitempty"`
-	NotifyWithPopup bool `json:"NotifyWithPopup,omitempty"`
-	Sound []string `json:"Sound,omitempty"`
+	EmailAddress    string   `json:"EmailAddress,omitempty"`
+	NotifyWithMail  bool     `json:"NotifyWithMail,omitempty"`
+	NotifyWithPopup bool     `json:"NotifyWithPopup,omitempty"`
+	Sound           []string `json:"Sound,omitempty"`
 }

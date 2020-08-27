@@ -9,10 +9,10 @@
 package saxo_openapi
 
 type Body struct {
-	DisplayName string `json:"DisplayName,omitempty"`
-	FundingAccountKey string `json:"FundingAccountKey,omitempty"`
-	InitialFunding float64 `json:"InitialFunding,omitempty"`
+	DisplayName            string  `json:"DisplayName,omitempty"`
+	FundingAccountKey      string  `json:"FundingAccountKey,omitempty"`
+	InitialFunding         float64 `json:"InitialFunding,omitempty"`
 	InvestmentShieldAmount float64 `json:"InvestmentShieldAmount,omitempty"`
-	IsDisclaimerAccepted bool `json:"IsDisclaimerAccepted,omitempty"`
-	TradeLeaderId string `json:"TradeLeaderId,omitempty"`
+	IsDisclaimerAccepted   bool    `json:"IsDisclaimerAccepted,omitempty"`
+	TradeLeaderId          string  `json:"TradeLeaderId,omitempty"`
 }

@@ -9,6 +9,6 @@
 package saxo_openapi
 
 type Body8 struct {
-	OwnerKey string `json:"OwnerKey,omitempty"`
+	OwnerKey       string   `json:"OwnerKey,omitempty"`
 	StandardPeriod []string `json:"StandardPeriod,omitempty"`
 }

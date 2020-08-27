@@ -9,6 +9,6 @@
 package saxo_openapi
 
 type Body32 struct {
-	ValidFrom string `json:"ValidFrom,omitempty"`
+	ValidFrom  string `json:"ValidFrom,omitempty"`
 	ValidUntil string `json:"ValidUntil,omitempty"`
 }

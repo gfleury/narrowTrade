@@ -9,10 +9,10 @@
 package saxo_openapi
 
 type Body56 struct {
-	AllocationKeyName string `json:"AllocationKeyName,omitempty"`
-	AllocationUnitType []string `json:"AllocationUnitType,omitempty"`
-	MarginHandling []string `json:"MarginHandling,omitempty"`
-	OneTime bool `json:"OneTime,omitempty"`
-	OwnerAccountKey string `json:"OwnerAccountKey,omitempty"`
+	AllocationKeyName         string        `json:"AllocationKeyName,omitempty"`
+	AllocationUnitType        []string      `json:"AllocationUnitType,omitempty"`
+	MarginHandling            []string      `json:"MarginHandling,omitempty"`
+	OneTime                   bool          `json:"OneTime,omitempty"`
+	OwnerAccountKey           string        `json:"OwnerAccountKey,omitempty"`
 	ParticipatingAccountsInfo []interface{} `json:"ParticipatingAccountsInfo,omitempty"`
 }

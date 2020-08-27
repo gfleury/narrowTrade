@@ -10,5 +10,5 @@ package saxo_openapi
 
 type Openapicmv1signupsSwitzerlandData struct {
 	AnnualIncomeChf string `json:"AnnualIncomeChf,omitempty"`
-	NetWorthChf string `json:"NetWorthChf,omitempty"`
+	NetWorthChf     string `json:"NetWorthChf,omitempty"`
 }

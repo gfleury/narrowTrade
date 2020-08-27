@@ -1,4 +1,3 @@
-
 /*
  * Swagger Saxo Bank openapi
  *
@@ -11,12 +10,12 @@ package saxo_openapi
 
 import (
 	"context"
+	"fmt"
+	"github.com/antihax/optional"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
-	"fmt"
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -25,47 +24,48 @@ var (
 )
 
 type AccountHistoryApiService service
+
 /*
 AccountHistoryApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param clientKey
  * @param optional nil or *AccountHistoryApiGetHistoricalPositionsOpts - Optional Parameters:
-     * @param "Inlinecount" (optional.Interface of []string) - 
-     * @param "Skip" (optional.Int32) - 
-     * @param "Skiptoken" (optional.String) - 
-     * @param "Top" (optional.Int32) - 
-     * @param "AccountGroupKey" (optional.String) - 
-     * @param "AccountKey" (optional.String) - 
-     * @param "AssetType" (optional.Interface of []string) - 
-     * @param "FromDate" (optional.String) - 
-     * @param "MockDataId" (optional.String) - 
-     * @param "StandardPeriod" (optional.Interface of []string) - 
-     * @param "Symbol" (optional.Interface of []string) - 
-     * @param "ToDate" (optional.String) - 
+     * @param "Inlinecount" (optional.Interface of []string) -
+     * @param "Skip" (optional.Int32) -
+     * @param "Skiptoken" (optional.String) -
+     * @param "Top" (optional.Int32) -
+     * @param "AccountGroupKey" (optional.String) -
+     * @param "AccountKey" (optional.String) -
+     * @param "AssetType" (optional.Interface of []string) -
+     * @param "FromDate" (optional.String) -
+     * @param "MockDataId" (optional.String) -
+     * @param "StandardPeriod" (optional.Interface of []string) -
+     * @param "Symbol" (optional.Interface of []string) -
+     * @param "ToDate" (optional.String) -
 @return interface{}
 */
 
 type AccountHistoryApiGetHistoricalPositionsOpts struct {
-    Inlinecount optional.Interface
-    Skip optional.Int32
-    Skiptoken optional.String
-    Top optional.Int32
-    AccountGroupKey optional.String
-    AccountKey optional.String
-    AssetType optional.Interface
-    FromDate optional.String
-    MockDataId optional.String
-    StandardPeriod optional.Interface
-    Symbol optional.Interface
-    ToDate optional.String
+	Inlinecount     optional.Interface
+	Skip            optional.Int32
+	Skiptoken       optional.String
+	Top             optional.Int32
+	AccountGroupKey optional.String
+	AccountKey      optional.String
+	AssetType       optional.Interface
+	FromDate        optional.String
+	MockDataId      optional.String
+	StandardPeriod  optional.Interface
+	Symbol          optional.Interface
+	ToDate          optional.String
 }
 
 func (a *AccountHistoryApiService) GetHistoricalPositions(ctx context.Context, clientKey string, localVarOptionals *AccountHistoryApiGetHistoricalPositionsOpts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -148,83 +148,84 @@ func (a *AccountHistoryApiService) GetHistoricalPositions(ctx context.Context, c
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		if localVarHttpResponse.StatusCode == 201 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		if localVarHttpResponse.StatusCode == 400 {
 			var v InlineResponse400
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
 /*
 AccountHistoryApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param clientKey
  * @param optional nil or *AccountHistoryApiGetPerformanceOpts - Optional Parameters:
-     * @param "AccountGroupKey" (optional.String) - 
-     * @param "AccountKey" (optional.String) - 
-     * @param "FieldGroups" (optional.Interface of []string) - 
-     * @param "FromDate" (optional.String) - 
-     * @param "MockDataId" (optional.String) - 
-     * @param "StandardPeriod" (optional.Interface of []string) - 
-     * @param "ToDate" (optional.String) - 
+     * @param "AccountGroupKey" (optional.String) -
+     * @param "AccountKey" (optional.String) -
+     * @param "FieldGroups" (optional.Interface of []string) -
+     * @param "FromDate" (optional.String) -
+     * @param "MockDataId" (optional.String) -
+     * @param "StandardPeriod" (optional.Interface of []string) -
+     * @param "ToDate" (optional.String) -
 @return interface{}
 */
 
 type AccountHistoryApiGetPerformanceOpts struct {
-    AccountGroupKey optional.String
-    AccountKey optional.String
-    FieldGroups optional.Interface
-    FromDate optional.String
-    MockDataId optional.String
-    StandardPeriod optional.Interface
-    ToDate optional.String
+	AccountGroupKey optional.String
+	AccountKey      optional.String
+	FieldGroups     optional.Interface
+	FromDate        optional.String
+	MockDataId      optional.String
+	StandardPeriod  optional.Interface
+	ToDate          optional.String
 }
 
 func (a *AccountHistoryApiService) GetPerformance(ctx context.Context, clientKey string, localVarOptionals *AccountHistoryApiGetPerformanceOpts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -292,71 +293,72 @@ func (a *AccountHistoryApiService) GetPerformance(ctx context.Context, clientKey
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		if localVarHttpResponse.StatusCode == 201 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		if localVarHttpResponse.StatusCode == 400 {
 			var v InlineResponse400
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
 /*
 AccountHistoryApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param clientKey
  * @param optional nil or *AccountHistoryApiGetStandardPeriodAccountValuesOpts - Optional Parameters:
-     * @param "MockDataId" (optional.String) - 
+     * @param "MockDataId" (optional.String) -
 @return interface{}
 */
 
 type AccountHistoryApiGetStandardPeriodAccountValuesOpts struct {
-    MockDataId optional.String
+	MockDataId optional.String
 }
 
 func (a *AccountHistoryApiService) GetStandardPeriodAccountValues(ctx context.Context, clientKey string, localVarOptionals *AccountHistoryApiGetStandardPeriodAccountValuesOpts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -406,46 +408,46 @@ func (a *AccountHistoryApiService) GetStandardPeriodAccountValues(ctx context.Co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		if localVarHttpResponse.StatusCode == 201 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		if localVarHttpResponse.StatusCode == 400 {
 			var v InlineResponse400
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}

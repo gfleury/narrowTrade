@@ -10,6 +10,6 @@ package saxo_openapi
 
 type Openapicmv1signupsItalyData struct {
 	EmploymentInformation *interface{} `json:"EmploymentInformation,omitempty"`
-	MailContactPreference bool `json:"MailContactPreference,omitempty"`
-	ProfileInformation *interface{} `json:"ProfileInformation,omitempty"`
+	MailContactPreference bool         `json:"MailContactPreference,omitempty"`
+	ProfileInformation    *interface{} `json:"ProfileInformation,omitempty"`
 }

@@ -9,14 +9,14 @@
 package saxo_openapi
 
 type Body10 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	Amount float64 `json:"Amount,omitempty"`
-	BIC string `json:"BIC,omitempty"`
-	ClientKey string `json:"ClientKey,omitempty"`
-	ClientName string `json:"ClientName,omitempty"`
-	Currency string `json:"Currency,omitempty"`
-	ExpectedValueDate string `json:"ExpectedValueDate,omitempty"`
-	ExternalReference string `json:"ExternalReference,omitempty"`
-	Iban string `json:"Iban,omitempty"`
-	RemitterAccount string `json:"RemitterAccount,omitempty"`
+	AccountKey        string  `json:"AccountKey,omitempty"`
+	Amount            float64 `json:"Amount,omitempty"`
+	BIC               string  `json:"BIC,omitempty"`
+	ClientKey         string  `json:"ClientKey,omitempty"`
+	ClientName        string  `json:"ClientName,omitempty"`
+	Currency          string  `json:"Currency,omitempty"`
+	ExpectedValueDate string  `json:"ExpectedValueDate,omitempty"`
+	ExternalReference string  `json:"ExternalReference,omitempty"`
+	Iban              string  `json:"Iban,omitempty"`
+	RemitterAccount   string  `json:"RemitterAccount,omitempty"`
 }

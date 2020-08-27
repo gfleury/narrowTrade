@@ -10,5 +10,5 @@ package saxo_openapi
 
 type Openapicmv1signupsFinlandData struct {
 	EuroclearJudicialForm string `json:"EuroclearJudicialForm,omitempty"`
-	EuroclearSectorCode string `json:"EuroclearSectorCode,omitempty"`
+	EuroclearSectorCode   string `json:"EuroclearSectorCode,omitempty"`
 }

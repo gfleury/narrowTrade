@@ -9,12 +9,12 @@
 package saxo_openapi
 
 type Body9 struct {
-	Amount float64 `json:"Amount,omitempty"`
-	Comment string `json:"Comment,omitempty"`
-	Currency string `json:"Currency,omitempty"`
-	ExternalReference string `json:"ExternalReference,omitempty"`
-	FromAccountKey string `json:"FromAccountKey,omitempty"`
-	FundingCheck []string `json:"FundingCheck,omitempty"`
-	ToAccountKey string `json:"ToAccountKey,omitempty"`
-	ValueDate string `json:"ValueDate,omitempty"`
+	Amount            float64  `json:"Amount,omitempty"`
+	Comment           string   `json:"Comment,omitempty"`
+	Currency          string   `json:"Currency,omitempty"`
+	ExternalReference string   `json:"ExternalReference,omitempty"`
+	FromAccountKey    string   `json:"FromAccountKey,omitempty"`
+	FundingCheck      []string `json:"FundingCheck,omitempty"`
+	ToAccountKey      string   `json:"ToAccountKey,omitempty"`
+	ValueDate         string   `json:"ValueDate,omitempty"`
 }

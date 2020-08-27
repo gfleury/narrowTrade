@@ -116,6 +116,30 @@ func main() {
 		}
 	}
 
+	//
+	// Reverse engineered methods
+	//
+
+	mGet := &Method{
+		Tags:        []string{"ReferenceData"},
+		OperationID: "GetWatchlists",
+	}
+	mGet.Responses.Num200.Content.ApplicationJSON.Schema.Type = "object"
+	mGet.Responses.Num201.Content.ApplicationJSON.Schema.Type = "object"
+	mGet.Responses.Num204.Description = "The resource was deleted successfully."
+	mGet.Responses.Num400.Content.ApplicationJSON.Schema.Type = "object"
+	mGet.Responses.Num400.Content.ApplicationJSON.Schema.Properties = map[string]Schema{
+		"ErrorCode":  Schema{Type: "string"},
+		"Message":    Schema{Type: "string"},
+		"ModelState": Schema{Type: "object"},
+	}
+
+	paths.Endpoints["/openapi/ref/v1/watchlists"] = &Endpoint{
+		Methods: map[string]*Method{
+			"get": mGet,
+		},
+	}
+
 	d, err := yaml.Marshal(&paths)
 	if err != nil {
 		fmt.Println(err)

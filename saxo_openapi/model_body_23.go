@@ -9,14 +9,14 @@
 package saxo_openapi
 
 type Body23 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	AdvancedOptions *Openapicsv2cashmanagementwithdrawalsWithdrawIBanSwiftAdvancedOptions `json:"AdvancedOptions,omitempty"`
-	Amount float64 `json:"Amount,omitempty"`
-	ClearingCode string `json:"ClearingCode,omitempty"`
-	Currency string `json:"Currency,omitempty"`
-	Iban string `json:"Iban,omitempty"`
-	MessageToBeneficiary string `json:"MessageToBeneficiary,omitempty"`
-	ReceivingCountryCode string `json:"ReceivingCountryCode,omitempty"`
-	Swift string `json:"Swift,omitempty"`
-	WithdrawalReasonId int32 `json:"WithdrawalReasonId,omitempty"`
+	AccountKey           string                                                                `json:"AccountKey,omitempty"`
+	AdvancedOptions      *Openapicsv2cashmanagementwithdrawalsWithdrawIBanSwiftAdvancedOptions `json:"AdvancedOptions,omitempty"`
+	Amount               float64                                                               `json:"Amount,omitempty"`
+	ClearingCode         string                                                                `json:"ClearingCode,omitempty"`
+	Currency             string                                                                `json:"Currency,omitempty"`
+	Iban                 string                                                                `json:"Iban,omitempty"`
+	MessageToBeneficiary string                                                                `json:"MessageToBeneficiary,omitempty"`
+	ReceivingCountryCode string                                                                `json:"ReceivingCountryCode,omitempty"`
+	Swift                string                                                                `json:"Swift,omitempty"`
+	WithdrawalReasonId   int32                                                                 `json:"WithdrawalReasonId,omitempty"`
 }

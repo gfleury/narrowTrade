@@ -9,10 +9,10 @@
 package saxo_openapi
 
 type Body71 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	DecisionMakerUserID int32 `json:"DecisionMakerUserID,omitempty"`
-	MultiLegAmount float64 `json:"MultiLegAmount,omitempty"`
-	MultiLegOrderId string `json:"MultiLegOrderId,omitempty"`
-	OrderPrice float64 `json:"OrderPrice,omitempty"`
-	TraderId string `json:"TraderId,omitempty"`
+	AccountKey          string  `json:"AccountKey,omitempty"`
+	DecisionMakerUserID int32   `json:"DecisionMakerUserID,omitempty"`
+	MultiLegAmount      float64 `json:"MultiLegAmount,omitempty"`
+	MultiLegOrderId     string  `json:"MultiLegOrderId,omitempty"`
+	OrderPrice          float64 `json:"OrderPrice,omitempty"`
+	TraderId            string  `json:"TraderId,omitempty"`
 }

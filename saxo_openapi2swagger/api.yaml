@@ -10442,6 +10442,41 @@ paths:
                     type: string
                   ModelState:
                     type: object
+  /openapi/ref/v1/watchlists:
+    get:
+      tags:
+      - ReferenceData
+      operationId: GetWatchlists
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "204":
+          description: The resource was deleted successfully.
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ErrorCode:
+                    type: string
+                  Message:
+                    type: string
+                  ModelState:
+                    type: object
   /openapi/root/v1/diagnostics/delete:
     delete:
       tags:

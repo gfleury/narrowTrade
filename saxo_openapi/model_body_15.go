@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body15 struct {
-	Email string `json:"Email,omitempty"`
+	Email    string `json:"Email,omitempty"`
 	Language string `json:"Language,omitempty"`
-	UserId string `json:"UserId,omitempty"`
+	UserId   string `json:"UserId,omitempty"`
 }

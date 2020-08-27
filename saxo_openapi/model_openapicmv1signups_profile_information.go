@@ -10,6 +10,6 @@ package saxo_openapi
 
 type Openapicmv1signupsProfileInformation struct {
 	AnnualIncomeInformation *interface{} `json:"AnnualIncomeInformation,omitempty"`
-	InvestableAssets *interface{} `json:"InvestableAssets,omitempty"`
-	InvestmentPurpose *interface{} `json:"InvestmentPurpose,omitempty"`
+	InvestableAssets        *interface{} `json:"InvestableAssets,omitempty"`
+	InvestmentPurpose       *interface{} `json:"InvestmentPurpose,omitempty"`
 }

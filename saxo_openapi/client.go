@@ -285,13 +285,6 @@ func (c *APIClient) prepareRequest(
 		}
 	}
 
-	// Adding MockedDataId
-	if ctx != nil {
-		if param, ok := ctx.Value(ContextMockedDataID).(string); ok {
-			query.Add("MockDataId", param)
-		}
-	}
-
 	// Encode the parameters.
 	url.RawQuery = query.Encode()
 

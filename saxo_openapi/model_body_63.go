@@ -9,9 +9,9 @@
 package saxo_openapi
 
 type Body63 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	Amount int32 `json:"Amount,omitempty"`
-	AppHint int32 `json:"AppHint,omitempty"`
-	AssetType []string `json:"AssetType,omitempty"`
-	Uic int32 `json:"Uic,omitempty"`
+	AccountKey string   `json:"AccountKey,omitempty"`
+	Amount     int32    `json:"Amount,omitempty"`
+	AppHint    int32    `json:"AppHint,omitempty"`
+	AssetType  []string `json:"AssetType,omitempty"`
+	Uic        int32    `json:"Uic,omitempty"`
 }

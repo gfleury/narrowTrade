@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Body31 struct {
-	BrandingId int32 `json:"BrandingId,omitempty"`
+	BrandingId  int32  `json:"BrandingId,omitempty"`
 	Description string `json:"Description,omitempty"`
-	Uri string `json:"Uri,omitempty"`
+	Uri         string `json:"Uri,omitempty"`
 }

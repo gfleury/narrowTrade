@@ -10,5 +10,5 @@ package saxo_openapi
 
 type Body29 struct {
 	Description string `json:"Description,omitempty"`
-	Name string `json:"Name,omitempty"`
+	Name        string `json:"Name,omitempty"`
 }

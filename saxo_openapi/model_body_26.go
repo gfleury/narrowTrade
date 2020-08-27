@@ -9,18 +9,18 @@
 package saxo_openapi
 
 type Body26 struct {
-	AccountKey string `json:"AccountKey,omitempty"`
-	AdvancedOptions *Openapicsv2cashmanagementwithdrawalsWithdrawIBanSwiftAdvancedOptions `json:"AdvancedOptions,omitempty"`
-	Amount float64 `json:"Amount,omitempty"`
-	BeneficiaryAddress string `json:"BeneficiaryAddress,omitempty"`
-	BeneficiaryCityAndPostcode string `json:"BeneficiaryCityAndPostcode,omitempty"`
-	BeneficiaryCountry string `json:"BeneficiaryCountry,omitempty"`
-	BeneficiaryName string `json:"BeneficiaryName,omitempty"`
-	ClearingCode string `json:"ClearingCode,omitempty"`
-	Currency string `json:"Currency,omitempty"`
-	Iban string `json:"Iban,omitempty"`
-	MessageToBeneficiary string `json:"MessageToBeneficiary,omitempty"`
-	ReceivingCountryCode string `json:"ReceivingCountryCode,omitempty"`
-	Swift string `json:"Swift,omitempty"`
-	WithdrawalReasonId int32 `json:"WithdrawalReasonId,omitempty"`
+	AccountKey                 string                                                                `json:"AccountKey,omitempty"`
+	AdvancedOptions            *Openapicsv2cashmanagementwithdrawalsWithdrawIBanSwiftAdvancedOptions `json:"AdvancedOptions,omitempty"`
+	Amount                     float64                                                               `json:"Amount,omitempty"`
+	BeneficiaryAddress         string                                                                `json:"BeneficiaryAddress,omitempty"`
+	BeneficiaryCityAndPostcode string                                                                `json:"BeneficiaryCityAndPostcode,omitempty"`
+	BeneficiaryCountry         string                                                                `json:"BeneficiaryCountry,omitempty"`
+	BeneficiaryName            string                                                                `json:"BeneficiaryName,omitempty"`
+	ClearingCode               string                                                                `json:"ClearingCode,omitempty"`
+	Currency                   string                                                                `json:"Currency,omitempty"`
+	Iban                       string                                                                `json:"Iban,omitempty"`
+	MessageToBeneficiary       string                                                                `json:"MessageToBeneficiary,omitempty"`
+	ReceivingCountryCode       string                                                                `json:"ReceivingCountryCode,omitempty"`
+	Swift                      string                                                                `json:"Swift,omitempty"`
+	WithdrawalReasonId         int32                                                                 `json:"WithdrawalReasonId,omitempty"`
 }

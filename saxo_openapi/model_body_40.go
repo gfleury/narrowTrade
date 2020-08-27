@@ -9,10 +9,10 @@
 package saxo_openapi
 
 type Body40 struct {
-	Arguments *Openapiportv1accountssubscriptionsArguments `json:"Arguments,omitempty"`
-	ContextId string `json:"ContextId,omitempty"`
-	Format string `json:"Format,omitempty"`
-	ReferenceId string `json:"ReferenceId,omitempty"`
-	RefreshRate int32 `json:"RefreshRate,omitempty"`
-	Tag string `json:"Tag,omitempty"`
+	Arguments   *Openapiportv1accountssubscriptionsArguments `json:"Arguments,omitempty"`
+	ContextId   string                                       `json:"ContextId,omitempty"`
+	Format      string                                       `json:"Format,omitempty"`
+	ReferenceId string                                       `json:"ReferenceId,omitempty"`
+	RefreshRate int32                                        `json:"RefreshRate,omitempty"`
+	Tag         string                                       `json:"Tag,omitempty"`
 }

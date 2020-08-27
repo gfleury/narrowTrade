@@ -10,6 +10,6 @@ package saxo_openapi
 
 type Openapiportv1accountssubscriptionsArguments struct {
 	AccountGroupKey string `json:"AccountGroupKey,omitempty"`
-	AccountKey string `json:"AccountKey,omitempty"`
-	ClientKey string `json:"ClientKey,omitempty"`
+	AccountKey      string `json:"AccountKey,omitempty"`
+	ClientKey       string `json:"ClientKey,omitempty"`
 }

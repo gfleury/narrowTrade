@@ -9,6 +9,6 @@
 package saxo_openapi
 
 type Body5 struct {
-	OverallSuitability []string `json:"OverallSuitability,omitempty"`
+	OverallSuitability     []string `json:"OverallSuitability,omitempty"`
 	ProductAreaSuitability []string `json:"ProductAreaSuitability,omitempty"`
 }

@@ -9,9 +9,9 @@
 package saxo_openapi
 
 type Body22 struct {
-	Amount float64 `json:"Amount,omitempty"`
-	Currency string `json:"Currency,omitempty"`
-	FromAccountKey string `json:"FromAccountKey,omitempty"`
-	ToAccountKey string `json:"ToAccountKey,omitempty"`
-	WithdrawalReasonId int32 `json:"WithdrawalReasonId,omitempty"`
+	Amount             float64 `json:"Amount,omitempty"`
+	Currency           string  `json:"Currency,omitempty"`
+	FromAccountKey     string  `json:"FromAccountKey,omitempty"`
+	ToAccountKey       string  `json:"ToAccountKey,omitempty"`
+	WithdrawalReasonId int32   `json:"WithdrawalReasonId,omitempty"`
 }

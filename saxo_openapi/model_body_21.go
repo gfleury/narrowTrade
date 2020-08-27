@@ -10,6 +10,6 @@ package saxo_openapi
 
 type Body21 struct {
 	Attachment *Openapicsv1partnersupportcasesCaseIdnoteAttachment `json:"Attachment,omitempty"`
-	Note string `json:"Note,omitempty"`
-	Title string `json:"Title,omitempty"`
+	Note       string                                              `json:"Note,omitempty"`
+	Title      string                                              `json:"Title,omitempty"`
 }

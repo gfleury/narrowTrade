@@ -9,7 +9,7 @@
 package saxo_openapi
 
 type Openapicsv1partnersupportcasesCaseIdnoteAttachment struct {
-	Data string `json:"Data,omitempty"`
+	Data     string `json:"Data,omitempty"`
 	FileName string `json:"FileName,omitempty"`
 	MimeType string `json:"MimeType,omitempty"`
 }

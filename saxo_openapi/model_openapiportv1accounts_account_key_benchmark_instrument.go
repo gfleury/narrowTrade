@@ -10,5 +10,5 @@ package saxo_openapi
 
 type Openapiportv1accountsAccountKeyBenchmarkInstrument struct {
 	BenchmarkInstrumentAssetType string `json:"BenchmarkInstrumentAssetType,omitempty"`
-	BenchmarkInstrumentUic int32 `json:"BenchmarkInstrumentUic,omitempty"`
+	BenchmarkInstrumentUic       int32  `json:"BenchmarkInstrumentUic,omitempty"`
 }

@@ -9,11 +9,11 @@
 package saxo_openapi
 
 type Body1 struct {
-	DisplayName string `json:"DisplayName,omitempty"`
-	FundingAccountKey string `json:"FundingAccountKey,omitempty"`
-	InvestmentShieldAmount float64 `json:"InvestmentShieldAmount,omitempty"`
-	IsActive bool `json:"IsActive,omitempty"`
-	IsAutoFundsTransfer bool `json:"IsAutoFundsTransfer,omitempty"`
-	PendingFunding float64 `json:"PendingFunding,omitempty"`
-	PositionsCloseOnDeactivation bool `json:"PositionsCloseOnDeactivation,omitempty"`
+	DisplayName                  string  `json:"DisplayName,omitempty"`
+	FundingAccountKey            string  `json:"FundingAccountKey,omitempty"`
+	InvestmentShieldAmount       float64 `json:"InvestmentShieldAmount,omitempty"`
+	IsActive                     bool    `json:"IsActive,omitempty"`
+	IsAutoFundsTransfer          bool    `json:"IsAutoFundsTransfer,omitempty"`
+	PendingFunding               float64 `json:"PendingFunding,omitempty"`
+	PositionsCloseOnDeactivation bool    `json:"PositionsCloseOnDeactivation,omitempty"`
 }

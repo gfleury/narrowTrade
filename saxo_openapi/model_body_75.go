@@ -9,14 +9,14 @@
 package saxo_openapi
 
 type Body75 struct {
-	AccountId string `json:"AccountId,omitempty"`
-	AssetType []string `json:"AssetType,omitempty"`
-	Comment string `json:"Comment,omitempty"`
-	ExpiryDate string `json:"ExpiryDate,omitempty"`
-	IsRecurring bool `json:"IsRecurring,omitempty"`
-	Operator []string `json:"Operator,omitempty"`
+	AccountId     string   `json:"AccountId,omitempty"`
+	AssetType     []string `json:"AssetType,omitempty"`
+	Comment       string   `json:"Comment,omitempty"`
+	ExpiryDate    string   `json:"ExpiryDate,omitempty"`
+	IsRecurring   bool     `json:"IsRecurring,omitempty"`
+	Operator      []string `json:"Operator,omitempty"`
 	PriceVariable []string `json:"PriceVariable,omitempty"`
-	State []string `json:"State,omitempty"`
-	TargetValue float64 `json:"TargetValue,omitempty"`
-	Uic int32 `json:"Uic,omitempty"`
+	State         []string `json:"State,omitempty"`
+	TargetValue   float64  `json:"TargetValue,omitempty"`
+	Uic           int32    `json:"Uic,omitempty"`
 }

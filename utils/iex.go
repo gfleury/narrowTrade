@@ -21,3 +21,15 @@ func IEXRecomendationReduce(rs []iex.Recommendation) *iex.Recommendation {
 
 	return ret
 }
+
+func IEXBBandsReduction(bbands iex.Indicator) []float64 {
+	ret := make([]float64, len(bbands.Indicator))
+	for idx, indicator := range bbands.Indicator {
+		for _, value := range indicator {
+			ret[idx] += value
+		}
+		ret[idx] = ret[idx] / float64(len(indicator))
+	}
+
+	return ret
+}

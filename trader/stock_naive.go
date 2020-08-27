@@ -15,6 +15,7 @@ type NaiveStockData struct {
 	iexQuote         iex.Quote
 	buyRecomendation int
 	betterBuy        bool
+	bbands           []float64
 }
 
 func (t *BasicSaxoTrader) GetCashPerSymbol(n int) (float64, error) {
@@ -126,6 +127,13 @@ func (t *BasicSaxoTrader) createStocksNaive(symbols []string) []NaiveStockData {
 		recommendation := utils.IEXRecomendationReduce(recommendations)
 		n.buyRecomendation = recommendation.BuyRatings
 		n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
+
+		log.Println("Trying to get bollinger bands from IEXCloud", i.GetAssetType(), i.GetSymbolSimple())
+		bbands, err := t.IEXClient.Indicator(t.ModeledAPI.Ctx, i.GetSymbolSimple(), "bbands", "ytd")
+		if err != nil {
+			continue
+		}
+		n.bbands = utils.IEXBBandsReduction(bbands)
 
 		naiveStockData = append(naiveStockData, n)
 	}

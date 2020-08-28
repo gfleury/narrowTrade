@@ -1,3 +1,5 @@
+// +build integration
+
 package models
 
 import check "gopkg.in/check.v1"

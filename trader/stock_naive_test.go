@@ -1,3 +1,5 @@
+// +build integration
+
 package trader
 
 import (
@@ -6,23 +8,29 @@ import (
 )
 
 func (s *Suite) TestBuyStocksNaive_2_5(c *check.C) {
-	t := BasicSaxoTrader{
-		AccountKey: s.acc.GetAccountKeyMe(),
-		ModeledAPI: s.ma,
-		IEXClient:  tests.GetIEXSandboxClient(),
+	t := StockNaive{
+		&BasicSaxoTrader{
+			AccountKey: s.acc.GetAccountKeyMe(),
+			ModeledAPI: s.ma,
+			IEXAPI:     tests.GetIEXSandboxClient(),
+		},
 	}
 
-	err := t.BuyStocksNaive([]string{"AAPL", "INTC"}, 2, 5)
+	// Buy Apple and Intel
+	err := t.Trade(StockNaiveParameter{"", []int{211, 247}, 2, 5, 0})
 	c.Assert(err, check.IsNil)
 }
 
 func (s *Suite) TestBuyStocksNaive_1_2(c *check.C) {
-	t := BasicSaxoTrader{
-		AccountKey: s.acc.GetAccountKeyMe(),
-		ModeledAPI: s.ma,
-		IEXClient:  tests.GetIEXSandboxClient(),
+	t := &StockNaive{
+		&BasicSaxoTrader{
+			AccountKey: s.acc.GetAccountKeyMe(),
+			ModeledAPI: s.ma,
+			IEXAPI:     tests.GetIEXSandboxClient(),
+		},
 	}
 
-	err := t.BuyStocksNaive([]string{"AAPL", "INTC"}, 1, 2)
+	// Buy Apple and Intel
+	err := t.Trade(StockNaiveParameter{"", []int{211, 247}, 1, 2, 0})
 	c.Assert(err, check.IsNil)
 }

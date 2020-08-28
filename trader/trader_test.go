@@ -1,3 +1,5 @@
+// +build integration
+
 package trader
 
 import (
@@ -329,24 +331,23 @@ func (s *Suite) TestTradeSimple_Buy_StopLimit_10_APPL(c *check.C) {
 		ModeledAPI: s.ma,
 	}
 
-	or, err := t.Buy(
-		s.i.GetOrder().
-			WithAmount(10).
-			WithType(models.StopLimit).
-			WithPrice(s.ip.Quote.Ask).
-			WithStopLimitPrice(s.ip.Quote.Ask + 2).
-			WithStopLoss(s.ip.Quote.Ask - 1))
-	if err != nil {
-		fmt.Println(models.GetStringError(err))
-	}
-	c.Assert(err, check.IsNil)
-
-	c.Assert(or.ErrorInfo, check.IsNil)
-
-	ol, err := s.ma.GetOrdersMe()
-	c.Assert(err, check.IsNil)
-
 	if !s.ex.IsOpen {
+		or, err := t.Buy(
+			s.i.GetOrder().
+				WithAmount(10).
+				WithType(models.StopLimit).
+				WithPrice(s.ip.Quote.Ask).
+				WithStopLimitPrice(s.ip.Quote.Ask + 2))
+		if err != nil {
+			fmt.Println(models.GetStringError(err))
+		}
+		c.Assert(err, check.IsNil)
+
+		c.Assert(or.ErrorInfo, check.IsNil)
+
+		ol, err := s.ma.GetOrdersMe()
+		c.Assert(err, check.IsNil)
+
 		c.Assert(ol.Data[0].BuySell, check.Equals, models.Buy)
 		c.Assert(ol.Data[0].OpenOrderType, check.Equals, models.StopLimit)
 		c.Assert(ol.Data[0].Price, check.Equals, s.ip.Quote.Ask)

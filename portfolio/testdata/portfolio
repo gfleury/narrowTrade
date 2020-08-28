@@ -1,0 +1,7 @@
+distribution:
+- watchlistid: "2491746"
+  valuepercentage: 90
+  trader: StockNaive
+- valuepercentage: 10
+  trader: ForexNaive
+traders: {}

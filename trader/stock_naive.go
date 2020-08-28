@@ -10,7 +10,11 @@ import (
 	iex "github.com/goinvest/iexcloud/v2"
 )
 
-type NaiveStockData struct {
+type StockNaive struct {
+	*BasicSaxoTrader
+}
+
+type StockNaiveData struct {
 	instrument       models.InstrumentDetails
 	iexQuote         iex.Quote
 	buyRecomendation int
@@ -18,28 +22,40 @@ type NaiveStockData struct {
 	bbands           []float64
 }
 
-func (t *BasicSaxoTrader) GetCashPerSymbol(n int) (float64, error) {
-	balance, err := t.ModeledAPI.GetBalanceMe()
-	if err != nil {
-		return 0, err
+type StockNaiveParameter struct {
+	Watchlist                               string
+	Symbols                                 []int
+	PercentLoss, PercentProfit, TotalInvest float64
+}
+
+func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64) (float64, error) {
+	// if cashToUse equal zero, than use the AvailableMargin from the account
+	if availableCash == 0 {
+		balance, err := t.Api().GetBalanceMe()
+		if err != nil {
+			return 0, err
+		}
+		availableCash = balance.InitialMargin.MarginAvailable
 	}
 
 	openOrdersTotal := t.getOpenOrders()
 
-	return (balance.InitialMargin.MarginAvailable - openOrdersTotal) / float64(n), nil
+	return (availableCash - openOrdersTotal) / float64(qntInstruments), nil
 }
 
-func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentProfit float64) error {
+func (t *StockNaive) Trade(param StockNaiveParameter) error {
 
-	naiveStockData := t.createStocksNaive(symbols)
+	naiveStockData := t.createStocksNaive(param.Symbols)
 
-	cashPerSymbol, err := t.GetCashPerSymbol(len(naiveStockData))
+	cashPerSymbol, err := t.GetCashPerSymbol(len(naiveStockData), param.TotalInvest)
 	if err != nil {
 		return err
 	}
 	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(naiveStockData)))
 
 	for _, n := range naiveStockData {
+		var profitPrice, stopLossPrice, distanceToMarket float64
+
 		iexQuote := n.iexQuote
 		i := n.instrument
 
@@ -48,8 +64,8 @@ func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentP
 			continue
 		}
 
-		log.Println("Trying to get price Saxo Bank price", i.GetAssetType(), i.GetSymbol())
-		buyPrice, err := t.ModeledAPI.GetInstrumentPrice(i)
+		log.Println("Fetching price from Saxo Bank for", i.GetAssetType(), i.GetSymbol())
+		buyPrice, err := t.Api().GetInstrumentPrice(i)
 		if err != nil {
 			return err
 		}
@@ -71,9 +87,26 @@ func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentP
 			continue
 		}
 
-		profitPrice := i.CalculatePriceWithThickSize(buyPrice, -percentProfit)
-		stopLossPrice := i.CalculatePriceWithThickSize(buyPrice, percentLoss)
-		distanceToMarket := i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
+		if n.bbands == nil {
+			// bollinger bands unavailable, go with percentage
+			profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
+			stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
+			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
+		} else {
+			// If percentProfit higher than bbands_higher go with percentProfit
+			if n.bbands[2] < buyPrice*((param.PercentProfit/100)+1) {
+				profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
+			} else {
+				profitPrice = i.CalculatePriceWithThickSize(n.bbands[2], -param.PercentProfit)
+			}
+			// If percentLoss lower than bbands_lower go with bbands_lower
+			if n.bbands[0] > buyPrice*(1-(param.PercentLoss/100)) {
+				stopLossPrice = i.CalculatePriceWithThickSize(n.bbands[0], 0)
+			} else {
+				stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
+			}
+			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
+		}
 
 		amount := int(utils.RoundDown(float64(cashPerSymbol)/buyPrice, 0))
 
@@ -98,43 +131,43 @@ func (t *BasicSaxoTrader) BuyStocksNaive(symbols []string, percentLoss, percentP
 	return nil
 }
 
-func (t *BasicSaxoTrader) createStocksNaive(symbols []string) []NaiveStockData {
-	naiveStockData := []NaiveStockData{}
-	for _, symbol := range symbols {
-		n := NaiveStockData{}
-		log.Println("Getting Saxo Bank symbol for", symbol)
-		i, err := t.ModeledAPI.GetInstrument(symbol)
+func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
+	naiveStockData := []StockNaiveData{}
+	for _, uic := range uics {
+		n := StockNaiveData{}
+		log.Println("Getting Saxo Bank symbol for", uic)
+		uicInstrument := &models.SaxoInstrument{
+			Identifier: int32(uic),
+		}
+		i, err := t.Api().GetInstrumentDetails(uicInstrument)
 		if err != nil {
 			continue
 		}
-		id, err := t.ModeledAPI.GetInstrumentDetails(i)
-		if err != nil {
-			continue
-		}
-		n.instrument = id
+		n.instrument = i
 
-		log.Println("Trying to get price IEXCloud price", i.GetAssetType(), i.GetSymbolSimple())
-		n.iexQuote, err = t.IEXClient.Quote(t.ModeledAPI.Ctx, i.GetSymbolSimple())
+		log.Println("Fetching price IEXCloud price", i.GetAssetType(), i.GetSymbolSimple())
+		n.iexQuote, err = t.IEXApi().Quote(t.Api().Ctx, i.GetSymbolSimple())
 		if err != nil {
 			n.iexQuote = iex.Quote{}
 		}
 
-		log.Println("Trying to get recommendation from IEXCloud analysis", i.GetAssetType(), i.GetSymbolSimple())
-		recommendations, err := t.IEXClient.RecommendationTrends(t.ModeledAPI.Ctx, i.GetSymbolSimple())
+		log.Println("Fetching recommendation from IEXCloud analysis", i.GetAssetType(), i.GetSymbolSimple())
+		recommendations, err := t.IEXApi().RecommendationTrends(t.Api().Ctx, i.GetSymbolSimple())
 		if err != nil {
+			log.Println("Failed to get IEXCloud analysis, ignoring symbol", i.GetSymbolSimple())
 			continue
 		}
 		recommendation := utils.IEXRecomendationReduce(recommendations)
 		n.buyRecomendation = recommendation.BuyRatings
 		n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
 
-		log.Println("Trying to get bollinger bands from IEXCloud", i.GetAssetType(), i.GetSymbolSimple())
-		bbands, err := t.IEXClient.Indicator(t.ModeledAPI.Ctx, i.GetSymbolSimple(), "bbands", "ytd")
+		log.Println("Fetching bollinger bands from IEXCloud", i.GetAssetType(), i.GetSymbolSimple())
+		bbands, err := t.IEXApi().Indicator(t.Api().Ctx, i.GetSymbolSimple(), "bbands", "ytd")
 		if err != nil {
-			continue
+			log.Println("Failed to get bollinger bands, going with percentage", i.GetSymbolSimple(), err)
+		} else {
+			n.bbands = utils.IEXBBandsReduction(bbands, 4)
 		}
-		n.bbands = utils.IEXBBandsReduction(bbands)
-
 		naiveStockData = append(naiveStockData, n)
 	}
 

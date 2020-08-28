@@ -9,30 +9,25 @@ import (
 )
 
 type Trader interface {
-	Buy(order models.Order) (*models.OrderResponse, error)
-	Sell(order models.Order) (*models.OrderResponse, error)
+	Api() *models.ModeledAPI
+	Buy(order *models.Order) (*models.OrderResponse, error)
+	Sell(order *models.Order) (*models.OrderResponse, error)
+	getOpenOrders() float64
+	IEXApi() *iex.Client
 }
 
 type ComplexTrader interface {
 	Trader
-	GetCashPerSymbol(n int) (int, error)
+	Trade(param interface{}) error
 }
 
 type BasicSaxoTrader struct {
 	Trader
 	AccountKey     string
 	ModeledAPI     *models.ModeledAPI
-	IEXClient      *iex.Client
+	IEXAPI         *iex.Client
 	tradedOrdersID []*models.OrderResponse
 	openOrders     *models.OrderList
-}
-
-func (t *BasicSaxoTrader) Buy(o *models.Order) (*models.OrderResponse, error) {
-	return t.placeOrder(o.WithBuySell(models.Buy))
-}
-
-func (t *BasicSaxoTrader) Sell(o *models.Order) (*models.OrderResponse, error) {
-	return t.placeOrder(o.WithBuySell(models.Sell))
 }
 
 func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse, error) {
@@ -91,4 +86,20 @@ func (t *BasicSaxoTrader) getOpenOrders() float64 {
 	}
 
 	return total
+}
+
+func (t *BasicSaxoTrader) Buy(o *models.Order) (*models.OrderResponse, error) {
+	return t.placeOrder(o.WithBuySell(models.Buy))
+}
+
+func (t *BasicSaxoTrader) Sell(o *models.Order) (*models.OrderResponse, error) {
+	return t.placeOrder(o.WithBuySell(models.Sell))
+}
+
+func (t *BasicSaxoTrader) Api() *models.ModeledAPI {
+	return t.ModeledAPI
+}
+
+func (t *BasicSaxoTrader) IEXApi() *iex.Client {
+	return t.IEXAPI
 }

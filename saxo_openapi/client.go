@@ -141,7 +141,7 @@ func selectHeaderAccept(accepts []string) string {
 // contains is a case insenstive match, finding needle in a haystack
 func contains(haystack []string, needle string) bool {
 	for _, a := range haystack {
-		if strings.ToLower(a) == strings.ToLower(needle) {
+		if strings.EqualFold(a, needle) {
 			return true
 		}
 	}

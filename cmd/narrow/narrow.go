@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"sort"
 
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/saxo_oauth2"
@@ -45,25 +46,51 @@ func main() {
 
 	log.Println(acc.GetAccountKey(0))
 
-	t := trader.BasicSaxoTrader{
-		AccountKey: acc.GetAccountKeyMe(),
-		ModeledAPI: ma,
-		IEXClient:  iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
+	t := trader.StockNaive{
+		BasicSaxoTrader: &trader.BasicSaxoTrader{
+			AccountKey: acc.GetAccountKeyMe(),
+			ModeledAPI: ma,
+			IEXAPI:     iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
+		},
 	}
 
-	gainers, err := t.IEXClient.Gainers(ctx)
+	watchlistRequest := &models.WatchlistRequest{
+		Arguments: models.Arguments{
+			WatchlistID: "2491746",
+			AssetTypes:  "Bond,Stock,StockIndex,CfdOnStock,CfdOnIndex,FxSpot,FxForwards,FxVanillaOption,FxKnockInOption,FxKnockOutOption,FxOneTouchOption,FxNoTouchOption",
+			Index:       0,
+			RowCount:    100,
+		},
+		RefreshRate: 500,
+		Format:      "application/json",
+		ContextID:   "7865091208",
+		ReferenceID: "10",
+	}
+
+	watchlist, err := t.ModeledAPI.GetWatchlist(watchlistRequest)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
-	symbols := []string{}
+	uics := make([]int, len(watchlist.Snapshot.Rows))
 
-	for _, instrument := range gainers {
-		symbols = append(symbols, instrument.Symbol)
+	sort.Slice(watchlist.Snapshot.Rows, func(i, j int) bool {
+		return watchlist.Snapshot.Rows[i].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[i].Price >
+			watchlist.Snapshot.Rows[j].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[j].Price
+	})
+
+	for idx, instrument := range watchlist.Snapshot.Rows {
+		uics[idx] = instrument.Uic
 	}
 
-	err = t.BuyStocksNaive(symbols[0:5], 2, 5)
+	err = t.Trade(
+		trader.StockNaiveParameter{
+			Symbols:       uics[0:10],
+			PercentLoss:   2,
+			PercentProfit: 5,
+			TotalInvest:   0,
+		})
 
 	if err != nil {
 		log.Println(err)

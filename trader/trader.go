@@ -18,7 +18,13 @@ type Trader interface {
 
 type ComplexTrader interface {
 	Trader
-	Trade(param interface{}) error
+	Trade(param TradeParameter) error
+}
+
+type TradeParameter struct {
+	Watchlist                               string
+	Symbols                                 []int
+	PercentLoss, PercentProfit, TotalInvest float64
 }
 
 type BasicSaxoTrader struct {

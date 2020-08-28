@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"sort"
 
 	"github.com/gfleury/narrowTrade/trader"
 	yaml "gopkg.in/yaml.v2"
@@ -17,11 +18,13 @@ const (
 )
 
 type Investment struct {
-	WatchlistID     string      `yaml:",omitempty"`
-	ValuePercentage float64     `yaml:",omitempty"`
-	ValueAbsolute   float64     `yaml:",omitempty"`
-	Trader          TraderName  `yaml:",omitempty"`
-	Parameters      interface{} `yaml:",omitempty"`
+	WatchlistID     string                `yaml:",omitempty"`
+	WatchlistItems  int                   `yaml:",omitempty"`
+	Symbols         []string              `yaml:",omitempty"`
+	ValuePercentage float64               `yaml:",omitempty"`
+	ValueAbsolute   float64               `yaml:",omitempty"`
+	Trader          TraderName            `yaml:",omitempty"`
+	Parameters      trader.TradeParameter `yaml:",omitempty"`
 }
 
 type Portfolio struct {
@@ -49,9 +52,17 @@ func (p *Portfolio) Validate() error {
 	totalPercentage := 0.0
 	for _, investment := range p.Distribution {
 		totalPercentage += investment.ValuePercentage
+		if investment.Parameters.PercentLoss == 0 ||
+			investment.Parameters.PercentProfit == 0 {
+			return fmt.Errorf("Investment parameters %v must contain PercentProfit and PercentLoss", investment)
+		}
 		if investment.ValuePercentage == 0 &&
 			investment.ValueAbsolute == 0 {
 			return fmt.Errorf("Investment %v must contain ValuePercentage or ValueAbsolute", investment)
+		}
+		if investment.WatchlistID == "" &&
+			(investment.Symbols == nil || len(investment.Symbols) == 0) {
+			return fmt.Errorf("Investment %v must contain WatchlistID or Symbols", investment)
 		}
 	}
 	if totalPercentage > 100 {
@@ -62,8 +73,50 @@ func (p *Portfolio) Validate() error {
 
 func (p *Portfolio) Rebalance() error {
 	for _, investment := range p.Distribution {
-		t := p.Traders[investment.Trader]
-		err := t.Trade(investment.Parameters)
+		t, ok := p.Traders[investment.Trader]
+		if !ok {
+			fmt.Printf("Trader not found: %s, skipping it", investment.Trader)
+			continue
+		}
+
+		balance, err := t.Api().GetBalanceMe()
+		if err != nil {
+			return fmt.Errorf("Unable to collect balance, bouncing back: %s", err)
+		}
+		availableCash := balance.InitialMargin.MarginAvailable
+
+		if investment.WatchlistID != "" {
+			watchlist, err := t.Api().GetWatchlistByID(investment.WatchlistID)
+			if err != nil {
+				return err
+			}
+
+			uics := make([]int, len(watchlist.Snapshot.Rows))
+
+			sort.Slice(watchlist.Snapshot.Rows, func(i, j int) bool {
+				return watchlist.Snapshot.Rows[i].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[i].Price >
+					watchlist.Snapshot.Rows[j].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[j].Price
+			})
+
+			for idx, instrument := range watchlist.Snapshot.Rows {
+				uics[idx] = instrument.Uic
+			}
+
+			// Default list to first 10 items of list
+			if investment.WatchlistItems == 0 {
+				investment.WatchlistItems = 10
+			}
+
+			investment.Parameters.Symbols = uics[:investment.WatchlistItems]
+
+			if investment.ValuePercentage != 0 {
+				investment.Parameters.TotalInvest = availableCash * (investment.ValuePercentage / 100)
+			} else {
+				investment.Parameters.TotalInvest = investment.ValueAbsolute
+			}
+		}
+
+		err = t.Trade(investment.Parameters)
 		if err != nil {
 			return err
 		}

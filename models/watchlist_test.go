@@ -16,8 +16,8 @@ func (s *ModeledApiSuite) TestGetWatchlist(c *check.C) {
 		},
 		RefreshRate: 500,
 		Format:      "application/json",
-		ContextID:   "7865091208",
-		ReferenceID: "10",
+		ContextID:   "3232",
+		ReferenceID: "13",
 	})
 	c.Assert(err, check.IsNil)
 	c.Assert(wl, check.NotNil)

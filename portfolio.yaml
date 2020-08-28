@@ -1,0 +1,15 @@
+distribution:
+- watchlistid: "2491746"
+  watchlistitems: 10
+  valuepercentage: 90
+  trader: StockNaive
+  parameters:
+    percentprofit: 3
+    percentloss: 1
+- valuepercentage: 10
+  trader: ForexNaive
+  symbols:
+    - USDAUD
+  parameters:
+    percentprofit: 3
+    percentloss: 1

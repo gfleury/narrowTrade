@@ -18,7 +18,7 @@ func (s *Suite) TestBuyStocksNaive_2_5(c *check.C) {
 	}
 
 	// Buy Apple and Intel
-	err := t.Trade(StockNaiveParameter{"", []int{211, 247}, 2, 5, 0})
+	err := t.Trade(TradeParameter{"", []int{211, 247}, 2, 5, 0})
 	c.Assert(err, check.IsNil)
 }
 
@@ -32,6 +32,6 @@ func (s *Suite) TestBuyStocksNaive_1_2(c *check.C) {
 	}
 
 	// Buy Apple and Intel
-	err := t.Trade(StockNaiveParameter{"", []int{211, 247}, 1, 2, 0})
+	err := t.Trade(TradeParameter{"", []int{211, 247}, 1, 2, 0})
 	c.Assert(err, check.IsNil)
 }

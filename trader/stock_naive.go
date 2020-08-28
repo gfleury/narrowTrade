@@ -22,12 +22,6 @@ type StockNaiveData struct {
 	bbands           []float64
 }
 
-type StockNaiveParameter struct {
-	Watchlist                               string
-	Symbols                                 []int
-	PercentLoss, PercentProfit, TotalInvest float64
-}
-
 func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64) (float64, error) {
 	// if cashToUse equal zero, than use the AvailableMargin from the account
 	if availableCash == 0 {
@@ -43,7 +37,7 @@ func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64)
 	return (availableCash - openOrdersTotal) / float64(qntInstruments), nil
 }
 
-func (t *StockNaive) Trade(param StockNaiveParameter) error {
+func (t *StockNaive) Trade(param TradeParameter) error {
 
 	naiveStockData := t.createStocksNaive(param.Symbols)
 

@@ -1304,7 +1304,7 @@ func (c Client) IntradayStats(ctx context.Context, symbol string) (IntradayStats
 // Indicator returns indicator
 func (c Client) Indicator(ctx context.Context, symbol, indicator, dateRange string) (Indicator, error) {
 	r := Indicator{}
-	endpoint := fmt.Sprintf("/stable/stock/%s/indicator/%s?range=%s", symbol, indicator, dateRange)
+	endpoint := fmt.Sprintf("/stock/%s/indicator/%s?range=%s", symbol, indicator, dateRange)
 	err := c.GetJSON(ctx, endpoint, &r)
 	return r, err
 }

@@ -4,12 +4,13 @@ import (
 	"context"
 	"log"
 	"os"
-	"sort"
 
 	"github.com/gfleury/narrowTrade/models"
+	"github.com/gfleury/narrowTrade/portfolio"
 	"github.com/gfleury/narrowTrade/saxo_oauth2"
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/trader"
+	"golang.org/x/oauth2"
 
 	"github.com/gfleury/narrowTrade/tests"
 
@@ -46,7 +47,7 @@ func main() {
 
 	log.Println(acc.GetAccountKey(0))
 
-	t := trader.StockNaive{
+	stockNaive := trader.StockNaive{
 		BasicSaxoTrader: &trader.BasicSaxoTrader{
 			AccountKey: acc.GetAccountKeyMe(),
 			ModeledAPI: ma,
@@ -54,59 +55,54 @@ func main() {
 		},
 	}
 
-	watchlistRequest := &models.WatchlistRequest{
-		Arguments: models.Arguments{
-			WatchlistID: "2491746",
-			AssetTypes:  "Bond,Stock,StockIndex,CfdOnStock,CfdOnIndex,FxSpot,FxForwards,FxVanillaOption,FxKnockInOption,FxKnockOutOption,FxOneTouchOption,FxNoTouchOption",
-			Index:       0,
-			RowCount:    100,
+	p := &portfolio.Portfolio{
+		Traders: map[portfolio.TraderName]trader.ComplexTrader{
+			portfolio.StockNaive: &stockNaive,
 		},
-		RefreshRate: 500,
-		Format:      "application/json",
-		ContextID:   "7865091208",
-		ReferenceID: "10",
 	}
 
-	watchlist, err := t.ModeledAPI.GetWatchlist(watchlistRequest)
+	f, err := os.Open("portfolio.yaml")
 	if err != nil {
-		log.Println(err)
-		os.Exit(1)
+		ExitSaveToken(tokenSource, err)
 	}
+	defer f.Close()
 
-	uics := make([]int, len(watchlist.Snapshot.Rows))
-
-	sort.Slice(watchlist.Snapshot.Rows, func(i, j int) bool {
-		return watchlist.Snapshot.Rows[i].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[i].Price >
-			watchlist.Snapshot.Rows[j].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[j].Price
-	})
-
-	for idx, instrument := range watchlist.Snapshot.Rows {
-		uics[idx] = instrument.Uic
-	}
-
-	err = t.Trade(
-		trader.StockNaiveParameter{
-			Symbols:       uics[0:10],
-			PercentLoss:   2,
-			PercentProfit: 5,
-			TotalInvest:   0,
-		})
-
+	err = p.Load(f)
 	if err != nil {
-		log.Println(err)
-		log.Println(models.GetStringError(err))
-		os.Exit(1)
+		ExitSaveToken(tokenSource, err)
 	}
+
+	err = p.Validate()
+	if err != nil {
+		ExitSaveToken(tokenSource, err)
+	}
+
+	err = p.Rebalance()
+	if err != nil {
+		ExitSaveToken(tokenSource, err)
+	}
+
+	ExitSaveToken(tokenSource, nil)
+}
+
+func ExitSaveToken(tokenSource oauth2.TokenSource, previousErr error) {
 
 	// Always write token back if everything went ok
-	token, err = tokenSource.Token()
+	token, err := tokenSource.Token()
 	if err != nil {
+		log.Println(previousErr)
 		log.Println(err)
 		os.Exit(1)
 	}
 	err = saxo_oauth2.PersistToken(token)
 	if err != nil {
+		log.Println(previousErr)
 		log.Println(err)
+		os.Exit(1)
+	}
+
+	if previousErr != nil {
+		log.Println(previousErr)
 		os.Exit(1)
 	}
 }

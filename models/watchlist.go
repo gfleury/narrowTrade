@@ -107,6 +107,10 @@ type Snapshot struct {
 	Rows     []Rows `json:"Rows"`
 }
 
+func (ma *ModeledAPI) GetWatchlistByID(watchlistID string) (*Watchlist, error) {
+	return ma.GetWatchlist(getWatchlistRequest(watchlistID))
+}
+
 func (ma *ModeledAPI) GetWatchlist(wr *WatchlistRequest) (*Watchlist, error) {
 	w := &Watchlist{}
 	ma.Throttle()
@@ -119,4 +123,19 @@ func (ma *ModeledAPI) GetWatchlist(wr *WatchlistRequest) (*Watchlist, error) {
 
 	err = mapstructure.Decode(data, w)
 	return w, err
+}
+
+func getWatchlistRequest(watchlistID string) *WatchlistRequest {
+	return &WatchlistRequest{
+		Arguments: Arguments{
+			WatchlistID: watchlistID,
+			AssetTypes:  "Bond,Stock,StockIndex,CfdOnStock,CfdOnIndex,FxSpot,FxForwards,FxVanillaOption,FxKnockInOption,FxKnockOutOption,FxOneTouchOption,FxNoTouchOption",
+			Index:       0,
+			RowCount:    100,
+		},
+		RefreshRate: 500,
+		Format:      "application/json",
+		ContextID:   "7865091208",
+		ReferenceID: "10",
+	}
 }

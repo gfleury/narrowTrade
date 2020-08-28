@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gfleury/narrowTrade/trader"
 	check "gopkg.in/check.v1"
 )
 
@@ -57,11 +58,19 @@ func (s *Suite) TestPortfolioValidate(c *check.C) {
 				WatchlistID:     "2491746",
 				ValuePercentage: 90.0,
 				Trader:          StockNaive,
+				Parameters: trader.TradeParameter{
+					PercentLoss:   1,
+					PercentProfit: 3,
+				},
 			},
 			Investment{
-				WatchlistID:     "",
+				Symbols:         []string{"USDAUS"},
 				ValuePercentage: 10.0,
 				Trader:          ForexNaive,
+				Parameters: trader.TradeParameter{
+					PercentLoss:   1,
+					PercentProfit: 3,
+				},
 			},
 		},
 	}
@@ -74,11 +83,19 @@ func (s *Suite) TestPortfolioValidate(c *check.C) {
 				WatchlistID:     "2491746",
 				ValuePercentage: 90.1,
 				Trader:          StockNaive,
+				Parameters: trader.TradeParameter{
+					PercentLoss:   1,
+					PercentProfit: 3,
+				},
 			},
 			Investment{
-				WatchlistID:     "",
+				Symbols:         []string{"USDAUS"},
 				ValuePercentage: 10.0,
 				Trader:          ForexNaive,
+				Parameters: trader.TradeParameter{
+					PercentLoss:   1,
+					PercentProfit: 3,
+				},
 			},
 		},
 	}
@@ -104,8 +121,16 @@ distribution:
 - watchlistid: "2491746"
   valuepercentage: 90
   trader: StockNaive
+  parameters:
+    percentprofit: 5
+    percentloss: 2
 - valuepercentage: 10
   trader: ForexNaive
+  symbols:
+  - USDCAD
+  parameters:
+    percentprofit: 5
+    percentloss: 2
 `)
 	p := &Portfolio{}
 

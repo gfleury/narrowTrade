@@ -1,4 +1,5 @@
 // +build integration
+// +build !unit
 
 package models
 

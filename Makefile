@@ -6,7 +6,11 @@ default:
 
 test:
 	go clean $(PKGS)
-	go test $(PKGS) -check.v -coverprofile=coverage.txt -covermode=atomic
+	go test $(PKGS) -check.v -coverprofile=coverage.txt -covermode=atomic --tags=unit
+
+integration:
+	go clean $(PKGS)
+	go test $(PKGS) -check.v -coverprofile=coverage.txt -covermode=atomic --tags=integration
 
 race:
 	go clean $(PKGS)

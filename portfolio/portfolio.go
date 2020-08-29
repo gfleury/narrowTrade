@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 
+	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/trader"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -140,15 +141,18 @@ func (p *Portfolio) Rebalance() error {
 			}
 		}
 
-		err = t.Trade(investment.Parameters)
-		if err != nil {
-			return err
-		}
+		tradeErr := t.Trade(investment.Parameters)
 
 		orders, prices := t.GetOrders()
 
 		p.Tags.AddTag(id, generateTags(orders, prices))
 		err = p.Tags.Save()
+
+		if tradeErr != nil {
+			log.Printf("Trading failed with: %s", models.GetStringError(tradeErr))
+			return tradeErr
+		}
+
 		if err != nil {
 			return err
 		}

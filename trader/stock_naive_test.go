@@ -15,6 +15,7 @@ func (s *Suite) TestBuyStocksNaive_2_5(c *check.C) {
 			ModeledAPI: s.ma,
 			IEXAPI:     tests.GetIEXSandboxClient(),
 		},
+		nil,
 	}
 
 	// Buy Apple and Intel
@@ -29,6 +30,7 @@ func (s *Suite) TestBuyStocksNaive_1_2(c *check.C) {
 			ModeledAPI: s.ma,
 			IEXAPI:     tests.GetIEXSandboxClient(),
 		},
+		nil,
 	}
 
 	// Buy Apple and Intel

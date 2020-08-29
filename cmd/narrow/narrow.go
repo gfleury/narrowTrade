@@ -10,11 +10,11 @@ import (
 	"github.com/gfleury/narrowTrade/saxo_oauth2"
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/trader"
-	"golang.org/x/oauth2"
 
 	"github.com/gfleury/narrowTrade/tests"
 
 	iex "github.com/goinvest/iexcloud/v2"
+	"golang.org/x/oauth2"
 )
 
 func main() {

@@ -13,6 +13,7 @@ import (
 
 type StockNaive struct {
 	*BasicSaxoTrader
+	data []StockNaiveData
 }
 
 type StockNaiveData struct {
@@ -35,20 +36,24 @@ func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64)
 
 	openOrdersTotal := t.getOpenOrders()
 
-	return (availableCash - openOrdersTotal) / float64(qntInstruments), nil
+	available := availableCash - openOrdersTotal
+	if available > 0 {
+		return available / float64(qntInstruments), nil
+	}
+	return 0, nil
 }
 
 func (t *StockNaive) Trade(param TradeParameter) error {
 
-	naiveStockData := t.createStocksNaive(param.Symbols)
+	t.data = t.createStocksNaive(param.Symbols)
 
-	cashPerSymbol, err := t.GetCashPerSymbol(len(naiveStockData), param.TotalInvest)
+	cashPerSymbol, err := t.GetCashPerSymbol(len(t.data), param.TotalInvest)
 	if err != nil {
 		return err
 	}
-	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(naiveStockData)))
+	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
 
-	for _, n := range naiveStockData {
+	for _, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
 
 		iexQuote := n.iexQuote
@@ -122,6 +127,10 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 				WithTakeProfit(profitPrice).
 				WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 		if err != nil {
+			orderError := models.GetOrderError(err)
+			if models.BusinessRuleViolation(orderError) {
+				continue
+			}
 			return err
 		}
 
@@ -174,12 +183,14 @@ func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
 		log.Println("Fetching recommendation from IEXCloud analysis", i.GetAssetType(), i.GetSymbolSimple())
 		recommendations, err := t.IEXApi().RecommendationTrends(t.Api().Ctx, i.GetSymbolSimple())
 		if err != nil {
-			log.Println("Failed to get IEXCloud analysis, ignoring symbol", i.GetSymbolSimple())
-			continue
+			log.Println("Failed to get IEXCloud analysis, flatting symbols to same level", i.GetSymbolSimple())
+			n.buyRecomendation = 1
+			n.betterBuy = false
+		} else {
+			recommendation := utils.IEXRecomendationReduce(recommendations)
+			n.buyRecomendation = recommendation.BuyRatings
+			n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
 		}
-		recommendation := utils.IEXRecomendationReduce(recommendations)
-		n.buyRecomendation = recommendation.BuyRatings
-		n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
 
 		log.Println("Fetching bollinger bands from IEXCloud", i.GetAssetType(), i.GetSymbolSimple())
 		bbands, err := t.IEXApi().Indicator(t.Api().Ctx, i.GetSymbolSimple(), "bbands", "ytd")

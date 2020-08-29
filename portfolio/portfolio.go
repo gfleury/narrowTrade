@@ -10,6 +10,7 @@ import (
 
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/trader"
+
 	yaml "gopkg.in/yaml.v2"
 )
 

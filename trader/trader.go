@@ -87,7 +87,12 @@ func (t *BasicSaxoTrader) getOpenOrders() float64 {
 	if t.openOrders != nil {
 		for _, oo := range t.openOrders.Data {
 			if oo.BuySell == models.Buy {
-				total += oo.Price * float64(oo.Amount)
+				price, err := t.ModeledAPI.GetInstrumentPrice(
+					&models.SaxoInstrument{Identifier: oo.Uic, AssetType: "Stock"})
+				if err != nil {
+					continue
+				}
+				total += price * float64(oo.Amount)
 			}
 		}
 	}

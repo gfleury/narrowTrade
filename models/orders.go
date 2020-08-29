@@ -64,8 +64,8 @@ type ActiveOrder struct {
 	ClientKey                string              `json:"ClientKey,omitempty"`
 	ClientName               string              `json:"ClientName,omitempty"`
 	CorrelationKey           string              `json:"CorrelationKey,omitempty"`
-	CurrentPrice             int                 `json:"CurrentPrice,omitempty"`
-	CurrentPriceDelayMinutes int                 `json:"CurrentPriceDelayMinutes,omitempty"`
+	CurrentPrice             float64             `json:"CurrentPrice,omitempty"`
+	CurrentPriceDelayMinutes float64             `json:"CurrentPriceDelayMinutes,omitempty"`
 	CurrentPriceType         string              `json:"CurrentPriceType,omitempty"`
 	DistanceToMarket         float64             `json:"DistanceToMarket,omitempty"`
 	Duration                 *Duration           `json:"Duration,omitempty"`
@@ -73,8 +73,8 @@ type ActiveOrder struct {
 	IsForceOpen              bool                `json:"IsForceOpen,omitempty"`
 	Isin                     string              `json:"Isin,omitempty"`
 	IsMarketOpen             bool                `json:"IsMarketOpen,omitempty"`
-	MarketPrice              int                 `json:"MarketPrice,omitempty"`
-	MarketValue              int                 `json:"MarketValue,omitempty"`
+	MarketPrice              float64             `json:"MarketPrice,omitempty"`
+	MarketValue              float64             `json:"MarketValue,omitempty"`
 	NonTradableReason        string              `json:"NonTradableReason,omitempty"`
 	OpenOrderType            string              `json:"OpenOrderType,omitempty"`
 	OrderAmountType          string              `json:"OrderAmountType,omitempty"`
@@ -86,6 +86,7 @@ type ActiveOrder struct {
 	RelatedPositionID        string              `json:"RelatedPositionId,omitempty"`
 	Status                   string              `json:"Status,omitempty"`
 	TradingStatus            string              `json:"TradingStatus,omitempty"`
+	Uic                      int32               `json:"Uic"`
 }
 
 type ErrorInfo struct {
@@ -135,7 +136,7 @@ func (ma *ModeledAPI) Order(o *Order) (*OrderResponse, error) {
 		&saxo_openapi.TradingApiPlaceOrderOpts{Body: optional.NewInterface(&o)})
 	defer ma.UpdateLastCall()
 	if err != nil {
-		mapErr := GetMapError(err)
+		mapErr := GetOrderError(err)
 		if mapErr == nil {
 			return nil, err
 		}

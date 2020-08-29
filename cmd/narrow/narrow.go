@@ -59,7 +59,6 @@ func main() {
 		Traders: map[portfolio.TraderName]trader.ComplexTrader{
 			portfolio.StockNaive: &stockNaive,
 		},
-		Tags: &portfolio.Tags{},
 	}
 
 	f, err := os.Open("portfolio.yaml")

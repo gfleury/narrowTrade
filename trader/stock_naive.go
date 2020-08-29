@@ -2,6 +2,7 @@ package trader
 
 import (
 	"log"
+	"math"
 	"sort"
 
 	"github.com/gfleury/narrowTrade/models"
@@ -102,9 +103,9 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
 		}
 
-		amount := int(utils.RoundDown(float64(cashPerSymbol)/buyPrice, 0))
+		amount := int(math.Round(float64(cashPerSymbol) / buyPrice))
 		if amount < 1 {
-			log.Printf("Not enough available resourcers to buy %s %s", i.GetAssetType(), i.GetSymbol())
+			log.Printf("Not enough available money to buy %s %s", i.GetAssetType(), i.GetSymbol())
 			continue
 		}
 
@@ -124,24 +125,30 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			return err
 		}
 
+		// Save Ordered price for next calculation
+		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
 	}
 	return nil
 }
 
-func (t *StockNaive) GetOrders() []string {
+func (t *StockNaive) GetOrders() ([]string, []float64) {
 	return flatOrderResponse(t.tradedOrdersID)
 }
 
-func flatOrderResponse(orders []*models.OrderResponse) []string {
+func flatOrderResponse(orders []*models.OrderResponse) ([]string, []float64) {
 	ordersID := []string{}
+	prices := []float64{}
 	for _, order := range orders {
 		ordersID = append(ordersID, order.OrderID)
+		prices = append(prices, order.TotalPrice)
 		if order.Orders != nil {
-			ordersID = append(ordersID, flatOrderResponse(order.Orders)...)
+			o, p := flatOrderResponse(order.Orders)
+			ordersID = append(ordersID, o...)
+			prices = append(prices, p...)
 		}
 	}
-	return ordersID
+	return ordersID, prices
 }
 
 func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {

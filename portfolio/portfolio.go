@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"sort"
 
@@ -31,7 +32,7 @@ type Investment struct {
 type Portfolio struct {
 	Distribution []Investment
 	Traders      map[TraderName]trader.ComplexTrader `yaml:"-"`
-	Tags         *Tags                               `yaml:"-"`
+	Tags         Tags                                `yaml:"-"`
 }
 
 func (p *Portfolio) Save() error {
@@ -74,12 +75,7 @@ func (p *Portfolio) Validate() error {
 }
 
 func (p *Portfolio) Rebalance() error {
-	f, err := os.OpenFile(".narrow_tags", os.O_APPEND|os.O_CREATE, 0644)
-	if err != nil {
-		return err
-	}
-	err = p.Tags.Load(f)
-	f.Close()
+	err := p.ReadTags()
 	if err != nil {
 		return err
 	}
@@ -91,10 +87,26 @@ func (p *Portfolio) Rebalance() error {
 			continue
 		}
 
+		openOrders, err := t.Api().GetOrdersMe()
+		if err != nil {
+			return fmt.Errorf("Unable to get open orders, bouncing back: %s", err)
+		}
+
+		totalInvested := p.Tags[id].GetOpenOrdersTotal(openOrders)
+
 		balance, err := t.Api().GetBalanceMe()
 		if err != nil {
-			return fmt.Errorf("Unable to collect balance, bouncing back: %s", err)
+			return fmt.Errorf("Unable to get balance, bouncing back: %s", err)
 		}
+
+		if totalInvested >= balance.TotalValue*(investment.ValuePercentage/100) {
+			log.Printf("Invested amount is already higher than requested: %f >= %f * %f ",
+				totalInvested, balance.TotalValue, investment.ValuePercentage/100)
+			continue
+		}
+		log.Printf("Balancing invested amount as it is lower than requested: %f >= %f * %f ",
+			totalInvested, balance.TotalValue, investment.ValuePercentage/100)
+		// Get available cash from account (cash that is not hold by positions/orders)
 		availableCash := balance.InitialMargin.MarginAvailable
 
 		if investment.WatchlistID != "" {
@@ -132,11 +144,29 @@ func (p *Portfolio) Rebalance() error {
 		if err != nil {
 			return err
 		}
-		p.Tags.AddTag(id, t.GetOrders())
+
+		orders, prices := t.GetOrders()
+
+		p.Tags.AddTag(id, generateTags(orders, prices))
 		err = p.Tags.Save()
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (p *Portfolio) ReadTags() error {
+	f, err := os.OpenFile(".narrow_tags", os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	tags := make(Tags, len(p.Distribution))
+	p.Tags = tags
+
+	err = p.Tags.Load(f)
+
+	return err
 }

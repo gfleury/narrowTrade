@@ -102,9 +102,10 @@ type PreOrderResponse struct {
 }
 
 type OrderResponse struct {
-	OrderID   string           `json:"OrderId"`
-	Orders    []*OrderResponse `json:"Orders"`
-	ErrorInfo *struct {
+	OrderID    string           `json:"OrderId"`
+	TotalPrice float64          `json:"-"`
+	Orders     []*OrderResponse `json:"Orders"`
+	ErrorInfo  *struct {
 		ErrorCode string `json:"ErrorCode,omitempty"`
 		Message   string `json:"Message,omitempty"`
 	} `json:"ErrorInfo,omitempty"`

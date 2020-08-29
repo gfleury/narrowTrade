@@ -19,6 +19,7 @@ type Trader interface {
 type ComplexTrader interface {
 	Trader
 	Trade(param TradeParameter) error
+	GetOrders() []string
 }
 
 type TradeParameter struct {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 	"sort"
 
 	"github.com/gfleury/narrowTrade/trader"
@@ -29,7 +30,8 @@ type Investment struct {
 
 type Portfolio struct {
 	Distribution []Investment
-	Traders      map[TraderName]trader.ComplexTrader
+	Traders      map[TraderName]trader.ComplexTrader `yaml:"-"`
+	Tags         *Tags                               `yaml:"-"`
 }
 
 func (p *Portfolio) Save() error {
@@ -72,7 +74,17 @@ func (p *Portfolio) Validate() error {
 }
 
 func (p *Portfolio) Rebalance() error {
-	for _, investment := range p.Distribution {
+	f, err := os.OpenFile(".narrow_tags", os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	err = p.Tags.Load(f)
+	f.Close()
+	if err != nil {
+		return err
+	}
+
+	for id, investment := range p.Distribution {
 		t, ok := p.Traders[investment.Trader]
 		if !ok {
 			fmt.Printf("Trader not found: %s, skipping it", investment.Trader)
@@ -117,6 +129,11 @@ func (p *Portfolio) Rebalance() error {
 		}
 
 		err = t.Trade(investment.Parameters)
+		if err != nil {
+			return err
+		}
+		p.Tags.AddTag(id, t.GetOrders())
+		err = p.Tags.Save()
 		if err != nil {
 			return err
 		}

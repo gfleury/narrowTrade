@@ -103,6 +103,10 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		}
 
 		amount := int(utils.RoundDown(float64(cashPerSymbol)/buyPrice, 0))
+		if amount < 1 {
+			log.Printf("Not enough available resourcers to buy %s %s", i.GetAssetType(), i.GetSymbol())
+			continue
+		}
 
 		log.Printf("Trying to buy %s %s for %d x %f with stopLoss %f (%f) and takeProfit %f\n",
 			i.GetAssetType(), i.GetSymbol(), amount, buyPrice, stopLossPrice,
@@ -123,6 +127,21 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		log.Println(or)
 	}
 	return nil
+}
+
+func (t *StockNaive) GetOrders() []string {
+	return flatOrderResponse(t.tradedOrdersID)
+}
+
+func flatOrderResponse(orders []*models.OrderResponse) []string {
+	ordersID := []string{}
+	for _, order := range orders {
+		ordersID = append(ordersID, order.OrderID)
+		if order.Orders != nil {
+			ordersID = append(ordersID, flatOrderResponse(order.Orders)...)
+		}
+	}
+	return ordersID
 }
 
 func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {

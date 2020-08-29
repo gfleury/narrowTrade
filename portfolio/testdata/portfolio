@@ -4,4 +4,3 @@ distribution:
   trader: StockNaive
 - valuepercentage: 10
   trader: ForexNaive
-traders: {}

@@ -5,10 +5,8 @@ import (
 	"math"
 	"sort"
 
+	"github.com/gfleury/narrowTrade/analysis"
 	"github.com/gfleury/narrowTrade/models"
-	"github.com/gfleury/narrowTrade/utils"
-
-	iex "github.com/goinvest/iexcloud/v2"
 )
 
 type StockNaive struct {
@@ -18,7 +16,7 @@ type StockNaive struct {
 
 type StockNaiveData struct {
 	instrument       models.InstrumentDetails
-	iexQuote         iex.Quote
+	quote            *analysis.Quote
 	buyRecomendation int
 	betterBuy        bool
 	bbands           []float64
@@ -56,7 +54,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 	for _, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
 
-		iexQuote := n.iexQuote
+		analysisQuote := n.quote
 		i := n.instrument
 
 		if i == nil {
@@ -74,10 +72,10 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 
 		durationType := models.DurationType(models.DayOrder)
 
-		log.Printf("Got price %f - %f\n", buyPrice, iexQuote.IEXRealtimePrice)
-		if (buyPrice > iexQuote.IEXRealtimePrice && buyPrice*0.8 < iexQuote.IEXRealtimePrice) ||
+		log.Printf("Got price %f - %f\n", buyPrice, analysisQuote.RealtimePrice)
+		if (buyPrice > analysisQuote.RealtimePrice && buyPrice*0.8 < analysisQuote.RealtimePrice) ||
 			buyPrice == 0 {
-			buyPrice = i.CalculatePriceWithThickSize(iexQuote.IEXRealtimePrice, 0)
+			buyPrice = i.CalculatePriceWithThickSize(analysisQuote.RealtimePrice, 0)
 			orderType = models.Limit
 			durationType = models.GoodTillCancel
 		}
@@ -175,30 +173,28 @@ func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
 		n.instrument = i
 
 		log.Println("Fetching price IEXCloud price", i.GetAssetType(), i.GetSymbolSimple())
-		n.iexQuote, err = t.IEXApi().Quote(t.Api().Ctx, i.GetSymbolSimple())
+		n.quote, err = t.Analyser().Quote(i)
 		if err != nil {
-			n.iexQuote = iex.Quote{}
+			n.quote = &analysis.Quote{}
 		}
 
 		log.Println("Fetching recommendation from IEXCloud analysis", i.GetAssetType(), i.GetSymbolSimple())
-		recommendations, err := t.IEXApi().RecommendationTrends(t.Api().Ctx, i.GetSymbolSimple())
+		recommendation, err := t.Analyser().OneAnalysis(i)
 		if err != nil {
 			log.Println("Failed to get IEXCloud analysis, flatting symbols to same level", i.GetSymbolSimple())
 			n.buyRecomendation = 1
 			n.betterBuy = false
 		} else {
-			recommendation := utils.IEXRecomendationReduce(recommendations)
 			n.buyRecomendation = recommendation.BuyRatings
 			n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
 		}
 
 		log.Println("Fetching bollinger bands from IEXCloud", i.GetAssetType(), i.GetSymbolSimple())
-		bbands, err := t.IEXApi().Indicator(t.Api().Ctx, i.GetSymbolSimple(), "bbands", "ytd")
+		n.bbands, err = t.Analyser().Indicator(i, analysis.BBANDS)
 		if err != nil {
 			log.Println("Failed to get bollinger bands, going with percentage", i.GetSymbolSimple(), err)
-		} else {
-			n.bbands = utils.IEXBBandsReduction(bbands, 4)
 		}
+
 		naiveStockData = append(naiveStockData, n)
 	}
 

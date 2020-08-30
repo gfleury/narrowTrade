@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/gfleury/narrowTrade/analysis"
+
 	"github.com/gfleury/narrowTrade/models"
-	iex "github.com/goinvest/iexcloud/v2"
 )
 
 type Trader interface {
 	Api() *models.ModeledAPI
 	Buy(order *models.Order) (*models.OrderResponse, error)
 	Sell(order *models.Order) (*models.OrderResponse, error)
+	Analyser() analysis.InstrumentAnalyser
 	getOpenOrders() float64
-	IEXApi() *iex.Client
 }
 
 type ComplexTrader interface {
@@ -30,11 +31,11 @@ type TradeParameter struct {
 
 type BasicSaxoTrader struct {
 	Trader
-	AccountKey     string
-	ModeledAPI     *models.ModeledAPI
-	IEXAPI         *iex.Client
-	tradedOrdersID []*models.OrderResponse
-	openOrders     *models.OrderList
+	AccountKey         string
+	ModeledAPI         *models.ModeledAPI
+	InstrumentAnalyser analysis.InstrumentAnalyser
+	tradedOrdersID     []*models.OrderResponse
+	openOrders         *models.OrderList
 }
 
 func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse, error) {
@@ -112,6 +113,6 @@ func (t *BasicSaxoTrader) Api() *models.ModeledAPI {
 	return t.ModeledAPI
 }
 
-func (t *BasicSaxoTrader) IEXApi() *iex.Client {
-	return t.IEXAPI
+func (t *BasicSaxoTrader) Analyser() analysis.InstrumentAnalyser {
+	return t.InstrumentAnalyser
 }

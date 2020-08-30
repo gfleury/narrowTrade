@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/gfleury/narrowTrade/analysis"
+
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/portfolio"
 	"github.com/gfleury/narrowTrade/saxo_oauth2"
@@ -51,7 +53,9 @@ func main() {
 		BasicSaxoTrader: &trader.BasicSaxoTrader{
 			AccountKey: acc.GetAccountKeyMe(),
 			ModeledAPI: ma,
-			IEXAPI:     iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
+			InstrumentAnalyser: &analysis.IEXAnalyser{
+				Client: iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
+			},
 		},
 	}
 

@@ -85,7 +85,7 @@ func (p *Portfolio) Rebalance() error {
 	for id, investment := range p.Distribution {
 		t, ok := p.Traders[investment.Trader]
 		if !ok {
-			fmt.Printf("Trader not found: %s, skipping it", investment.Trader)
+			log.Printf("Trader not found: %s, skipping it", investment.Trader)
 			continue
 		}
 

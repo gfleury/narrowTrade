@@ -4,8 +4,8 @@ distribution:
   valuepercentage: 90
   trader: StockNaive
   parameters:
-    percentprofit: 3
-    percentloss: 1
+    percentprofit: 5
+    percentloss: 10
 - valuepercentage: 10
   trader: ForexNaive
   symbols:

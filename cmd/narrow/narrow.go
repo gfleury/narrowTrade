@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gfleury/narrowTrade/analysis"
 
@@ -31,6 +35,18 @@ func main() {
 	}
 
 	tokenSource := oauth2cfg.TokenSource(ctx, token)
+
+	signalChannel := make(chan os.Signal, 2)
+	signal.Notify(signalChannel, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		sig := <-signalChannel
+		switch sig {
+		case os.Interrupt:
+			ExitSaveToken(tokenSource, fmt.Errorf("CTRL-Ced"))
+		case syscall.SIGTERM:
+			ExitSaveToken(tokenSource, fmt.Errorf("CTRL-Ced"))
+		}
+	}()
 
 	client := saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration())
 	auth := context.WithValue(ctx, saxo_openapi.ContextOAuth2, tokenSource)
@@ -81,12 +97,20 @@ func main() {
 		ExitSaveToken(tokenSource, err)
 	}
 
-	err = p.Rebalance()
-	if err != nil {
-		ExitSaveToken(tokenSource, err)
+	for {
+		err = p.Rebalance()
+		if err != nil {
+			break
+		}
+
+		token, err := tokenSource.Token()
+		if err != nil {
+			break
+		}
+		time.Sleep(time.Until(token.Expiry) - 2*time.Minute)
 	}
 
-	ExitSaveToken(tokenSource, nil)
+	ExitSaveToken(tokenSource, err)
 }
 
 func ExitSaveToken(tokenSource oauth2.TokenSource, previousErr error) {

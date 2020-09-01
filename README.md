@@ -14,7 +14,6 @@
 - FX hedging - sheets can be configured to automatically hedge other positions or transactions once these are committed
 - Bulk trading on behalf of multiple clients or accounts
 - Portfolio rebalancing and monitoring across clients for smaller wealth managers or hedge funds
-- Back testing FX based models
 
 ## Nice to check technical projects:
 - https://github.com/sdcoffey/techan

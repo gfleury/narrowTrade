@@ -62,3 +62,7 @@ type InstrumentAnalyser interface {
 	OneAnalysis(models.Instrument) (*InstrumentAnalysis, error)
 	Analyse([]models.Instrument) error
 }
+
+func (in IndicatorName) String() string {
+	return string(in)
+}

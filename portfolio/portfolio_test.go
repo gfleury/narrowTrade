@@ -7,6 +7,10 @@ import (
 	"strings"
 	"testing"
 
+	"golang.org/x/net/context"
+
+	"github.com/gfleury/narrowTrade/models"
+	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/trader"
 	check "gopkg.in/check.v1"
 )
@@ -139,5 +143,44 @@ distribution:
 
 	err = p.Validate()
 	c.Assert(err, check.IsNil)
+
+}
+
+func (s *Suite) TestPortfolioRebalance(c *check.C) {
+	data := strings.NewReader(`
+distribution:
+- watchlistid: "2491746"
+  valuepercentage: 90
+  trader: StockNaive
+  parameters:
+    percentprofit: 5
+    percentloss: 2
+- valuepercentage: 10
+  trader: ForexNaive
+  symbols:
+  - USDCAD
+  parameters:
+    percentprofit: 5
+    percentloss: 2
+`)
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	p := &Portfolio{
+		Traders: map[TraderName]trader.ComplexTrader{
+			StockNaive: &trader.DummyTrader{
+				ModeledAPI: &models.ModeledAPI{
+					Ctx:    ctx,
+					Client: saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration()),
+				},
+			},
+		},
+	}
+
+	err := p.Load(data)
+	c.Assert(err, check.IsNil)
+
+	err = p.Rebalance()
+	c.Assert(err, check.NotNil)
 
 }

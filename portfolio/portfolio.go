@@ -101,13 +101,13 @@ func (p *Portfolio) Rebalance() error {
 			return fmt.Errorf("Unable to get balance, bouncing back: %s", err)
 		}
 
-		if totalInvested >= balance.TotalValue*(investment.ValuePercentage/100) {
+		if totalInvested >= balance.MarginAvailableForTrading*(investment.ValuePercentage/100) {
 			log.Printf("Invested amount is already higher than requested: %f >= %f * %f ",
-				totalInvested, balance.TotalValue, investment.ValuePercentage/100)
+				totalInvested, balance.MarginAvailableForTrading, investment.ValuePercentage/100)
 			continue
 		}
 		log.Printf("Balancing invested amount as it is lower than requested: %f >= %f * %f ",
-			totalInvested, balance.TotalValue, investment.ValuePercentage/100)
+			totalInvested, balance.MarginAvailableForTrading, investment.ValuePercentage/100)
 		// Get available cash from account (cash that is not hold by positions/orders)
 		availableCash := balance.InitialMargin.MarginAvailable
 

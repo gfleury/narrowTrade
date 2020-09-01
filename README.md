@@ -9,7 +9,7 @@
 - Stock Trading based on dynamic data from external systems or from the API - OK
 - Forex Trading based on dynamic data from external systems or from the API - OK
 - Trading on specific times 
-- Rebalance CashPerSymbol if any order fail during the Trade()
+- Rebalance CashPerSymbol if any order fail during the Trade() - OK
 - StockNaive with pricing per percentage, support/resistance and moving averages.
 - FX hedging - sheets can be configured to automatically hedge other positions or transactions once these are committed
 - Bulk trading on behalf of multiple clients or accounts

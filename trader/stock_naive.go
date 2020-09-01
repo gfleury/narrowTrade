@@ -41,6 +41,15 @@ func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64)
 	return 0, nil
 }
 
+func (t *StockNaive) GetNewCashPerSymbol(oldCashPerSymbol, totalInvest float64, failedTrades int) float64 {
+	newCashPerSymbol, err := t.GetCashPerSymbol(len(t.data)-failedTrades, totalInvest)
+	if err == nil {
+		log.Printf("Rebalancing cash per symbol from: %f to: %f", oldCashPerSymbol, newCashPerSymbol)
+		return newCashPerSymbol
+	}
+	return oldCashPerSymbol
+}
+
 func (t *StockNaive) Trade(param TradeParameter) error {
 
 	t.data = t.createStocksNaive(param.Symbols)
@@ -51,6 +60,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 	}
 	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
 
+	failedTrades := 0
 	for _, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
 
@@ -59,6 +69,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 
 		if i == nil {
 			log.Println("Instrument is nil, something is wrong:", n)
+			failedTrades++
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
 			continue
 		}
 
@@ -82,6 +94,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 
 		if buyPrice <= 0 {
 			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
+			failedTrades++
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
 			continue
 		}
 
@@ -89,7 +103,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			// bollinger bands unavailable, go with percentage
 			profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
 			stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
-			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
+			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 70)
 		} else {
 			// If percentProfit higher than bbands_higher go with percentProfit
 			if n.bbands[2] < buyPrice*((param.PercentProfit/100)+1) {
@@ -109,6 +123,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		amount := int(math.Round(float64(cashPerSymbol) / buyPrice))
 		if amount < 1 {
 			log.Printf("Not enough available money to buy %s %s", i.GetAssetType(), i.GetSymbol())
+			failedTrades++
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
 			continue
 		}
 
@@ -127,6 +143,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if err != nil {
 			orderError := models.GetOrderError(err)
 			if models.BusinessRuleViolation(orderError) {
+				failedTrades++
+				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
 				continue
 			}
 			return err
@@ -172,16 +190,16 @@ func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
 		}
 		n.instrument = i
 
-		log.Println("Fetching price IEXCloud price", i.GetAssetType(), i.GetSymbolSimple())
+		log.Println("Fetching price at Analyser", i.GetAssetType(), i.GetSymbolSimple())
 		n.quote, err = t.Analyser().Quote(i)
 		if err != nil {
 			n.quote = &analysis.Quote{}
 		}
 
-		log.Println("Fetching recommendation from IEXCloud analysis", i.GetAssetType(), i.GetSymbolSimple())
+		log.Println("Fetching recommendation from Analyser", i.GetAssetType(), i.GetSymbolSimple())
 		recommendation, err := t.Analyser().OneAnalysis(i)
 		if err != nil {
-			log.Println("Failed to get IEXCloud analysis, flatting symbols to same level", i.GetSymbolSimple())
+			log.Println("Failed to get Analyser, flatting symbols to same level", i.GetSymbolSimple())
 			n.buyRecomendation = 1
 			n.betterBuy = false
 		} else {
@@ -189,7 +207,7 @@ func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
 			n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
 		}
 
-		log.Println("Fetching bollinger bands from IEXCloud", i.GetAssetType(), i.GetSymbolSimple())
+		log.Println("Fetching bollinger bands from Analyser", i.GetAssetType(), i.GetSymbolSimple())
 		n.bbands, err = t.Analyser().Indicator(i, analysis.BBANDS)
 		if err != nil {
 			log.Println("Failed to get bollinger bands, going with percentage", i.GetSymbolSimple(), err)

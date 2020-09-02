@@ -2,6 +2,7 @@ package analysis
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -22,6 +23,10 @@ type IEXAnalyser struct {
 	cache  map[string]*cacheEntry
 }
 
+func (a *IEXAnalyser) Init() {
+	a.cache = map[string]*cacheEntry{}
+}
+
 func (a *IEXAnalyser) Analysis() []InstrumentAnalysis {
 	return []InstrumentAnalysis{}
 }
@@ -34,13 +39,17 @@ func (a *IEXAnalyser) Indicator(i models.Instrument, indicatorName IndicatorName
 			return cachedValue.value.([]float64), nil
 		}
 	}
-	indicator, err := a.Client.Indicator(a.Ctx, i.GetSymbolSimple(), indicatorName.String(), "ytd")
+	indicator, err := a.Client.Indicator(a.Ctx, i.GetSymbolSimple(), indicatorName.String(), "3m")
 	if err != nil {
 		return nil, err
 	}
 
-	a.cache[cacheKey] = &cacheEntry{utils.IEXBBandsReduction(indicator, 5), time.Now().Add(6 * time.Hour)}
-
+	switch indicatorName {
+	case EMA:
+		a.cache[cacheKey] = &cacheEntry{indicator.Indicator[0], time.Now().Add(6 * time.Hour)}
+	case BBANDS:
+		a.cache[cacheKey] = &cacheEntry{utils.IEXBBandsReduction(indicator, 5), time.Now().Add(6 * time.Hour)}
+	}
 	return a.cache[cacheKey].value.([]float64), nil
 }
 
@@ -57,7 +66,17 @@ func (a *IEXAnalyser) Quote(i models.Instrument) (*Quote, error) {
 		return nil, err
 	}
 
-	a.cache[cacheKey] = &cacheEntry{quote, time.Now().Add(60 * time.Second)}
+	data, err := json.Marshal(quote)
+	if err != nil {
+		return nil, err
+	}
+	aQuote := &Quote{}
+	err = json.Unmarshal(data, aQuote)
+	if err != nil {
+		return nil, err
+	}
+
+	a.cache[cacheKey] = &cacheEntry{aQuote, time.Now().Add(60 * time.Second)}
 
 	return a.cache[cacheKey].value.(*Quote), nil
 }
@@ -75,7 +94,19 @@ func (a *IEXAnalyser) OneAnalysis(i models.Instrument) (*InstrumentAnalysis, err
 		return nil, err
 	}
 
-	a.cache[cacheKey] = &cacheEntry{utils.IEXRecomendationReduce(recommendations), time.Now().Add(24 * time.Hour)}
+	recommendation := utils.IEXRecomendationReduce(recommendations)
+
+	data, err := json.Marshal(recommendation)
+	if err != nil {
+		return nil, err
+	}
+	instrumentAnalysis := &InstrumentAnalysis{}
+	err = json.Unmarshal(data, instrumentAnalysis)
+	if err != nil {
+		return nil, err
+	}
+
+	a.cache[cacheKey] = &cacheEntry{instrumentAnalysis, time.Now().Add(24 * time.Hour)}
 
 	return a.cache[cacheKey].value.(*InstrumentAnalysis), nil
 }

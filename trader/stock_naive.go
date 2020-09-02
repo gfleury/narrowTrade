@@ -19,7 +19,7 @@ type StockNaiveData struct {
 	quote            *analysis.Quote
 	buyRecomendation int
 	betterBuy        bool
-	bbands           []float64
+	indicator        []float64
 }
 
 func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64) (float64, error) {
@@ -61,8 +61,12 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
 
 	failedTrades := 0
-	for _, n := range t.data {
+	for count, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
+
+		if n.buyRecomendation != 0 && !n.betterBuy {
+			log.Println("Skipping symbol as it does not seem good to buy", n.instrument)
+		}
 
 		analysisQuote := n.quote
 		i := n.instrument
@@ -99,21 +103,21 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			continue
 		}
 
-		if n.bbands == nil {
-			// bollinger bands unavailable, go with percentage
+		if n.indicator == nil {
+			// indicator unavailable, go with percentage
 			profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
 			stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
 			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 70)
 		} else {
 			// If percentProfit higher than bbands_higher go with percentProfit
-			if n.bbands[2] < buyPrice*((param.PercentProfit/100)+1) {
+			if n.indicator[2] < buyPrice*((param.PercentProfit/100)+1) {
 				profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
 			} else {
-				profitPrice = i.CalculatePriceWithThickSize(n.bbands[2], -param.PercentProfit)
+				profitPrice = i.CalculatePriceWithThickSize(n.indicator[2], -param.PercentProfit)
 			}
 			// If percentLoss lower than bbands_lower go with bbands_lower
-			if n.bbands[0] > buyPrice*(1-(param.PercentLoss/100)) {
-				stopLossPrice = i.CalculatePriceWithThickSize(n.bbands[0], 0)
+			if n.indicator[0] > buyPrice*(1-(param.PercentLoss/100)) {
+				stopLossPrice = i.CalculatePriceWithThickSize(n.indicator[0], 0)
 			} else {
 				stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
 			}
@@ -153,6 +157,12 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		// Save Ordered price for next calculation
 		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
+
+		cashPerSymbol, err = t.GetCashPerSymbol(len(t.data)-count, param.TotalInvest-or.TotalPrice)
+		if err != nil {
+			return err
+		}
+		log.Printf("Rebalancing, using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
 	}
 	return nil
 }
@@ -200,7 +210,7 @@ func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
 		recommendation, err := t.Analyser().OneAnalysis(i)
 		if err != nil {
 			log.Println("Failed to get Analyser, flatting symbols to same level", i.GetSymbolSimple())
-			n.buyRecomendation = 1
+			n.buyRecomendation = 0
 			n.betterBuy = false
 		} else {
 			n.buyRecomendation = recommendation.BuyRatings
@@ -208,7 +218,7 @@ func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
 		}
 
 		log.Println("Fetching bollinger bands from Analyser", i.GetAssetType(), i.GetSymbolSimple())
-		n.bbands, err = t.Analyser().Indicator(i, analysis.BBANDS)
+		n.indicator, err = t.Analyser().Indicator(i, analysis.BBANDS)
 		if err != nil {
 			log.Println("Failed to get bollinger bands, going with percentage", i.GetSymbolSimple(), err)
 		}

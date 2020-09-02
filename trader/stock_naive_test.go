@@ -5,18 +5,15 @@ package trader
 
 import (
 	"github.com/gfleury/narrowTrade/analysis"
-	"github.com/gfleury/narrowTrade/tests"
 	check "gopkg.in/check.v1"
 )
 
 func (s *Suite) TestBuyStocksNaive_2_5(c *check.C) {
 	t := StockNaive{
 		&BasicSaxoTrader{
-			AccountKey: s.acc.GetAccountKeyMe(),
-			ModeledAPI: s.ma,
-			InstrumentAnalyser: &analysis.IEXAnalyser{
-				Client: tests.GetIEXSandboxClient(),
-			},
+			AccountKey:         s.acc.GetAccountKeyMe(),
+			ModeledAPI:         s.ma,
+			InstrumentAnalyser: &analysis.DummyAnalyser{},
 		},
 		nil,
 	}
@@ -29,11 +26,9 @@ func (s *Suite) TestBuyStocksNaive_2_5(c *check.C) {
 func (s *Suite) TestBuyStocksNaive_1_2(c *check.C) {
 	t := &StockNaive{
 		&BasicSaxoTrader{
-			AccountKey: s.acc.GetAccountKeyMe(),
-			ModeledAPI: s.ma,
-			InstrumentAnalyser: &analysis.IEXAnalyser{
-				Client: tests.GetIEXSandboxClient(),
-			},
+			AccountKey:         s.acc.GetAccountKeyMe(),
+			ModeledAPI:         s.ma,
+			InstrumentAnalyser: &analysis.DummyAnalyser{},
 		},
 		nil,
 	}

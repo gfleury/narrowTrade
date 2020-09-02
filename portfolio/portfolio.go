@@ -133,6 +133,10 @@ func (p *Portfolio) Rebalance() error {
 				investment.WatchlistItems = 10
 			}
 
+			if len(uics) < investment.WatchlistItems {
+				investment.WatchlistItems = len(uics)
+			}
+
 			investment.Parameters.Symbols = uics[:investment.WatchlistItems]
 
 			if investment.ValuePercentage != 0 {

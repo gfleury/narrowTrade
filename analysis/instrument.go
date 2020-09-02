@@ -6,6 +6,7 @@ type IndicatorName string
 
 const (
 	BBANDS IndicatorName = "bbands"
+	EMA                  = "ema"
 )
 
 type InstrumentAnalysis struct {

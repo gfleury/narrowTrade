@@ -65,13 +65,17 @@ func main() {
 
 	log.Println(acc.GetAccountKey(0))
 
+	IEXAnalyser := &analysis.IEXAnalyser{
+		Ctx:    ctx,
+		Client: iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
+	}
+	IEXAnalyser.Init()
+
 	stockNaive := trader.StockNaive{
 		BasicSaxoTrader: &trader.BasicSaxoTrader{
-			AccountKey: acc.GetAccountKeyMe(),
-			ModeledAPI: ma,
-			InstrumentAnalyser: &analysis.IEXAnalyser{
-				Client: iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
-			},
+			AccountKey:         acc.GetAccountKeyMe(),
+			ModeledAPI:         ma,
+			InstrumentAnalyser: IEXAnalyser,
 		},
 	}
 

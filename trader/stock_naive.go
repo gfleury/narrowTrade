@@ -61,7 +61,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
 
 	failedTrades := 0
-	for count, n := range t.data {
+	for idx, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
 
 		if n.buyRecomendation != 0 && !n.betterBuy {
@@ -124,8 +124,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
 		}
 
-		amount := int(math.Round(float64(cashPerSymbol) / buyPrice))
-		if amount < 1 {
+		amount := int(math.Ceil(cashPerSymbol / buyPrice))
+		if amount < 1 || buyPrice > cashPerSymbol {
 			log.Printf("Not enough available money to buy %s %s", i.GetAssetType(), i.GetSymbol())
 			failedTrades++
 			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
@@ -146,7 +146,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 				WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 		if err != nil {
 			orderError := models.GetOrderError(err)
-			if models.BusinessRuleViolation(orderError) {
+			if orderError != nil && models.BusinessRuleViolation(orderError) {
 				failedTrades++
 				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
 				continue
@@ -158,11 +158,11 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
 
-		cashPerSymbol, err = t.GetCashPerSymbol(len(t.data)-count, param.TotalInvest-or.TotalPrice)
+		cashPerSymbol, err = t.GetCashPerSymbol(len(t.data)-(idx+1), param.TotalInvest)
 		if err != nil {
 			return err
 		}
-		log.Printf("Rebalancing, using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
+		log.Printf("Rebalancing, using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)-(idx+1)))
 	}
 	return nil
 }

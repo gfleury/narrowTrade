@@ -27,6 +27,7 @@ github.com/niemeyer/pretty
 ## explicit
 github.com/nirasan/go-oauth-pkce-code-verifier
 # golang.org/x/net v0.0.0-20190108225652-1e06a53dbb7e
+## explicit
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
 # golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d

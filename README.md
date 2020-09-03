@@ -8,12 +8,13 @@
 - remove all IEX code and create Instrument analysis interface. - OK
 - Stock Trading based on dynamic data from external systems or from the API - OK
 - Forex Trading based on dynamic data from external systems or from the API - OK
-- Trading on specific times 
 - Rebalance CashPerSymbol if any order fail during the Trade() - OK
-- StockNaive with pricing per percentage, support/resistance and moving averages.
+- StockNaive with pricing per percentage and moving averages. - OK
 - FX hedging - sheets can be configured to automatically hedge other positions or transactions once these are committed
 - Bulk trading on behalf of multiple clients or accounts
 - Portfolio rebalancing and monitoring across clients for smaller wealth managers or hedge funds
+- Check how to implement analysis for resistance/support
+- Trading on specific times
 
 ## Nice to check technical projects:
 - https://github.com/sdcoffey/techan

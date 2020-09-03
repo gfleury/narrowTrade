@@ -111,8 +111,11 @@ func main() {
 		if err != nil {
 			break
 		}
-		time.Sleep(time.Until(token.Expiry) - 30*time.Second)
-		log.Println("Slept", time.Until(token.Expiry)-2*time.Minute)
+
+		interval := time.Until(token.Expiry) - 30*time.Second
+		time.Sleep(interval)
+
+		log.Println("Slept", interval)
 	}
 
 	ExitSaveToken(tokenSource, err)

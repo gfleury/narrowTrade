@@ -74,7 +74,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if i == nil {
 			log.Println("Instrument is nil, something is wrong:", n)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 			continue
 		}
 
@@ -99,7 +99,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if buyPrice <= 0 {
 			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 			continue
 		}
 
@@ -128,7 +128,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if amount < 1 || buyPrice > cashPerSymbol {
 			log.Printf("Not enough available money to buy %s %s", i.GetAssetType(), i.GetSymbol())
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 			continue
 		}
 
@@ -148,7 +148,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			orderError := models.GetOrderError(err)
 			if orderError != nil && models.BusinessRuleViolation(orderError) {
 				failedTrades++
-				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, failedTrades)
+				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 				continue
 			}
 			return err
@@ -158,10 +158,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
 
-		cashPerSymbol, err = t.GetCashPerSymbol(len(t.data)-(idx+1), param.TotalInvest)
-		if err != nil {
-			return err
-		}
+		// rebalance cashPerSymbol based on remaining cash
+		cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 		log.Printf("Rebalancing, using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)-(idx+1)))
 	}
 	return nil

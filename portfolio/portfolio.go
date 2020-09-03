@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 
+	"github.com/gfleury/narrowTrade/config"
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/trader"
 
@@ -99,6 +100,12 @@ func (p *Portfolio) Rebalance() error {
 		balance, err := t.Api().GetBalanceMe()
 		if err != nil {
 			return fmt.Errorf("Unable to get balance, bouncing back: %s", err)
+		}
+
+		if balance.MarginAvailableForTrading < config.MINIMUM_TRADE_VALUE {
+			log.Printf("Available margin is lower than Minimum amount for trading: %f < %f",
+				balance.MarginAvailableForTrading, config.MINIMUM_TRADE_VALUE)
+			continue
 		}
 
 		if totalInvested >= balance.MarginAvailableForTrading*(investment.ValuePercentage/100) {

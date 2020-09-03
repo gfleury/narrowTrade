@@ -6,15 +6,16 @@ import (
 	"sort"
 
 	"github.com/gfleury/narrowTrade/analysis"
+	"github.com/gfleury/narrowTrade/config"
 	"github.com/gfleury/narrowTrade/models"
 )
 
 type StockNaive struct {
 	*BasicSaxoTrader
-	data []StockNaiveData
+	data []InstrumentNaiveData
 }
 
-type StockNaiveData struct {
+type InstrumentNaiveData struct {
 	instrument       models.InstrumentDetails
 	quote            *analysis.Quote
 	buyRecomendation int
@@ -125,8 +126,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		}
 
 		amount := int(math.Ceil(cashPerSymbol / buyPrice))
-		if amount < 1 || buyPrice > cashPerSymbol {
-			log.Printf("Not enough available money to buy %s %s", i.GetAssetType(), i.GetSymbol())
+		if amount < 1 || buyPrice > cashPerSymbol || buyPrice*float64(amount) < config.MINIMUM_TRADE_VALUE {
+			log.Printf("Not enough available money to buy OR trade value too low %s %s for %f", i.GetAssetType(), i.GetSymbol(), buyPrice*float64(amount))
 			failedTrades++
 			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 			continue
@@ -184,10 +185,10 @@ func flatOrderResponse(orders []*models.OrderResponse) ([]string, []float64) {
 	return ordersID, prices
 }
 
-func (t *StockNaive) createStocksNaive(uics []int) []StockNaiveData {
-	naiveStockData := []StockNaiveData{}
+func (t *StockNaive) createStocksNaive(uics []int) []InstrumentNaiveData {
+	naiveStockData := []InstrumentNaiveData{}
 	for _, uic := range uics {
-		n := StockNaiveData{}
+		n := InstrumentNaiveData{}
 		log.Println("Getting Saxo Bank symbol for", uic)
 		uicInstrument := &models.SaxoInstrument{
 			Identifier: int32(uic),

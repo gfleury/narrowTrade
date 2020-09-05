@@ -14,9 +14,11 @@ type Quote struct {
 	Bid              float64 `json:"Bid"`
 	DelayedByMinutes int     `json:"DelayedByMinutes"`
 	ErrorCode        string  `json:"ErrorCode"`
+	MarketState      string  `json:"MarketState,omitempty"`
 	Mid              float64 `json:"Mid"`
 	PriceSource      string  `json:"PriceSource"`
 	PriceSourceType  string  `json:"PriceSourceType"`
 	PriceTypeAsk     string  `json:"PriceTypeAsk"`
 	PriceTypeBid     string  `json:"PriceTypeBid"`
+	RFQState         string  `json:"RFQState,omitempty"`
 }

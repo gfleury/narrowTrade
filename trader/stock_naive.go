@@ -36,7 +36,7 @@ func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64)
 	openOrdersTotal := t.getOpenOrders()
 
 	available := availableCash - openOrdersTotal
-	if available > 0 {
+	if available > 0 && qntInstruments > 0 {
 		return available / float64(qntInstruments), nil
 	}
 	return 0, nil
@@ -44,7 +44,7 @@ func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64)
 
 func (t *StockNaive) GetNewCashPerSymbol(oldCashPerSymbol, totalInvest float64, failedTrades int) float64 {
 	newCashPerSymbol, err := t.GetCashPerSymbol(len(t.data)-failedTrades, totalInvest)
-	if err == nil {
+	if err == nil && newCashPerSymbol > 0 {
 		log.Printf("Rebalancing cash per symbol from: %f to: %f", oldCashPerSymbol, newCashPerSymbol)
 		return newCashPerSymbol
 	}
@@ -127,7 +127,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 
 		amount := int(math.Ceil(cashPerSymbol / buyPrice))
 		if amount < 1 || buyPrice > cashPerSymbol || buyPrice*float64(amount) < config.MINIMUM_TRADE_VALUE {
-			log.Printf("Not enough available money to buy OR trade value too low %s %s for %f", i.GetAssetType(), i.GetSymbol(), buyPrice*float64(amount))
+			log.Printf("Not enough available money to buy OR trade value too low %s %s for %f",
+				i.GetAssetType(), i.GetSymbol(), buyPrice*float64(amount))
 			failedTrades++
 			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
 			continue
@@ -159,9 +160,10 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
 
-		// rebalance cashPerSymbol based on remaining cash
-		cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
-		log.Printf("Rebalancing, using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)-(idx+1)))
+		if (idx + 1 + failedTrades) < len(t.data) {
+			// rebalance cashPerSymbol based on remaining cash
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
+		}
 	}
 	return nil
 }

@@ -12,6 +12,9 @@ github.com/golang/protobuf/proto
 github.com/google/go-querystring/query
 # github.com/google/uuid v1.1.1
 ## explicit
+# github.com/gorilla/websocket v1.4.2
+## explicit
+github.com/gorilla/websocket
 # github.com/kr/text v0.1.0
 github.com/kr/text
 # github.com/mitchellh/go-homedir v1.1.0
@@ -26,7 +29,7 @@ github.com/niemeyer/pretty
 # github.com/nirasan/go-oauth-pkce-code-verifier v0.0.0-20170819232839-0fbfe93532da
 ## explicit
 github.com/nirasan/go-oauth-pkce-code-verifier
-# golang.org/x/net v0.0.0-20190108225652-1e06a53dbb7e
+# golang.org/x/net v0.0.0-20200822124328-c89045814202
 ## explicit
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp

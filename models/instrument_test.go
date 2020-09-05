@@ -1,9 +1,11 @@
 // +build !integration
-// +build !unit
+// +build unit
 
 package models
 
 import (
+	"testing"
+
 	check "gopkg.in/check.v1"
 )
 
@@ -20,6 +22,10 @@ func (s *InstrumentSuite) SetUpTest(c *check.C) {
 }
 
 var _ = check.Suite(&InstrumentSuite{})
+
+func TestInstrument(t *testing.T) {
+	check.TestingT(t)
+}
 
 // TestGetPriceTick tests the instrument tick based on the order price
 // https://www.developer.saxo/openapi/learn/order-placement#TickSizeandTickSizeSchemes

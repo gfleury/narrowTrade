@@ -18,6 +18,7 @@
 - StockNaive GetCashPerSymbol testing for different scenarios
 - API's context with timeout and exponential backoff 
   `sleep = min(2000, random.uniform(5, sleep * 3))`
+- Only Trade when exchange is about 20 minutes to open
 
 ## Nice to check technical projects:
 - https://github.com/sdcoffey/techan

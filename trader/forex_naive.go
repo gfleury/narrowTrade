@@ -12,7 +12,6 @@ import (
 
 type ForexNaive struct {
 	*StockNaive
-	data []InstrumentNaiveData
 }
 
 func (t *ForexNaive) Trade(param TradeParameter) error {

@@ -75,7 +75,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if i == nil {
 			log.Println("Instrument is nil, something is wrong:", n)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
 			continue
 		}
 
@@ -100,7 +100,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if buyPrice <= 0 {
 			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
 			continue
 		}
 
@@ -130,7 +130,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			log.Printf("Not enough available money to buy OR trade value too low %s %s for %f",
 				i.GetAssetType(), i.GetSymbol(), buyPrice*float64(amount))
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
 			continue
 		}
 
@@ -150,7 +150,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			orderError := models.GetOrderError(err)
 			if orderError != nil && models.BusinessRuleViolation(orderError) {
 				failedTrades++
-				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
+				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
 				continue
 			}
 			return err
@@ -160,9 +160,9 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
 
-		if (idx + 1 + failedTrades) < len(t.data) {
+		if (idx + failedTrades) < len(t.data) {
 			// rebalance cashPerSymbol based on remaining cash
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + 1 + failedTrades))
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
 		}
 	}
 	return nil

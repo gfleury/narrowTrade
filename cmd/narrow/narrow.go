@@ -71,17 +71,24 @@ func main() {
 	}
 	IEXAnalyser.Init()
 
+	basicTrader := &trader.BasicSaxoTrader{
+		AccountKey:         acc.GetAccountKeyMe(),
+		ModeledAPI:         ma,
+		InstrumentAnalyser: IEXAnalyser,
+	}
+
 	stockNaive := trader.StockNaive{
-		BasicSaxoTrader: &trader.BasicSaxoTrader{
-			AccountKey:         acc.GetAccountKeyMe(),
-			ModeledAPI:         ma,
-			InstrumentAnalyser: IEXAnalyser,
-		},
+		BasicSaxoTrader: basicTrader,
+	}
+
+	forexNaive := trader.ForexNaive{
+		StockNaive: &stockNaive,
 	}
 
 	p := &portfolio.Portfolio{
 		Traders: map[portfolio.TraderName]trader.ComplexTrader{
 			portfolio.StockNaive: &stockNaive,
+			portfolio.ForexNaive: &forexNaive,
 		},
 	}
 

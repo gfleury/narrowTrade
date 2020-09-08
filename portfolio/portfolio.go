@@ -153,6 +153,15 @@ func (p *Portfolio) Rebalance() error {
 			}
 		}
 
+		// Read Symbols From Investment
+		for _, symbol := range investment.Symbols {
+			i, err := t.Api().GetInstrument(symbol)
+			if err != nil {
+				return fmt.Errorf("Unable to fetch Symbol: %s , bouncing back: %s", symbol, err)
+			}
+			investment.Parameters.Symbols = append(investment.Parameters.Symbols, int(i.GetID()))
+		}
+
 		tradeErr := t.Trade(investment.Parameters)
 
 		orders, prices := t.GetOrders()

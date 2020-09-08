@@ -9,7 +9,7 @@ distribution:
 - valuepercentage: 10
   trader: ForexNaive
   symbols:
-    - USDEUR
+    - EURUSD
   parameters:
     percentprofit: 3
     percentloss: 1

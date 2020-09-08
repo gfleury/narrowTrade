@@ -116,12 +116,20 @@ type TickSizeScheme struct {
 }
 
 func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
+	var assetType optional.Interface
+
 	i := &SaxoInstrument{}
+	if len(symbol) == 6 {
+		assetType = optional.NewInterface(FxSpot)
+	} else {
+		assetType = optional.NewInterface(Stock)
+	}
+
 	ma.Throttle()
 	data, _, err := ma.Client.ReferenceDataApi.GetSummaries(ma.Ctx,
 		&saxo_openapi.ReferenceDataApiGetSummariesOpts{
 			Keywords:   optional.NewString(symbol),
-			AssetTypes: optional.NewInterface(Stock),
+			AssetTypes: assetType,
 		})
 	defer ma.UpdateLastCall()
 	if err != nil {

@@ -18,6 +18,7 @@
 - StockNaive GetCashPerSymbol testing for different edge cases
 - API's context with timeout and exponential backoff 
   `sleep = min(2000, random.uniform(5, sleep * 3))`
+- Removed closed orders from .narrow_tags
 
 ## Nice to check technical projects:
 - https://github.com/sdcoffey/techan

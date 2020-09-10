@@ -3,6 +3,7 @@ package portfolio
 import (
 	"io"
 	"io/ioutil"
+	"sort"
 
 	"github.com/gfleury/narrowTrade/models"
 	yaml "gopkg.in/yaml.v2"
@@ -26,7 +27,12 @@ func (t Tags) AddTag(id int, ordersIDs map[string]float64) {
 }
 
 func (t *Tags) Save() error {
-	data, err := yaml.Marshal(t)
+	sortT := *t
+	sort.Slice(sortT, func(i, j int) bool {
+		return sortT[i].ID < sortT[j].ID
+	})
+
+	data, err := yaml.Marshal(sortT)
 	if err != nil {
 		return err
 	}
@@ -38,7 +44,15 @@ func (t *Tags) Load(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	return yaml.Unmarshal(data, &t)
+	err = yaml.Unmarshal(data, t)
+	if err != nil {
+		return err
+	}
+	idxT := *t
+	for idx := range idxT {
+		idxT[idx].ID = idx
+	}
+	return nil
 }
 
 func (t *Tag) GetOpenOrdersTotal(ol *models.OrderList) float64 {

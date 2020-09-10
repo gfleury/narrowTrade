@@ -12,11 +12,14 @@ import (
 func (s *Suite) TestTagsSave(c *check.C) {
 	t := &Tags{
 		Tag{
+			ID: 0,
 			OrdersIDs: map[string]float64{
 				"123": 1.7,
 			},
 		},
-		Tag{},
+		Tag{
+			ID: 1,
+		},
 	}
 	c.Assert(t, check.NotNil)
 

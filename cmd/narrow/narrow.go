@@ -82,7 +82,9 @@ func main() {
 	}
 
 	forexNaive := trader.ForexNaive{
-		StockNaive: &stockNaive,
+		StockNaive: &trader.StockNaive{
+			BasicSaxoTrader: basicTrader,
+		},
 	}
 
 	p := &portfolio.Portfolio{

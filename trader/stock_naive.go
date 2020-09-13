@@ -162,7 +162,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 
 		if (idx + failedTrades) < len(t.data) {
 			// rebalance cashPerSymbol based on remaining cash
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest-(float64(amount)*buyPrice), (idx + failedTrades))
 		}
 	}
 	return nil

@@ -18,11 +18,16 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 
 	t.data = t.createStocksNaive(param.Symbols)
 
-	cashPerSymbol, err := t.GetCashPerSymbol(len(t.data), param.TotalInvest)
+	err := t.UpdateAvailableCash(param.TotalInvest)
 	if err != nil {
 		return err
 	}
-	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
+
+	qntSymbols := len(t.data)
+
+	cashPerSymbol := t.availableCash.GetSplit(qntSymbols)
+
+	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, t.availableCash.GetTotal())
 
 	failedTrades := 0
 	for idx, n := range t.data {
@@ -35,7 +40,7 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 		if i == nil {
 			log.Println("Instrument is nil, something is wrong:", n)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 			continue
 		}
 
@@ -48,7 +53,7 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 		if buyPrice <= 0 {
 			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 			continue
 		}
 
@@ -56,7 +61,7 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 		if amount < 1 || buyPrice > cashPerSymbol || buyPrice*float64(amount) < config.MINIMUM_TRADE_VALUE {
 			log.Printf("Not enough available money to buy OR trade value too low %s %s for %f", i.GetAssetType(), i.GetSymbol(), buyPrice*float64(amount))
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 			continue
 		}
 
@@ -73,7 +78,7 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 			orderError := models.GetOrderError(err)
 			if orderError != nil && models.BusinessRuleViolation(orderError) {
 				failedTrades++
-				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+				cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 				continue
 			}
 			return err
@@ -84,8 +89,8 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 		log.Println(or)
 
 		// rebalance cashPerSymbol based on remaining cash
-		cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
-		log.Printf("Rebalancing, using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)-(idx+1)))
+		t.availableCash.Spent(float64(amount) * buyPrice)
+		cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 	}
 	return nil
 }

@@ -12,7 +12,8 @@ import (
 
 type StockNaive struct {
 	*BasicSaxoTrader
-	data []InstrumentNaiveData
+	data          []InstrumentNaiveData
+	availableCash *AvailableCash
 }
 
 type InstrumentNaiveData struct {
@@ -23,43 +24,43 @@ type InstrumentNaiveData struct {
 	indicator        []float64
 }
 
-func (t *StockNaive) GetCashPerSymbol(qntInstruments int, availableCash float64) (float64, error) {
+func (t *StockNaive) UpdateAvailableCash(availableCash float64) error {
+
+	// Lazy initialization of availableCash
+	if t.availableCash == nil {
+		t.availableCash = &AvailableCash{}
+	}
+
 	// if cashToUse equal zero, than use the AvailableMargin from the account
 	if availableCash == 0 {
 		balance, err := t.Api().GetBalanceMe()
 		if err != nil {
-			return 0, err
+			return err
 		}
-		availableCash = balance.InitialMargin.MarginAvailable
+		t.availableCash.SetAvailableCash(balance.InitialMargin.MarginAvailable)
 	}
 
 	openOrdersTotal := t.getOpenOrders()
 
-	available := availableCash - openOrdersTotal
-	if available > 0 && qntInstruments > 0 {
-		return available / float64(qntInstruments), nil
-	}
-	return 0, nil
-}
+	t.availableCash.Spent(openOrdersTotal)
 
-func (t *StockNaive) GetNewCashPerSymbol(oldCashPerSymbol, totalInvest float64, failedTrades int) float64 {
-	newCashPerSymbol, err := t.GetCashPerSymbol(len(t.data)-failedTrades, totalInvest)
-	if err == nil && newCashPerSymbol > 0 {
-		log.Printf("Rebalancing cash per symbol from: %f to: %f", oldCashPerSymbol, newCashPerSymbol)
-		return newCashPerSymbol
-	}
-	return oldCashPerSymbol
+	return nil
 }
 
 func (t *StockNaive) Trade(param TradeParameter) error {
 
 	t.data = t.createStocksNaive(param.Symbols)
 
-	cashPerSymbol, err := t.GetCashPerSymbol(len(t.data), param.TotalInvest)
+	err := t.UpdateAvailableCash(param.TotalInvest)
 	if err != nil {
 		return err
 	}
-	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, cashPerSymbol*float64(len(t.data)))
+
+	qntSymbols := len(t.data)
+
+	cashPerSymbol := t.availableCash.GetSplit(qntSymbols)
+
+	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, t.availableCash.GetTotal())
 
 	failedTrades := 0
 	for idx, n := range t.data {
@@ -75,7 +76,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if i == nil {
 			log.Println("Instrument is nil, something is wrong:", n)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 			continue
 		}
 
@@ -100,7 +101,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		if buyPrice <= 0 {
 			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 			continue
 		}
 
@@ -130,7 +131,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			log.Printf("Not enough available money to buy OR trade value too low %s %s for %f",
 				i.GetAssetType(), i.GetSymbol(), buyPrice*float64(amount))
 			failedTrades++
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+			cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 			continue
 		}
 
@@ -150,7 +151,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			orderError := models.GetOrderError(err)
 			if orderError != nil && models.BusinessRuleViolation(orderError) {
 				failedTrades++
-				cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest, (idx + failedTrades))
+				cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 				continue
 			}
 			return err
@@ -160,10 +161,9 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		or.TotalPrice = float64(amount) * buyPrice
 		log.Println(or)
 
-		if (idx + failedTrades) < len(t.data) {
-			// rebalance cashPerSymbol based on remaining cash
-			cashPerSymbol = t.GetNewCashPerSymbol(cashPerSymbol, param.TotalInvest-(float64(amount)*buyPrice), (idx + failedTrades))
-		}
+		// rebalance cashPerSymbol based on remaining cash
+		t.availableCash.Spent(float64(amount) * buyPrice)
+		cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
 	}
 	return nil
 }

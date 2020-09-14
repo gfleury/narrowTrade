@@ -81,9 +81,15 @@ func main() {
 		BasicSaxoTrader: basicTrader,
 	}
 
+	basicTraderForex := &trader.BasicSaxoTrader{
+		AccountKey:         acc.GetAccountKeyMe(),
+		ModeledAPI:         ma,
+		InstrumentAnalyser: IEXAnalyser,
+	}
+
 	forexNaive := trader.ForexNaive{
 		StockNaive: &trader.StockNaive{
-			BasicSaxoTrader: basicTrader,
+			BasicSaxoTrader: basicTraderForex,
 		},
 	}
 

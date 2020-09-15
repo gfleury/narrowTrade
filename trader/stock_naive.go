@@ -38,6 +38,8 @@ func (t *StockNaive) UpdateAvailableCash(availableCash float64) error {
 			return err
 		}
 		t.availableCash.SetAvailableCash(balance.InitialMargin.MarginAvailable)
+	} else {
+		t.availableCash.SetAvailableCash(availableCash)
 	}
 
 	openOrdersTotal := t.getOpenOrders()

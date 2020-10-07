@@ -1,3 +1,6 @@
+// +build !integration
+// +build unit
+
 package external_lists
 
 import (

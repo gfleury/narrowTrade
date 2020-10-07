@@ -65,7 +65,7 @@ func (ws *WikipediaSP500) GetSymbols() ([]string, error) {
 							tt = z.Next()
 							if tt == html.TextToken {
 								nt = z.Token()
-								ws.symbols = append(ws.symbols, strings.TrimSpace(nt.Data))
+								ws.symbols = append(ws.symbols, strings.TrimSpace(strings.ReplaceAll(nt.Data, ".", "")))
 							}
 						}
 					}

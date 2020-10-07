@@ -1,6 +1,6 @@
 distribution:
-- watchlistid: "2542009"
-  watchlistitems: 10
+- externallist: "SP100"
+  watchlistitems: 5
   valuepercentage: 90
   trader: StockNaive
   parameters:

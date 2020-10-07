@@ -7,8 +7,10 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/gfleury/narrowTrade/config"
+	"github.com/gfleury/narrowTrade/external_lists"
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/trader"
 
@@ -23,6 +25,7 @@ const (
 )
 
 type Investment struct {
+	ExternalList    string                `yaml:",omitempty"`
 	WatchlistID     string                `yaml:",omitempty"`
 	WatchlistItems  int                   `yaml:",omitempty"`
 	Symbols         []string              `yaml:",omitempty"`
@@ -66,9 +69,9 @@ func (p *Portfolio) Validate() error {
 			investment.ValueAbsolute == 0 {
 			return fmt.Errorf("Investment %v must contain ValuePercentage or ValueAbsolute", investment)
 		}
-		if investment.WatchlistID == "" &&
+		if investment.ExternalList == "" && investment.WatchlistID == "" &&
 			(investment.Symbols == nil || len(investment.Symbols) == 0) {
-			return fmt.Errorf("Investment %v must contain WatchlistID or Symbols", investment)
+			return fmt.Errorf("Investment %v must contain ExternalList, WatchlistID or Symbols", investment)
 		}
 	}
 	if totalPercentage > 100 {
@@ -138,6 +141,56 @@ func (p *Portfolio) Rebalance() error {
 			// Default list to first 10 items of list
 			if investment.WatchlistItems == 0 {
 				investment.WatchlistItems = 10
+			}
+
+			if len(uics) < investment.WatchlistItems {
+				investment.WatchlistItems = len(uics)
+			}
+
+			investment.Parameters.Symbols = uics[:investment.WatchlistItems]
+
+			if investment.ValuePercentage != 0 {
+				investment.Parameters.TotalInvest = availableCash * (investment.ValuePercentage / 100)
+			} else {
+				investment.Parameters.TotalInvest = investment.ValueAbsolute
+			}
+		} else if investment.ExternalList != "" {
+			var externalList external_lists.ExternalList
+
+			switch investment.ExternalList {
+			case "SP100":
+				externalList = external_lists.NewWikipediaSP100()
+			case "SP500":
+				externalList = external_lists.NewWikipediaSP500()
+			default:
+				return fmt.Errorf("Unknown ExternalList provider %s", investment.ExternalList)
+			}
+
+			elSymbols, err := externalList.GetSymbols()
+			if err != nil {
+				return err
+			}
+
+			log.Printf("Getting instruments for symbols, it may take a while: %s",
+				strings.Join(elSymbols, ", "))
+
+			// Default list to first 10 items of list
+			if investment.WatchlistItems == 0 {
+				investment.WatchlistItems = 10
+			}
+
+			uics := []int{}
+
+			for idx, symbol := range elSymbols {
+				if idx > investment.WatchlistItems {
+					break
+				}
+				i, err := t.Api().GetInstrument(symbol)
+				if err != nil {
+					log.Printf("Failed to get Symbol %s from %s", symbol, investment.ExternalList)
+					continue
+				}
+				uics = append(uics, int(i.GetID()))
 			}
 
 			if len(uics) < investment.WatchlistItems {

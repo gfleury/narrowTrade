@@ -25,4 +25,4 @@ clean:
 	go clean $(PKGS)
 
 lint:
-	docker run --rm -it -v ${PWD}:/go/src/github.com/gfleury/gobbs -w /go/src/github.com/gfleury/gobbs golangci/golangci-lint:latest golangci-lint run
+	docker run --rm -it -v ${PWD}:/go/src/github.com/gfleury/narrowTrade -w /go/src/github.com/gfleury/narrowTrade golangci/golangci-lint:latest golangci-lint run

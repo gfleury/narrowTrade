@@ -184,3 +184,42 @@ distribution:
 	c.Assert(err, check.NotNil)
 
 }
+
+func (s *Suite) TestPortfolioSP100Rebalance(c *check.C) {
+	data := strings.NewReader(`
+distribution:
+- externallist: "SP100"
+  valuepercentage: 90
+  trader: StockNaive
+  parameters:
+    percentprofit: 5
+    percentloss: 2
+- valuepercentage: 10
+  trader: ForexNaive
+  symbols:
+  - USDCAD
+  parameters:
+    percentprofit: 5
+    percentloss: 2
+`)
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	p := &Portfolio{
+		Traders: map[TraderName]trader.ComplexTrader{
+			StockNaive: &trader.DummyTrader{
+				ModeledAPI: &models.ModeledAPI{
+					Ctx:    ctx,
+					Client: saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration()),
+				},
+			},
+		},
+	}
+
+	err := p.Load(data)
+	c.Assert(err, check.IsNil)
+
+	err = p.Rebalance()
+	c.Assert(err, check.NotNil)
+
+}

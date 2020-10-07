@@ -1,7 +1,6 @@
 package trader
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gfleury/narrowTrade/analysis"
@@ -63,7 +62,8 @@ func (t *BasicSaxoTrader) placeOrder(order *models.Order) (*models.OrderResponse
 	}
 
 	if !order.GoodToGo {
-		return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f, initial margin available: %f, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
+		log.Printf("Order is not good to go, pre-check result: %s, estimated cost: %f + open Orders Cost %f, initial margin available: %f, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, costOpenOrders, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
+		// return nil, fmt.Errorf("Order is not good to go, pre-check result: %s, estimated cost: %f + open Orders Cost %f, initial margin available: %f, %s: %s", r.PreCheckResult, r.EstimatedCashRequired, costOpenOrders, bal.InitialMargin.MarginAvailable, r.ErrorInfo.ErrorCode, r.ErrorInfo.Message)
 	}
 
 	or, err := t.ModeledAPI.Order(order)

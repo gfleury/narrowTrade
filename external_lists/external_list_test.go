@@ -1,6 +1,3 @@
-// +build !integration
-// +build unit
-
 package external_lists
 
 import (
@@ -34,4 +31,13 @@ func (s *ExternalListsSuite) TestWikipedia_sp100_getsymbols(c *check.C) {
 
 	c.Assert(err, check.IsNil)
 	c.Assert(len(symbols), check.Equals, 101)
+}
+
+func (s *ExternalListsSuite) TestWikipedia_sp500_getsymbols(c *check.C) {
+	ws := NewWikipediaSP500()
+
+	symbols, err := ws.GetSymbols()
+
+	c.Assert(err, check.IsNil)
+	c.Assert(len(symbols), check.Equals, 505)
 }

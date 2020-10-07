@@ -22,13 +22,13 @@ func (s *ModeledApiSuite) TestcreateSubscriptioWebSocket(c *check.C) {
 	if time.Since(quote.LastUpdated) > 10*time.Minute {
 		c.Errorf("Lastupdate more than 10m behind")
 	}
-	if quote.Quote.Ask <= 0 {
+	if quote.Quote.Ask < 0 {
 		c.Errorf("quote.Ask lower or equal to zero")
 	}
-	if quote.Quote.Bid <= 0 {
+	if quote.Quote.Bid < 0 {
 		c.Errorf("quote.Bid lower or equal to zero")
 	}
-	if quote.Quote.Mid <= 0 {
+	if quote.Quote.Mid < 0 {
 		c.Errorf("quote.Mid lower or equal to zero")
 	}
 }

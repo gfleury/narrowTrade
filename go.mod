@@ -4,9 +4,7 @@ go 1.14
 
 require (
 	github.com/antihax/optional v1.0.0
-	github.com/goinvest/iexcloud v0.0.0-20191106161709-2740cd5af52d // indirect
 	github.com/goinvest/iexcloud/v2 v2.9.0
-	github.com/google/uuid v1.1.1 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.3.3

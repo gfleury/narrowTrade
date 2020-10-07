@@ -1,8 +1,6 @@
 # github.com/antihax/optional v1.0.0
 ## explicit
 github.com/antihax/optional
-# github.com/goinvest/iexcloud v0.0.0-20191106161709-2740cd5af52d
-## explicit
 # github.com/goinvest/iexcloud/v2 v2.9.0
 ## explicit
 github.com/goinvest/iexcloud/v2
@@ -10,8 +8,6 @@ github.com/goinvest/iexcloud/v2
 github.com/golang/protobuf/proto
 # github.com/google/go-querystring v1.0.0
 github.com/google/go-querystring/query
-# github.com/google/uuid v1.1.1
-## explicit
 # github.com/gorilla/websocket v1.4.2
 ## explicit
 github.com/gorilla/websocket
@@ -33,6 +29,8 @@ github.com/nirasan/go-oauth-pkce-code-verifier
 ## explicit
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
+golang.org/x/net/html
+golang.org/x/net/html/atom
 # golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 ## explicit
 golang.org/x/oauth2

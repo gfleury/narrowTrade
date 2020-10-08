@@ -12,19 +12,14 @@ import (
 	iex "github.com/goinvest/iexcloud/v2"
 )
 
-type cacheEntry struct {
-	value  interface{}
-	expire time.Time
-}
-
 type IEXAnalyser struct {
 	Ctx    context.Context
 	Client *iex.Client
-	cache  map[string]*cacheEntry
+	cache  map[string]*utils.CacheEntry
 }
 
 func (a *IEXAnalyser) Init() {
-	a.cache = map[string]*cacheEntry{}
+	a.cache = map[string]*utils.CacheEntry{}
 }
 
 func (a *IEXAnalyser) Analysis() []InstrumentAnalysis {
@@ -35,8 +30,8 @@ func (a *IEXAnalyser) Indicator(i models.Instrument, indicatorName IndicatorName
 	// Check if we have the data cached
 	cacheKey := cacheKey(i.GetSymbolSimple(), indicatorName.String())
 	if cachedValue, ok := a.cache[cacheKey]; ok {
-		if !time.Now().After(cachedValue.expire) {
-			return cachedValue.value.([]float64), nil
+		if !time.Now().After(cachedValue.Expire) {
+			return cachedValue.Value.([]float64), nil
 		}
 	}
 	indicator, err := a.Client.Indicator(a.Ctx, i.GetSymbolSimple(), indicatorName.String(), "3m")
@@ -46,19 +41,19 @@ func (a *IEXAnalyser) Indicator(i models.Instrument, indicatorName IndicatorName
 
 	switch indicatorName {
 	case EMA:
-		a.cache[cacheKey] = &cacheEntry{indicator.Indicator[0], time.Now().Add(6 * time.Hour)}
+		a.cache[cacheKey] = &utils.CacheEntry{indicator.Indicator[0], time.Now().Add(6 * time.Hour)}
 	case BBANDS:
-		a.cache[cacheKey] = &cacheEntry{utils.IEXBBandsReduction(indicator, 5), time.Now().Add(6 * time.Hour)}
+		a.cache[cacheKey] = &utils.CacheEntry{utils.IEXBBandsReduction(indicator, 5), time.Now().Add(6 * time.Hour)}
 	}
-	return a.cache[cacheKey].value.([]float64), nil
+	return a.cache[cacheKey].Value.([]float64), nil
 }
 
 func (a *IEXAnalyser) Quote(i models.Instrument) (*Quote, error) {
 	// Check if we have the data cached
 	cacheKey := cacheKey(i.GetSymbolSimple(), "quote")
 	if cachedValue, ok := a.cache[cacheKey]; ok {
-		if !time.Now().After(cachedValue.expire) {
-			return cachedValue.value.(*Quote), nil
+		if !time.Now().After(cachedValue.Expire) {
+			return cachedValue.Value.(*Quote), nil
 		}
 	}
 	quote, err := a.Client.Quote(a.Ctx, i.GetSymbolSimple())
@@ -76,17 +71,17 @@ func (a *IEXAnalyser) Quote(i models.Instrument) (*Quote, error) {
 		return nil, err
 	}
 
-	a.cache[cacheKey] = &cacheEntry{aQuote, time.Now().Add(60 * time.Second)}
+	a.cache[cacheKey] = &utils.CacheEntry{aQuote, time.Now().Add(60 * time.Second)}
 
-	return a.cache[cacheKey].value.(*Quote), nil
+	return a.cache[cacheKey].Value.(*Quote), nil
 }
 
 func (a *IEXAnalyser) OneAnalysis(i models.Instrument) (*InstrumentAnalysis, error) {
 	// Check if we have the data cached
 	cacheKey := cacheKey(i.GetSymbolSimple(), "recommendation")
 	if cachedValue, ok := a.cache[cacheKey]; ok {
-		if !time.Now().After(cachedValue.expire) {
-			return cachedValue.value.(*InstrumentAnalysis), nil
+		if !time.Now().After(cachedValue.Expire) {
+			return cachedValue.Value.(*InstrumentAnalysis), nil
 		}
 	}
 	recommendations, err := a.Client.RecommendationTrends(a.Ctx, i.GetSymbolSimple())
@@ -106,9 +101,9 @@ func (a *IEXAnalyser) OneAnalysis(i models.Instrument) (*InstrumentAnalysis, err
 		return nil, err
 	}
 
-	a.cache[cacheKey] = &cacheEntry{instrumentAnalysis, time.Now().Add(24 * time.Hour)}
+	a.cache[cacheKey] = &utils.CacheEntry{instrumentAnalysis, time.Now().Add(24 * time.Hour)}
 
-	return a.cache[cacheKey].value.(*InstrumentAnalysis), nil
+	return a.cache[cacheKey].Value.(*InstrumentAnalysis), nil
 }
 
 func (a *IEXAnalyser) Analyse(is []models.Instrument) error {

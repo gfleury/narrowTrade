@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/utils"
@@ -118,6 +119,10 @@ type TickSizeScheme struct {
 func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 	var assetType optional.Interface
 
+	if key := ma.cache.Get(symbol); key != nil {
+		return key.(Instrument), nil
+	}
+
 	i := &SaxoInstrument{}
 	if len(symbol) == 6 {
 		assetType = optional.NewInterface(FxSpot)
@@ -142,6 +147,11 @@ func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 	}
 
 	err = mapstructure.Decode(is[0], i)
+
+	if err == nil {
+		ma.cache.Put(symbol, i, 24*time.Hour)
+	}
+
 	return i, err
 }
 

@@ -58,13 +58,14 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		return err
 	}
 
-	qntSymbols := len(t.data)
+	qntSymbols := param.MaxBuySymbols
 
 	cashPerSymbol := t.availableCash.GetSplit(qntSymbols)
 
 	log.Printf("Using %f per symbol, totalzing %f\n", cashPerSymbol, t.availableCash.GetTotal())
 
 	failedTrades := 0
+	successfulTrades := 0
 	for idx, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
 
@@ -107,7 +108,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			continue
 		}
 
-		if n.indicator == nil {
+		if n.indicator == nil || len(n.indicator) < 3 {
 			// indicator unavailable, go with percentage
 			profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
 			stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
@@ -166,6 +167,13 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		// rebalance cashPerSymbol based on remaining cash
 		t.availableCash.Spent(float64(amount) * buyPrice)
 		cashPerSymbol = t.availableCash.GetSplit(qntSymbols - (idx + failedTrades))
+
+		successfulTrades++
+
+		if successfulTrades > param.MaxBuySymbols {
+			log.Printf("Bought %d symbols stopping for now", successfulTrades)
+			break
+		}
 	}
 	return nil
 }

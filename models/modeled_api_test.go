@@ -36,10 +36,7 @@ func (s *ModeledApiSuite) SetUpSuite(c *check.C) {
 	auth := context.WithValue(ctx, saxo_openapi.ContextOAuth2, s.tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
-	s.ma = &ModeledAPI{
-		Ctx:    auth,
-		Client: client,
-	}
+	s.ma = NewModeledAPI(auth, client)
 
 	s.acc, err = s.ma.GetAccounts()
 	c.Assert(err, check.IsNil)

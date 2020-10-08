@@ -28,6 +28,7 @@ type Investment struct {
 	ExternalList    string                `yaml:",omitempty"`
 	WatchlistID     string                `yaml:",omitempty"`
 	WatchlistItems  int                   `yaml:",omitempty"`
+	MaxBuySymbols   int                   `yaml:",omitempty"`
 	Symbols         []string              `yaml:",omitempty"`
 	ValuePercentage float64               `yaml:",omitempty"`
 	ValueAbsolute   float64               `yaml:",omitempty"`
@@ -148,6 +149,7 @@ func (p *Portfolio) Rebalance() error {
 			}
 
 			investment.Parameters.Symbols = uics[:investment.WatchlistItems]
+			investment.Parameters.MaxBuySymbols = investment.MaxBuySymbols
 
 			if investment.ValuePercentage != 0 {
 				investment.Parameters.TotalInvest = availableCash * (investment.ValuePercentage / 100)
@@ -198,6 +200,7 @@ func (p *Portfolio) Rebalance() error {
 			}
 
 			investment.Parameters.Symbols = uics[:investment.WatchlistItems]
+			investment.Parameters.MaxBuySymbols = investment.MaxBuySymbols
 
 			if investment.ValuePercentage != 0 {
 				investment.Parameters.TotalInvest = availableCash * (investment.ValuePercentage / 100)

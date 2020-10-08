@@ -1,6 +1,7 @@
 distribution:
 - externallist: "SP100"
-  watchlistitems: 5
+  watchlistitems: 100
+  maxbuysymbols: 20
   valuepercentage: 90
   trader: StockNaive
   parameters:

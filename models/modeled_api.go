@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gfleury/narrowTrade/saxo_openapi"
+	"github.com/gfleury/narrowTrade/utils"
 )
 
 type ModeledAPI struct {
@@ -13,6 +14,19 @@ type ModeledAPI struct {
 	Client      *saxo_openapi.APIClient
 	lastAPICall time.Time
 	m           sync.Mutex
+	cache       *utils.Cache
+}
+
+func NewModeledAPI(ctx context.Context, client *saxo_openapi.APIClient) *ModeledAPI {
+
+	ma := &ModeledAPI{
+		Ctx:    ctx,
+		Client: client,
+	}
+
+	ma.cache = &utils.Cache{}
+
+	return ma
 }
 
 func (ma *ModeledAPI) Throttle() {

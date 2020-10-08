@@ -169,10 +169,7 @@ distribution:
 	p := &Portfolio{
 		Traders: map[TraderName]trader.ComplexTrader{
 			StockNaive: &trader.DummyTrader{
-				ModeledAPI: &models.ModeledAPI{
-					Ctx:    ctx,
-					Client: saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration()),
-				},
+				ModeledAPI: models.NewModeledAPI(ctx, saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration())),
 			},
 		},
 	}
@@ -208,10 +205,7 @@ distribution:
 	p := &Portfolio{
 		Traders: map[TraderName]trader.ComplexTrader{
 			StockNaive: &trader.DummyTrader{
-				ModeledAPI: &models.ModeledAPI{
-					Ctx:    ctx,
-					Client: saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration()),
-				},
+				ModeledAPI: models.NewModeledAPI(ctx, saxo_openapi.NewAPIClient(saxo_openapi.NewConfiguration())),
 			},
 		},
 	}

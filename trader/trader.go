@@ -25,6 +25,7 @@ type ComplexTrader interface {
 type TradeParameter struct {
 	Watchlist                               string
 	Symbols                                 []int
+	MaxBuySymbols                           int
 	PercentLoss, PercentProfit, TotalInvest float64
 }
 

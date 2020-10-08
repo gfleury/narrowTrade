@@ -20,6 +20,6 @@ func (s *Suite) TestBuyForexNaive_5_6(c *check.C) {
 	}
 
 	// Buy USDEUR 5/6 ticks
-	err := t.Trade(TradeParameter{"", []int{22}, 5, 6, 0})
+	err := t.Trade(TradeParameter{"", []int{22}, 1, 5, 6, 0})
 	c.Assert(err, check.IsNil)
 }

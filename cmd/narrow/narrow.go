@@ -52,10 +52,7 @@ func main() {
 	auth := context.WithValue(ctx, saxo_openapi.ContextOAuth2, tokenSource)
 	auth = context.WithValue(auth, saxo_openapi.ContextMockedDataID, "001")
 
-	ma := &models.ModeledAPI{
-		Ctx:    auth,
-		Client: client,
-	}
+	ma := models.NewModeledAPI(auth, client)
 
 	acc, err := ma.GetAccounts()
 	if err != nil {

@@ -1,6 +1,9 @@
 package models
 
 import (
+	"context"
+	"time"
+
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/mitchellh/mapstructure"
 )
@@ -57,7 +60,10 @@ func (ma *ModeledAPI) GetPositionsMe() (*PositionList, error) {
 	b := &PositionList{}
 
 	ma.Throttle()
-	data, _, err := ma.Client.PortfolioApi.GetPositions(ma.Ctx, &saxo_openapi.PortfolioApiGetPositionsOpts{})
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.PortfolioApi.GetPositions(ctx, &saxo_openapi.PortfolioApiGetPositionsOpts{})
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err

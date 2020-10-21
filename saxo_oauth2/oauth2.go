@@ -129,6 +129,8 @@ func GetToken(ctx context.Context, oauth2cfg *oauth2.Config) (*oauth2.Token, err
 	// Use the custom HTTP client when requesting a token.
 	httpClient := &http.Client{Timeout: 2 * time.Second}
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, httpClient)
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
 
 	opts = []oauth2.AuthCodeOption{
 		urlParam,

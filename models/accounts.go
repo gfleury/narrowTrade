@@ -1,6 +1,9 @@
 package models
 
 import (
+	"context"
+	"time"
+
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -36,7 +39,10 @@ type Accounts struct {
 func (ma *ModeledAPI) GetAccounts() (*Accounts, error) {
 	a := &Accounts{}
 	ma.Throttle()
-	data, _, err := ma.Client.PortfolioApi.GetAccounts(ma.Ctx, nil)
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.PortfolioApi.GetAccounts(ctx, nil)
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err

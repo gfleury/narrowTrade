@@ -1,6 +1,11 @@
 package models
 
-import "github.com/mitchellh/mapstructure"
+import (
+	"context"
+	"time"
+
+	"github.com/mitchellh/mapstructure"
+)
 
 type Balance struct {
 	CalculationReliability string  `json:"CalculationReliability"`
@@ -53,7 +58,10 @@ type Balance struct {
 func (ma *ModeledAPI) GetBalanceMe() (*Balance, error) {
 	b := &Balance{}
 	ma.Throttle()
-	data, _, err := ma.Client.PortfolioApi.GetBalance(ma.Ctx)
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.PortfolioApi.GetBalance(ctx)
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err

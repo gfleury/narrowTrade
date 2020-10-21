@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -38,7 +39,10 @@ type Exchange struct {
 func (ma *ModeledAPI) GetExchange(id string) (*Exchange, error) {
 	b := &Exchange{}
 	ma.Throttle()
-	data, _, err := ma.Client.ReferenceDataApi.GetExchange(ma.Ctx, id)
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.ReferenceDataApi.GetExchange(ctx, id)
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err

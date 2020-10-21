@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strings"
@@ -131,7 +132,10 @@ func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 	}
 
 	ma.Throttle()
-	data, _, err := ma.Client.ReferenceDataApi.GetSummaries(ma.Ctx,
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.ReferenceDataApi.GetSummaries(ctx,
 		&saxo_openapi.ReferenceDataApiGetSummariesOpts{
 			Keywords:   optional.NewString(symbol),
 			AssetTypes: assetType,
@@ -158,7 +162,10 @@ func (ma *ModeledAPI) GetInstrument(symbol string) (Instrument, error) {
 func (ma *ModeledAPI) GetInstrumentDetails(i Instrument) (InstrumentDetails, error) {
 	d := &SaxoInstrumentDetails{}
 	ma.Throttle()
-	data, _, err := ma.Client.ReferenceDataApi.GetDetailsForOneInstrument(ma.Ctx,
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.ReferenceDataApi.GetDetailsForOneInstrument(ctx,
 		Stock,
 		i.GetID(),
 		nil)
@@ -174,7 +181,10 @@ func (ma *ModeledAPI) GetInstrumentDetails(i Instrument) (InstrumentDetails, err
 func (ma *ModeledAPI) GetInstrumentPrice(i Instrument) (float64, error) {
 	iprice := &InstrumentPrice{}
 	ma.Throttle()
-	data, _, err := ma.Client.TradingApi.GetInfoPriceAsync(ma.Ctx, []string{string(i.GetAssetType())}, i.GetID(), nil)
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.TradingApi.GetInfoPriceAsync(ctx, []string{string(i.GetAssetType())}, i.GetID(), nil)
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return 0, err

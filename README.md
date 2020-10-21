@@ -10,6 +10,7 @@
 - Forex Trading based on dynamic data from external systems or from the API - OK
 - Rebalance CashPerSymbol if any order fail during the Trade() - OK
 - StockNaive with pricing per percentage and moving averages. - OK
+- Add context timeout on all API calls.
 - Portfolio rebalancing and monitoring across clients for smaller wealth managers or hedge funds
 - Check how to implement analysis for resistance/support
 - Trading on specific times

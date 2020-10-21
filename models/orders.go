@@ -1,6 +1,9 @@
 package models
 
 import (
+	"context"
+	"time"
+
 	"github.com/antihax/optional"
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/mitchellh/mapstructure"
@@ -115,7 +118,10 @@ type OrderResponse struct {
 func (ma *ModeledAPI) PreOrder(o *Order) (*PreOrderResponse, error) {
 	b := &PreOrderResponse{}
 	ma.Throttle()
-	data, _, err := ma.Client.TradingApi.PreCheckOrder(ma.Ctx, &saxo_openapi.TradingApiPreCheckOrderOpts{Body: optional.NewInterface(&o)})
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.TradingApi.PreCheckOrder(ctx, &saxo_openapi.TradingApiPreCheckOrderOpts{Body: optional.NewInterface(&o)})
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err
@@ -132,7 +138,10 @@ func (ma *ModeledAPI) PreOrder(o *Order) (*PreOrderResponse, error) {
 func (ma *ModeledAPI) Order(o *Order) (*OrderResponse, error) {
 	b := &OrderResponse{}
 	ma.Throttle()
-	data, _, err := ma.Client.TradingApi.PlaceOrder(ma.Ctx,
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.TradingApi.PlaceOrder(ctx,
 		&saxo_openapi.TradingApiPlaceOrderOpts{Body: optional.NewInterface(&o)})
 	defer ma.UpdateLastCall()
 	if err != nil {
@@ -156,7 +165,10 @@ func (ma *ModeledAPI) GetOrdersMe() (*OrderList, error) {
 	b := &OrderList{}
 
 	ma.Throttle()
-	data, _, err := ma.Client.PortfolioApi.GetOpenOrders(ma.Ctx, &saxo_openapi.PortfolioApiGetOpenOrdersOpts{})
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.PortfolioApi.GetOpenOrders(ctx, &saxo_openapi.PortfolioApiGetOpenOrdersOpts{})
 	defer ma.UpdateLastCall()
 	if err != nil {
 		return nil, err

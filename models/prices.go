@@ -1,6 +1,9 @@
 package models
 
 import (
+	"context"
+	"time"
+
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -15,7 +18,10 @@ type InfoPrice struct {
 func (ma *ModeledAPI) GetInfoPrice(i Instrument) (*InfoPrice, error) {
 	b := &InfoPrice{}
 	ma.Throttle()
-	data, _, err := ma.Client.TradingApi.GetInfoPriceAsync(ma.Ctx,
+	ctx, cancel := context.WithTimeout(ma.Ctx, 15*time.Second)
+	defer cancel()
+
+	data, _, err := ma.Client.TradingApi.GetInfoPriceAsync(ctx,
 		[]string{string(i.GetAssetType())}, i.GetID(), nil)
 	defer ma.UpdateLastCall()
 	if err != nil {

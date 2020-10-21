@@ -27,6 +27,9 @@ func (a *IEXAnalyser) Analysis() []InstrumentAnalysis {
 }
 
 func (a *IEXAnalyser) Indicator(i models.Instrument, indicatorName IndicatorName) ([]float64, error) {
+	ctx, cancel := context.WithTimeout(a.Ctx, 15*time.Second)
+	defer cancel()
+
 	// Check if we have the data cached
 	cacheKey := cacheKey(i.GetSymbolSimple(), indicatorName.String())
 	if cachedValue, ok := a.cache[cacheKey]; ok {
@@ -34,7 +37,7 @@ func (a *IEXAnalyser) Indicator(i models.Instrument, indicatorName IndicatorName
 			return cachedValue.Value.([]float64), nil
 		}
 	}
-	indicator, err := a.Client.Indicator(a.Ctx, i.GetSymbolSimple(), indicatorName.String(), "3m")
+	indicator, err := a.Client.Indicator(ctx, i.GetSymbolSimple(), indicatorName.String(), "3m")
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +52,9 @@ func (a *IEXAnalyser) Indicator(i models.Instrument, indicatorName IndicatorName
 }
 
 func (a *IEXAnalyser) Quote(i models.Instrument) (*Quote, error) {
+	ctx, cancel := context.WithTimeout(a.Ctx, 15*time.Second)
+	defer cancel()
+
 	// Check if we have the data cached
 	cacheKey := cacheKey(i.GetSymbolSimple(), "quote")
 	if cachedValue, ok := a.cache[cacheKey]; ok {
@@ -56,7 +62,7 @@ func (a *IEXAnalyser) Quote(i models.Instrument) (*Quote, error) {
 			return cachedValue.Value.(*Quote), nil
 		}
 	}
-	quote, err := a.Client.Quote(a.Ctx, i.GetSymbolSimple())
+	quote, err := a.Client.Quote(ctx, i.GetSymbolSimple())
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +83,9 @@ func (a *IEXAnalyser) Quote(i models.Instrument) (*Quote, error) {
 }
 
 func (a *IEXAnalyser) OneAnalysis(i models.Instrument) (*InstrumentAnalysis, error) {
+	ctx, cancel := context.WithTimeout(a.Ctx, 15*time.Second)
+	defer cancel()
+
 	// Check if we have the data cached
 	cacheKey := cacheKey(i.GetSymbolSimple(), "recommendation")
 	if cachedValue, ok := a.cache[cacheKey]; ok {
@@ -84,7 +93,7 @@ func (a *IEXAnalyser) OneAnalysis(i models.Instrument) (*InstrumentAnalysis, err
 			return cachedValue.Value.(*InstrumentAnalysis), nil
 		}
 	}
-	recommendations, err := a.Client.RecommendationTrends(a.Ctx, i.GetSymbolSimple())
+	recommendations, err := a.Client.RecommendationTrends(ctx, i.GetSymbolSimple())
 	if err != nil {
 		return nil, err
 	}

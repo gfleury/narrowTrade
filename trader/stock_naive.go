@@ -4,16 +4,19 @@ import (
 	"log"
 	"math"
 	"sort"
+	"time"
 
 	"github.com/gfleury/narrowTrade/analysis"
 	"github.com/gfleury/narrowTrade/config"
 	"github.com/gfleury/narrowTrade/models"
+	"github.com/gfleury/narrowTrade/utils"
 )
 
 type StockNaive struct {
 	*BasicSaxoTrader
-	data          []InstrumentNaiveData
-	availableCash *AvailableCash
+	data               []InstrumentNaiveData
+	availableCash      *AvailableCash
+	boughtSymbolsCache *utils.Cache
 }
 
 type InstrumentNaiveData struct {
@@ -50,6 +53,10 @@ func (t *StockNaive) UpdateAvailableCash(availableCash float64) error {
 }
 
 func (t *StockNaive) Trade(param TradeParameter) error {
+	// Initialize symbol caching
+	if t.boughtSymbolsCache == nil {
+		t.boughtSymbolsCache = &utils.Cache{}
+	}
 
 	t.data = t.createStocksNaive(param.Symbols)
 
@@ -68,6 +75,11 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 	successfulTrades := 0
 	for idx, n := range t.data {
 		var profitPrice, stopLossPrice, distanceToMarket float64
+
+		if t.boughtSymbolsCache.Get(n.instrument.GetSymbol()) != nil {
+			// We bought this symbol before and the timeout still haven't expired
+			continue
+		}
 
 		if n.buyRecomendation != 0 && !n.betterBuy {
 			log.Println("Skipping symbol as it does not seem good to buy", n.instrument)
@@ -148,8 +160,8 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 				WithAmount(amount).
 				WithPrice(buyPrice).
 				WithDuration(durationType).
-				WithTakeProfit(profitPrice).
-				WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
+				WithTakeProfit(profitPrice))
+		// WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
 		if err != nil {
 			orderError := models.GetOrderError(err)
 			if orderError != nil && models.BusinessRuleViolation(orderError) {
@@ -159,6 +171,9 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			}
 			return err
 		}
+
+		// Add bought symbol with 2 hours cache
+		t.boughtSymbolsCache.Put(n.instrument.GetSymbol(), true, time.Hour*2)
 
 		// Save Ordered price for next calculation
 		or.TotalPrice = float64(amount) * buyPrice

@@ -18,7 +18,7 @@ func (c Cache) Get(k string) interface{} {
 		if !time.Now().After(ce.Expire) {
 			return ce.Value
 		}
-		c[k] = nil
+		delete(c, k)
 	}
 	return nil
 }

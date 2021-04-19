@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -17,8 +18,6 @@ import (
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/trader"
 
-	"github.com/gfleury/narrowTrade/tests"
-
 	iex "github.com/goinvest/iexcloud/v2"
 	"golang.org/x/oauth2"
 )
@@ -26,12 +25,20 @@ import (
 func main() {
 	ctx := context.Background()
 
-	oauth2cfg := tests.GetTestOauth()
+	data, err := ioutil.ReadFile("oauth.json")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	oauth2cfg, err := saxo_oauth2.LoadConfiguration(data)
+	if err != nil {
+		log.Println("oauth.json file wrong format")
+		log.Fatalln(err)
+	}
 
 	token, err := saxo_oauth2.GetToken(ctx, oauth2cfg)
 	if err != nil {
-		log.Println(err)
-		os.Exit(1)
+		log.Fatalln(err)
 	}
 
 	tokenSource := oauth2cfg.TokenSource(ctx, token)
@@ -56,15 +63,24 @@ func main() {
 
 	acc, err := ma.GetAccounts()
 	if err != nil {
-		log.Println(err)
-		os.Exit(1)
+		log.Fatalln(err)
 	}
 
 	log.Println(acc.GetAccountKey(0))
 
+	data, err = ioutil.ReadFile("iex.json")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	IEXToken, IEXUrl, err := analysis.IEXConfigLoad(data)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	IEXAnalyser := &analysis.IEXAnalyser{
 		Ctx:    ctx,
-		Client: iex.NewClient("sk_be7d6c55dfb6412e8e8c40bc648b11c1", iex.WithBaseURL("https://cloud.iexapis.com/v1")),
+		Client: iex.NewClient(IEXToken, iex.WithBaseURL(IEXUrl)),
 	}
 	IEXAnalyser.Init()
 

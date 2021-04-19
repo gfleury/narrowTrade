@@ -235,7 +235,7 @@ func (t *StockNaive) createStocksNaive(uics []int) []InstrumentNaiveData {
 		log.Println("Fetching recommendation from Analyser", i.GetAssetType(), i.GetSymbolSimple())
 		recommendation, err := t.Analyser().OneAnalysis(i)
 		if err != nil {
-			log.Println("Failed to get Analyser, flatting symbols to same level", i.GetSymbolSimple())
+			log.Println("Failed to get Analyser, flatting symbols to same level", i.GetSymbolSimple(), err)
 			n.buyRecomendation = 0
 			n.betterBuy = false
 		} else {

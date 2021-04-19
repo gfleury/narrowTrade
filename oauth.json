@@ -1,0 +1,8 @@
+{
+  "ClientID":"4e7b5f42dae64ad889cc4e0ae499c398",
+  "Endpoint":{
+    "AuthURL":"https://sim.logonvalidation.net/authorize",
+    "TokenURL":"https://sim.logonvalidation.net/token"
+    },
+    "RedirectURL":"http://localhost/redirect"
+}

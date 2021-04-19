@@ -128,3 +128,17 @@ func (a *IEXAnalyser) Analyse(is []models.Instrument) error {
 func cacheKey(symbol, cacheName string) string {
 	return fmt.Sprintf("%s:%s", symbol, cacheName)
 }
+
+func IEXConfigLoad(data []byte) (string, string, error) {
+	iexConf := &struct {
+		Token string
+		URL   string
+	}{}
+
+	err := json.Unmarshal(data, iexConf)
+	if err != nil {
+		return "", "", err
+	}
+
+	return iexConf.Token, iexConf.URL, nil
+}

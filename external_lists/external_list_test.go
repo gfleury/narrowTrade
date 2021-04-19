@@ -33,7 +33,7 @@ func (s *ExternalListsSuite) TestWikipedia_sp100_getsymbols(c *check.C) {
 	symbols, err := ws.GetSymbols()
 
 	c.Assert(err, check.IsNil)
-	c.Assert(len(symbols), check.Equals, 101)
+	c.Assert(len(symbols), check.Equals, 98)
 }
 
 func (s *ExternalListsSuite) TestWikipedia_sp500_getsymbols(c *check.C) {

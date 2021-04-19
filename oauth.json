@@ -1,0 +1,8 @@
+{
+  "ClientID":"",
+  "Endpoint":{
+    "AuthURL":"https://sim.logonvalidation.net/authorize",
+    "TokenURL":"https://sim.logonvalidation.net/token"
+    },
+    "RedirectURL":"http://localhost/redirect"
+}

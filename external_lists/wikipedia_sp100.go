@@ -56,6 +56,9 @@ func (ws *WikipediaSP100) GetSymbols() ([]string, error) {
 					tt = z.Next()
 					if tt == html.TextToken {
 						nt := z.Token()
+						if len(nt.Data) > 5 {
+							continue
+						}
 						ws.symbols = append(ws.symbols, strings.TrimSpace(strings.ReplaceAll(nt.Data, ".", "")))
 					}
 				}

@@ -16,7 +16,7 @@ type ForexNaive struct {
 
 func (t *ForexNaive) Trade(param TradeParameter) error {
 
-	t.data = t.createStocksNaive(param.Symbols)
+	t.data = t.createStocksNaive(param.Symbols, param.PercentProfit)
 
 	err := t.UpdateAvailableCash(param.TotalInvest)
 	if err != nil {
@@ -31,10 +31,6 @@ func (t *ForexNaive) Trade(param TradeParameter) error {
 
 	failedTrades := 0
 	for idx, n := range t.data {
-		if n.buyRecomendation != 0 && !n.betterBuy {
-			log.Println("Skipping symbol as it does not seem good to buy", n.instrument)
-		}
-
 		i := n.instrument
 
 		if i == nil {

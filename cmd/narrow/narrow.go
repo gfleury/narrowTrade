@@ -10,15 +10,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gfleury/narrowTrade/analysis"
-
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/portfolio"
 	"github.com/gfleury/narrowTrade/saxo_oauth2"
 	"github.com/gfleury/narrowTrade/saxo_openapi"
 	"github.com/gfleury/narrowTrade/trader"
 
-	iex "github.com/goinvest/iexcloud/v2"
 	"golang.org/x/oauth2"
 )
 
@@ -68,26 +65,12 @@ func main() {
 
 	log.Println(acc.GetAccountKey(0))
 
-	data, err = ioutil.ReadFile("iex.json")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	IEXToken, IEXUrl, err := analysis.IEXConfigLoad(data)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	IEXAnalyser := &analysis.IEXAnalyser{
-		Ctx:    ctx,
-		Client: iex.NewClient(IEXToken, iex.WithBaseURL(IEXUrl)),
-	}
-	IEXAnalyser.Init()
+	StockDataOrgAnalyser.Init()
 
 	basicTrader := &trader.BasicSaxoTrader{
 		AccountKey:         acc.GetAccountKeyMe(),
 		ModeledAPI:         ma,
-		InstrumentAnalyser: IEXAnalyser,
+		InstrumentAnalyser: StockDataOrgAnalyser,
 	}
 
 	stockNaive := trader.StockNaive{
@@ -97,7 +80,7 @@ func main() {
 	basicTraderForex := &trader.BasicSaxoTrader{
 		AccountKey:         acc.GetAccountKeyMe(),
 		ModeledAPI:         ma,
-		InstrumentAnalyser: IEXAnalyser,
+		InstrumentAnalyser: StockDataOrgAnalyser,
 	}
 
 	forexNaive := trader.ForexNaive{
@@ -132,7 +115,9 @@ func main() {
 	for {
 		err = p.Rebalance()
 		if err != nil {
-			break
+			if !portfolio.IsTradeError(err) {
+				break
+			}
 		}
 
 		token, err := tokenSource.Token()

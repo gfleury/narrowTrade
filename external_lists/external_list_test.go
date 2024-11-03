@@ -1,5 +1,5 @@
-// +build !integration
-// +build unit
+//go:build !integration && unit
+// +build !integration,unit
 
 package external_lists
 
@@ -42,5 +42,5 @@ func (s *ExternalListsSuite) TestWikipedia_sp500_getsymbols(c *check.C) {
 	symbols, err := ws.GetSymbols()
 
 	c.Assert(err, check.IsNil)
-	c.Assert(len(symbols), check.Equals, 505)
+	c.Assert(len(symbols), check.Equals, 503)
 }

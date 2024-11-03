@@ -1,5 +1,5 @@
-// +build !integration
-// +build unit
+//go:build !integration && unit
+// +build !integration,unit
 
 package portfolio
 
@@ -37,12 +37,10 @@ func (s *Suite) TestPortfolioSave(c *check.C) {
 	p := &Portfolio{
 		Distribution: []Investment{
 			Investment{
-				WatchlistID:     "2491746",
 				ValuePercentage: 90.0,
 				Trader:          StockNaive,
 			},
 			Investment{
-				WatchlistID:     "",
 				ValuePercentage: 10.0,
 				Trader:          ForexNaive,
 			},
@@ -59,7 +57,7 @@ func (s *Suite) TestPortfolioValidate(c *check.C) {
 	p := &Portfolio{
 		Distribution: []Investment{
 			Investment{
-				WatchlistID:     "2491746",
+				ExternalList:    "SP100",
 				ValuePercentage: 90.0,
 				Trader:          StockNaive,
 				Parameters: trader.TradeParameter{
@@ -84,7 +82,7 @@ func (s *Suite) TestPortfolioValidate(c *check.C) {
 	p = &Portfolio{
 		Distribution: []Investment{
 			Investment{
-				WatchlistID:     "2491746",
+				ExternalList:    "SP100",
 				ValuePercentage: 90.1,
 				Trader:          StockNaive,
 				Parameters: trader.TradeParameter{
@@ -104,13 +102,12 @@ func (s *Suite) TestPortfolioValidate(c *check.C) {
 		},
 	}
 	err = p.Validate()
-	c.Assert(err.Error(), check.Matches, "Portifolio investments can't be more.*")
+	c.Assert(err.Error(), check.Matches, "portifolio investments can't be more.*")
 
 	p = &Portfolio{
 		Distribution: []Investment{
 			Investment{
-				WatchlistID: "2491746",
-				Trader:      StockNaive,
+				Trader: StockNaive,
 			},
 		},
 	}
@@ -122,7 +119,7 @@ func (s *Suite) TestPortfolioValidate(c *check.C) {
 func (s *Suite) TestPortfolioLoad(c *check.C) {
 	data := strings.NewReader(`
 distribution:
-- watchlistid: "2491746"
+- externallist: "2491746"
   valuepercentage: 90
   trader: StockNaive
   parameters:
@@ -149,7 +146,7 @@ distribution:
 func (s *Suite) TestPortfolioRebalance(c *check.C) {
 	data := strings.NewReader(`
 distribution:
-- watchlistid: "2491746"
+- externallist: "2491746"
   valuepercentage: 90
   trader: StockNaive
   parameters:

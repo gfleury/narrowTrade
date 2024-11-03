@@ -57,11 +57,8 @@ type Quote struct {
 }
 
 type InstrumentAnalyser interface {
-	Analysis() []InstrumentAnalysis
-	Indicator(models.Instrument, IndicatorName) ([]float64, error)
-	Quote(models.Instrument) (*Quote, error)
-	OneAnalysis(models.Instrument) (*InstrumentAnalysis, error)
-	Analyse([]models.Instrument) error
+	Init()
+	HistoricalPrices(i models.Instrument) ([]float64, error)
 }
 
 func (in IndicatorName) String() string {

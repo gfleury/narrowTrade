@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"sort"
 	"strings"
 
 	"github.com/gfleury/narrowTrade/config"
@@ -19,6 +18,19 @@ import (
 
 type TraderName string
 
+type ErrTradeError struct {
+	ErrorMessage string
+}
+
+func (e ErrTradeError) Error() string {
+	return e.ErrorMessage
+}
+
+func IsTradeError(target error) bool {
+	_, ok := target.(ErrTradeError)
+	return ok
+}
+
 const (
 	StockNaive TraderName = "StockNaive"
 	ForexNaive            = "ForexNaive"
@@ -26,7 +38,6 @@ const (
 
 type Investment struct {
 	ExternalList    string                `yaml:",omitempty"`
-	WatchlistID     string                `yaml:",omitempty"`
 	WatchlistItems  int                   `yaml:",omitempty"`
 	MaxBuySymbols   int                   `yaml:",omitempty"`
 	Symbols         []string              `yaml:",omitempty"`
@@ -70,13 +81,13 @@ func (p *Portfolio) Validate() error {
 			investment.ValueAbsolute == 0 {
 			return fmt.Errorf("Investment %v must contain ValuePercentage or ValueAbsolute", investment)
 		}
-		if investment.ExternalList == "" && investment.WatchlistID == "" &&
-			(investment.Symbols == nil || len(investment.Symbols) == 0) {
+		if investment.ExternalList == "" &&
+			len(investment.Symbols) == 0 {
 			return fmt.Errorf("Investment %v must contain ExternalList, WatchlistID or Symbols", investment)
 		}
 	}
 	if totalPercentage > 100 {
-		return fmt.Errorf("Portifolio investments can't be more than 100%%, right now is %f", totalPercentage)
+		return fmt.Errorf("portifolio investments can't be more than 100%%, right now is %f", totalPercentage)
 	}
 	return nil
 }
@@ -122,41 +133,7 @@ func (p *Portfolio) Rebalance() error {
 		// Get available cash from account (cash that is not hold by positions/orders)
 		availableCash := balance.InitialMargin.MarginAvailable
 
-		if investment.WatchlistID != "" {
-			watchlist, err := t.Api().GetWatchlistByID(investment.WatchlistID)
-			if err != nil {
-				return err
-			}
-
-			uics := make([]int, len(watchlist.Snapshot.Rows))
-
-			sort.Slice(watchlist.Snapshot.Rows, func(i, j int) bool {
-				return watchlist.Snapshot.Rows[i].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[i].Price >
-					watchlist.Snapshot.Rows[j].ThreeMonthsReturnPct*watchlist.Snapshot.Rows[j].Price
-			})
-
-			for idx, instrument := range watchlist.Snapshot.Rows {
-				uics[idx] = instrument.Uic
-			}
-
-			// Default list to first 10 items of list
-			if investment.WatchlistItems == 0 {
-				investment.WatchlistItems = 10
-			}
-
-			if len(uics) < investment.WatchlistItems {
-				investment.WatchlistItems = len(uics)
-			}
-
-			investment.Parameters.Symbols = uics[:investment.WatchlistItems]
-			investment.Parameters.MaxBuySymbols = investment.MaxBuySymbols
-
-			if investment.ValuePercentage != 0 {
-				investment.Parameters.TotalInvest = availableCash * (investment.ValuePercentage / 100)
-			} else {
-				investment.Parameters.TotalInvest = investment.ValueAbsolute
-			}
-		} else if investment.ExternalList != "" {
+		if investment.ExternalList != "" {
 			var externalList external_lists.ExternalList
 
 			switch investment.ExternalList {
@@ -227,7 +204,7 @@ func (p *Portfolio) Rebalance() error {
 
 		if tradeErr != nil {
 			log.Printf("Trading failed with: %s", models.GetStringError(tradeErr))
-			return tradeErr
+			return ErrTradeError{ErrorMessage: tradeErr.Error()}
 		}
 
 		if err != nil {

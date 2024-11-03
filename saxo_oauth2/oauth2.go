@@ -165,5 +165,5 @@ func PersistToken(token *oauth2.Token) error {
 	}
 
 	// Hack to run non-root
-	return os.Chown(persistedToken, 501, 20)
+	return os.Chown(persistedToken, 1000, 1000)
 }

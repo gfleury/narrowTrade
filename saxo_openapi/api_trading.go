@@ -11,11 +11,12 @@ package saxo_openapi
 import (
 	"context"
 	"fmt"
-	"github.com/antihax/optional"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -723,10 +724,11 @@ func (a *TradingApiService) AddSubscriptionAsyncTrading6(ctx context.Context, lo
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param accountKey
- * @param assetType
- * @param uic
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param accountKey
+  - @param assetType
+  - @param uic
+
 @return interface{}
 */
 func (a *TradingApiService) CancelAllOrder(ctx context.Context, accountKey string, assetType []string, uic int32) (interface{}, *http.Response, error) {
@@ -832,9 +834,10 @@ func (a *TradingApiService) CancelAllOrder(ctx context.Context, accountKey strin
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param accountKey
- * @param multiLegOrderId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param accountKey
+  - @param multiLegOrderId
+
 @return interface{}
 */
 func (a *TradingApiService) CancelMultiLegStrategyOrder(ctx context.Context, accountKey string, multiLegOrderId string) (interface{}, *http.Response, error) {
@@ -939,9 +942,10 @@ func (a *TradingApiService) CancelMultiLegStrategyOrder(ctx context.Context, acc
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param accountKey
- * @param orderIds
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param accountKey
+  - @param orderIds
+
 @return interface{}
 */
 func (a *TradingApiService) CancelOrder(ctx context.Context, accountKey string, orderIds string) (interface{}, *http.Response, error) {
@@ -1394,8 +1398,9 @@ func (a *TradingApiService) CreatePosition(ctx context.Context, localVarOptional
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param allocationKeyId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param allocationKeyId
+
 @return interface{}
 */
 func (a *TradingApiService) DeleteAllocationKey(ctx context.Context, allocationKeyId string) (interface{}, *http.Response, error) {
@@ -1499,9 +1504,10 @@ func (a *TradingApiService) DeleteAllocationKey(ctx context.Context, allocationK
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) DeleteMultiLegPricesSubscription(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {
@@ -1721,9 +1727,10 @@ func (a *TradingApiService) DeleteMultiLegPricesSubscriptions(ctx context.Contex
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) DeleteSubscriptionTrading12(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {
@@ -1828,9 +1835,10 @@ func (a *TradingApiService) DeleteSubscriptionTrading12(ctx context.Context, con
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) DeleteSubscriptionTrading13(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {
@@ -1935,9 +1943,10 @@ func (a *TradingApiService) DeleteSubscriptionTrading13(ctx context.Context, con
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) DeleteSubscriptionTrading14(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {
@@ -2042,9 +2051,10 @@ func (a *TradingApiService) DeleteSubscriptionTrading14(ctx context.Context, con
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) DeleteSubscriptionTrading15(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {
@@ -2843,8 +2853,9 @@ func (a *TradingApiService) ExercisePositionAsync(ctx context.Context, positionI
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param allocationKeyId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param allocationKeyId
+
 @return interface{}
 */
 func (a *TradingApiService) GetAllocationKey(ctx context.Context, allocationKeyId string) (interface{}, *http.Response, error) {
@@ -3455,7 +3466,8 @@ func (a *TradingApiService) GetInfoPriceListAsync(ctx context.Context, assetType
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+
 @return interface{}
 */
 func (a *TradingApiService) GetMessagesAsync(ctx context.Context) (interface{}, *http.Response, error) {
@@ -3558,10 +3570,11 @@ func (a *TradingApiService) GetMessagesAsync(ctx context.Context) (interface{}, 
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param accountKey
- * @param optionRootId
- * @param optionsStrategyType
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param accountKey
+  - @param optionRootId
+  - @param optionsStrategyType
+
 @return interface{}
 */
 func (a *TradingApiService) GetMultiLegOrderStrategyDefaults(ctx context.Context, accountKey string, optionRootId int32, optionsStrategyType []string) (interface{}, *http.Response, error) {
@@ -3803,7 +3816,7 @@ func (a *TradingApiService) GetWatchlist(ctx context.Context, localVarOptionals 
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/openapi/trade/v1/watchlists/subscriptions"
+	localVarPath := "https://www.saxotrader.com/sim" + "/openapi/trade/v1/watchlists/subscriptions"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3899,8 +3912,9 @@ func (a *TradingApiService) GetWatchlist(ctx context.Context, localVarOptionals 
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param messageId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param messageId
+
 @return interface{}
 */
 func (a *TradingApiService) MarkMessageAsSeen(ctx context.Context, messageId string) (interface{}, *http.Response, error) {
@@ -4588,9 +4602,10 @@ func (a *TradingApiService) PreCheckOrder(ctx context.Context, localVarOptionals
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) RequestMarginImpactOnSubscription(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {
@@ -4695,9 +4710,10 @@ func (a *TradingApiService) RequestMarginImpactOnSubscription(ctx context.Contex
 
 /*
 TradingApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param contextId
- * @param referenceId
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param contextId
+  - @param referenceId
+
 @return interface{}
 */
 func (a *TradingApiService) ResetSubscriptionAtTheMoney(ctx context.Context, contextId string, referenceId string) (interface{}, *http.Response, error) {

@@ -5,12 +5,5 @@ distribution:
   valuepercentage: 90
   trader: StockNaive
   parameters:
-    percentprofit: 10
-    percentloss: 20
-- valuepercentage: 10
-  trader: ForexNaive
-  symbols:
-    - EURUSD
-  parameters:
-    percentprofit: 3
-    percentloss: 1
+    percentprofit: 2
+    percentloss: -1

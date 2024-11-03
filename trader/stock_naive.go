@@ -6,7 +6,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/gfleury/narrowTrade/analysis"
 	"github.com/gfleury/narrowTrade/config"
 	"github.com/gfleury/narrowTrade/models"
 	"github.com/gfleury/narrowTrade/utils"
@@ -21,10 +20,24 @@ type StockNaive struct {
 
 type InstrumentNaiveData struct {
 	instrument       models.InstrumentDetails
-	quote            *analysis.Quote
-	buyRecomendation int
-	betterBuy        bool
-	indicator        []float64
+	historicalPrices []float64
+	priceRecoveries  int
+}
+
+func (i *InstrumentNaiveData) CalculateCrosses(expectedPriceRecovery float64) {
+	log.Println("Calculating crosses for", i.instrument.GetSymbol(), expectedPriceRecovery, len(i.historicalPrices))
+	if i.historicalPrices == nil {
+		return
+	}
+
+	for index, price := range i.historicalPrices {
+		expectedPrice := price * (1 + expectedPriceRecovery)
+
+		if index+1 < len(i.historicalPrices) && i.historicalPrices[index+1] >= expectedPrice {
+			i.priceRecoveries++
+			log.Println(i.instrument.GetSymbol(), "Recovered from previous day", price, i.historicalPrices[index+1], ">=", expectedPrice)
+		}
+	}
 }
 
 func (t *StockNaive) UpdateAvailableCash(availableCash float64) error {
@@ -58,7 +71,7 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 		t.boughtSymbolsCache = &utils.Cache{}
 	}
 
-	t.data = t.createStocksNaive(param.Symbols)
+	t.data = t.createStocksNaive(param.Symbols, param.PercentProfit)
 
 	err := t.UpdateAvailableCash(param.TotalInvest)
 	if err != nil {
@@ -81,11 +94,6 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			continue
 		}
 
-		if n.buyRecomendation != 0 && !n.betterBuy {
-			log.Println("Skipping symbol as it does not seem good to buy", n.instrument)
-		}
-
-		analysisQuote := n.quote
 		i := n.instrument
 
 		if i == nil {
@@ -105,14 +113,6 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 
 		durationType := models.DurationType(models.DayOrder)
 
-		log.Printf("Got price %f - %f\n", buyPrice, analysisQuote.RealtimePrice)
-		if (buyPrice > analysisQuote.RealtimePrice && buyPrice*0.8 < analysisQuote.RealtimePrice) ||
-			buyPrice == 0 {
-			buyPrice = i.CalculatePriceWithThickSize(analysisQuote.RealtimePrice, 0)
-			orderType = models.Limit
-			durationType = models.GoodTillCancel
-		}
-
 		if buyPrice <= 0 {
 			log.Println("Calculated BuyPrice below/equal 0:", buyPrice)
 			failedTrades++
@@ -120,26 +120,14 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			continue
 		}
 
-		if n.indicator == nil || len(n.indicator) < 3 {
-			// indicator unavailable, go with percentage
-			profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
+		// indicator unavailable, go with percentage
+		profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
+		if param.PercentLoss > 0 {
 			stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
-			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 70)
 		} else {
-			// If percentProfit higher than bbands_higher go with percentProfit
-			if n.indicator[2] < buyPrice*((param.PercentProfit/100)+1) {
-				profitPrice = i.CalculatePriceWithThickSize(buyPrice, -param.PercentProfit)
-			} else {
-				profitPrice = i.CalculatePriceWithThickSize(n.indicator[2], -param.PercentProfit)
-			}
-			// If percentLoss lower than bbands_lower go with bbands_lower
-			if n.indicator[0] > buyPrice*(1-(param.PercentLoss/100)) {
-				stopLossPrice = i.CalculatePriceWithThickSize(n.indicator[0], 0)
-			} else {
-				stopLossPrice = i.CalculatePriceWithThickSize(buyPrice, param.PercentLoss)
-			}
-			distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 0)
+			stopLossPrice = 0
 		}
+		distanceToMarket = i.CalculatePriceWithThickSize(buyPrice-stopLossPrice, 70)
 
 		amount := int(math.Ceil(cashPerSymbol / buyPrice))
 		if amount < 1 || buyPrice > cashPerSymbol || buyPrice*float64(amount) < config.MINIMUM_TRADE_VALUE {
@@ -154,14 +142,18 @@ func (t *StockNaive) Trade(param TradeParameter) error {
 			i.GetAssetType(), i.GetSymbol(), amount, buyPrice, stopLossPrice,
 			distanceToMarket, profitPrice)
 
-		or, err := t.Buy(
-			i.GetOrder().
-				WithType(orderType).
-				WithAmount(amount).
-				WithPrice(buyPrice).
-				WithDuration(durationType).
-				WithTakeProfit(profitPrice))
-		// WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05))
+		order := i.GetOrder().
+			WithType(orderType).
+			WithAmount(amount).
+			WithPrice(buyPrice).
+			WithDuration(durationType).
+			WithTakeProfit(profitPrice)
+
+		if stopLossPrice > 0 {
+			order = order.WithStopLossTrailingStop(stopLossPrice, distanceToMarket, 0.05)
+		}
+
+		or, err := t.Buy(order)
 		if err != nil {
 			orderError := models.GetOrderError(err)
 			if orderError != nil && models.BusinessRuleViolation(orderError) {
@@ -212,7 +204,7 @@ func flatOrderResponse(orders []*models.OrderResponse) ([]string, []float64) {
 	return ordersID, prices
 }
 
-func (t *StockNaive) createStocksNaive(uics []int) []InstrumentNaiveData {
+func (t *StockNaive) createStocksNaive(uics []int, percentProfit float64) []InstrumentNaiveData {
 	naiveStockData := []InstrumentNaiveData{}
 	for _, uic := range uics {
 		n := InstrumentNaiveData{}
@@ -227,33 +219,18 @@ func (t *StockNaive) createStocksNaive(uics []int) []InstrumentNaiveData {
 		n.instrument = i
 
 		log.Println("Fetching price at Analyser", i.GetAssetType(), i.GetSymbolSimple())
-		n.quote, err = t.Analyser().Quote(i)
+		n.historicalPrices, err = t.Analyser().HistoricalPrices(i)
 		if err != nil {
-			n.quote = &analysis.Quote{}
+			log.Println("Failed to get historical prices, going with percentage", i.GetSymbolSimple(), err)
 		}
 
-		log.Println("Fetching recommendation from Analyser", i.GetAssetType(), i.GetSymbolSimple())
-		recommendation, err := t.Analyser().OneAnalysis(i)
-		if err != nil {
-			log.Println("Failed to get Analyser, flatting symbols to same level", i.GetSymbolSimple(), err)
-			n.buyRecomendation = 0
-			n.betterBuy = false
-		} else {
-			n.buyRecomendation = recommendation.BuyRatings
-			n.betterBuy = recommendation.BuyRatings > recommendation.SellRatings
-		}
-
-		log.Println("Fetching bollinger bands from Analyser", i.GetAssetType(), i.GetSymbolSimple())
-		n.indicator, err = t.Analyser().Indicator(i, analysis.BBANDS)
-		if err != nil {
-			log.Println("Failed to get bollinger bands, going with percentage", i.GetSymbolSimple(), err)
-		}
+		n.CalculateCrosses(percentProfit / 100)
 
 		naiveStockData = append(naiveStockData, n)
 	}
 
 	sort.Slice(naiveStockData, func(i, j int) bool {
-		return naiveStockData[i].buyRecomendation > naiveStockData[j].buyRecomendation
+		return naiveStockData[i].priceRecoveries > naiveStockData[j].priceRecoveries
 	})
 
 	return naiveStockData
